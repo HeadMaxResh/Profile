@@ -26,45 +26,57 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        // Создаем роли
-        Role userRole = new Role();
-        userRole.setName("ROLE_USER");
-        roleRepository.save(userRole);
+        // Создаем роли, если их еще нет
+        Role userRole = roleRepository.findByName("ROLE_USER");
+        if (userRole == null) {
+            userRole = new Role();
+            userRole.setName("ROLE_USER");
+            roleRepository.save(userRole);
+        }
 
-        Role adminRole = new Role();
-        adminRole.setName("ROLE_ADMIN");
-        roleRepository.save(adminRole);
+        Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+        if (adminRole == null) {
+            adminRole = new Role();
+            adminRole.setName("ROLE_ADMIN");
+            roleRepository.save(adminRole);
+        }
 
-        // Создаем пользователя
-        User user = new User();
-        user.setFirstName("Иван");
-        user.setLastName("Иванов");
-        user.setEmail("ivanov@example.com");
-        user.setPasswordHash(passwordEncoder.encode("password"));
-        user.setDateOfBirth(LocalDate.of(1999, 1, 1));
-        user.setCity("Москва");
-        user.setGender("M");
+        // Проверяем, существует ли пользователь с таким email
+        if (!userRepository.findByEmail("ivanov@example.com").isPresent()) {
+            // Создаем пользователя
+            User user = new User();
+            user.setFirstName("Иван");
+            user.setLastName("Иванов");
+            user.setEmail("ivanov@example.com");
+            user.setPasswordHash(passwordEncoder.encode("password"));
+            user.setDateOfBirth(LocalDate.of(1999, 1, 1));
+            user.setCity("Москва");
+            user.setGender("M");
 
-        Set<Role> roles = new HashSet<>();
-        roles.add(userRole);
-        user.setRoles(roles);
+            Set<Role> roles = new HashSet<>();
+            roles.add(userRole);
+            user.setRoles(roles);
 
-        userRepository.save(user);
+            userRepository.save(user);
+        }
 
-        // Создаем администратора
-        User admin = new User();
-        admin.setFirstName("Админ");
-        admin.setLastName("Администраторов");
-        admin.setEmail("admin@example.com");
-        admin.setPasswordHash(passwordEncoder.encode("adminpassword"));
-        admin.setDateOfBirth(LocalDate.of(1995, 5, 15));
-        admin.setCity("Санкт-Петербург");
-        admin.setGender("F");
+        // Проверяем, существует ли администратор с таким email
+        if (!userRepository.findByEmail("admin@example.com").isPresent()) {
+            // Создаем администратора
+            User admin = new User();
+            admin.setFirstName("Админ");
+            admin.setLastName("Администраторов");
+            admin.setEmail("admin@example.com");
+            admin.setPasswordHash(passwordEncoder.encode("adminpassword"));
+            admin.setDateOfBirth(LocalDate.of(1995, 5, 15));
+            admin.setCity("Санкт-Петербург");
+            admin.setGender("F");
 
-        Set<Role> adminRoles = new HashSet<>();
-        adminRoles.add(adminRole);
-        admin.setRoles(adminRoles);
+            Set<Role> adminRoles = new HashSet<>();
+            adminRoles.add(adminRole);
+            admin.setRoles(adminRoles);
 
-        userRepository.save(admin);
+            userRepository.save(admin);
+        }
     }
 }

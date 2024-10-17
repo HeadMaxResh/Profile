@@ -1,8 +1,11 @@
 package com.t1.profile.model;
 
+import com.t1.profile.enums.SkillLevel;
 import com.t1.profile.Table;
+
 import jakarta.persistence.*;
 import lombok.Data;
+
 
 @Data
 @Entity
@@ -14,7 +17,7 @@ public class SoftSkill {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    private Integer level;
+    private SkillLevel level;
 
     @ManyToOne
     @JoinColumn(name = Table.USER_ID)

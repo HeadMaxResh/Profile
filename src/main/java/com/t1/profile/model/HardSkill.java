@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @Entity
 public class HardSkill {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -17,7 +18,10 @@ public class HardSkill {
     private HardSkillType type;
 
     @ManyToOne
+    @JoinColumn(name = "profession_id")
+    private Profession profession;
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
 }
