@@ -15,4 +15,9 @@ public class HardSkill {
 
     @Enumerated(EnumType.STRING)
     private HardSkillType type;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }
