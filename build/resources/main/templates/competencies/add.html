@@ -1,0 +1,28 @@
+<!-- competencies/add.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Добавить компетенцию</title>
+</head>
+<body>
+<h1>Добавить компетенцию</h1>
+<form th:action="@{/admin/competencies/add}" th:object="${competency}" method="post">
+    <label>Название:</label>
+    <input type="text" th:field="*{name}" /><br/>
+    <label>Описание:</label>
+    <textarea th:field="*{description}"></textarea><br/>
+    <label>Тип:</label>
+    <select th:field="*{type}">
+        <option th:value="SOFT">Soft</option>
+        <option th:value="HARD">Hard</option>
+    </select><br/>
+    <label>Родительская компетенция:</label>
+    <select th:field="*{parent.id}">
+        <option th:value="0">Нет</option>
+        <option th:each="comp : ${competencies}" th:value="${comp.id}"
+                th:text="${comp.name}">Компетенция</option>
+    </select><br/>
+    <button type="submit">Сохранить</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!-- competencies/list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Список компетенций</title>
+</head>
+<body>
+<h1>Список компетенций</h1>
+<a th:href="@{/admin/competencies/add}">Добавить компетенцию</a>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+        <th>Тип</th>
+        <th>Действия</th>
+    </tr>
+    <tr th:each="competency : ${competencies}">
+        <td th:text="${competency.id}">1</td>
+        <td th:text="${competency.name}">Название</td>
+        <td th:text="${competency.type}">Тип</td>
+        <td>
+            <a th:href="@{/admin/competencies/edit/{id}(id=${competency.id})}">Редактировать</a>
+            |
+            <a th:href="@{/admin/competencies/delete/{id}(id=${competency.id})}"
+               onclick="return confirm('Вы уверены?');">Удалить</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
