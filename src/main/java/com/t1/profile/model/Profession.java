@@ -9,6 +9,7 @@ import java.util.Set;
 @Data
 @Entity
 public class Profession {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
