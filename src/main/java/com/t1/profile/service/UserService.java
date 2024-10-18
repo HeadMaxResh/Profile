@@ -41,12 +41,11 @@ public class UserService {
         user.setEmail(registrationDto.getEmail());
         user.setPasswordHash(passwordEncoder.encode(registrationDto.getPassword()));
 
-
         // Устанавливаем роль
-        Role userRole = roleRepository.findByName("ROLE_USER");
+        Role userRole = roleRepository.findByName("USER"); // Ищем роль 'USER'
         if (userRole == null) {
             userRole = new Role();
-            userRole.setName("ROLE_USER");
+            userRole.setName("USER"); // Создаем роль 'USER'
             roleRepository.save(userRole);
         }
         user.setRoles(Collections.singleton(userRole));

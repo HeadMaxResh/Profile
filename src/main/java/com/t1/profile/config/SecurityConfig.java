@@ -15,7 +15,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity // Включение аннотаций безопасности
 public class SecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
@@ -42,21 +42,20 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/register**", "/login**", "/resources/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")
+                        .loginPage("/login")  // Страница для входа
+                        .defaultSuccessUrl("/admin/competencies", true) // URL по умолчанию после успешного входа
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .permitAll()
                 );
-
         return http.build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {

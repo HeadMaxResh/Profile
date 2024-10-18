@@ -26,24 +26,23 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        // Создаем роли, если их еще нет
-        Role userRole = roleRepository.findByName("ROLE_USER");
+        // Создаем роли без префиксов ROLE_
+        Role userRole = roleRepository.findByName("USER");
         if (userRole == null) {
             userRole = new Role();
-            userRole.setName("ROLE_USER");
+            userRole.setName("USER");
             roleRepository.save(userRole);
         }
 
-        Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+        Role adminRole = roleRepository.findByName("ADMIN");
         if (adminRole == null) {
             adminRole = new Role();
-            adminRole.setName("ROLE_ADMIN");
+            adminRole.setName("ADMIN");
             roleRepository.save(adminRole);
         }
 
-        // Проверяем, существует ли пользователь с таким email
+        // Создаем пользователя, если его нет
         if (!userRepository.findByEmail("ivanov@example.com").isPresent()) {
-            // Создаем пользователя
             User user = new User();
             user.setFirstName("Иван");
             user.setLastName("Иванов");
@@ -60,9 +59,8 @@ public class DataInitializer implements CommandLineRunner {
             userRepository.save(user);
         }
 
-        // Проверяем, существует ли администратор с таким email
+        // Создаем администратора, если его нет
         if (!userRepository.findByEmail("admin@example.com").isPresent()) {
-            // Создаем администратора
             User admin = new User();
             admin.setFirstName("Админ");
             admin.setLastName("Администраторов");
@@ -80,3 +78,5 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 }
+
+

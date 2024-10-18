@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Редактирование компетенции</title>
+</head>
+<body>
+<h1>Редактирование компетенции</h1>
+
+<form th:action="@{/admin/competencies/edit/{id}(id=${competency.id})}" th:object="${competency}" method="post">
+    <label for="name">Название:</label>
+    <input type="text" id="name" th:field="*{name}" /><br/>
+
+    <label for="description">Описание:</label>
+    <textarea id="description" th:field="*{description}"></textarea><br/>
+
+    <label for="type">Тип компетенции:</label>
+    <select id="type" th:field="*{type}">
+        <option th:value="SOFT" th:text="'Soft'"></option>
+        <option th:value="HARD" th:text="'Hard'"></option>
+    </select><br/>
+
+    <label for="level">Уровень:</label>
+    <select id="level" th:field="*{level}">
+        <option th:value="NEGATIVE" th:text="'Negative'"></option>
+        <option th:value="ZERO" th:text="'Zero'"></option>
+        <option th:value="ONE" th:text="'One'"></option>
+        <option th:value="TWO" th:text="'Two'"></option>
+        <option th:value="THREE" th:text="'Three'"></option>
+    </select><br/>
+
+    <label for="parent">Родительская компетенция:</label>
+    <select id="parent" th:field="*{parent.id}">
+        <option th:value="0">Нет</option>
+        <option th:each="comp : ${competencies}" th:value="${comp.id}" th:text="${comp.name}">Компетенция</option>
+    </select><br/>
+
+    <button type="submit">Сохранить изменения</button>
+</form>
+
+<a th:href="@{/admin/competencies}">Вернуться к списку</a>
+</body>
+</html>

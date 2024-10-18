@@ -4,19 +4,22 @@
     <title>Вход</title>
 </head>
 <body>
-<h1>Пожалуйста, войдите</h1>
+<h1>Вход в систему</h1>
 <form th:action="@{/login}" method="post">
     <div>
-        <label>Электронная почта:</label>
-        <input type="text" name="username"/>
+        <label for="username">Email:</label>
+        <input type="text" id="username" name="username"/>
     </div>
     <div>
-        <label>Пароль:</label>
-        <input type="password" name="password"/>
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password"/>
     </div>
     <div>
         <button type="submit">Войти</button>
     </div>
 </form>
+<div>
+    <a th:href="@{/register}">Регистрация</a>
+</div>
 </body>
 </html>

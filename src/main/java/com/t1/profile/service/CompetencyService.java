@@ -1,5 +1,6 @@
 package com.t1.profile.service;
 
+import com.t1.profile.enums.CompetencyType;
 import com.t1.profile.model.Competency;
 import com.t1.profile.repository.CompetencyRepository;
 import org.springframework.beans.factory.annotation.Autowired;

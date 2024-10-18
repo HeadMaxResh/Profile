@@ -1,5 +1,6 @@
 package com.t1.profile.repository;
 
+import com.t1.profile.enums.CompetencyType;
 import com.t1.profile.model.Competency;
 import org.springframework.data.jpa.repository.JpaRepository;
 

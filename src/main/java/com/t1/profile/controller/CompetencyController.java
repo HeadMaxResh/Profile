@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@Controller  // Добавили аннотацию @Controller
 @RequestMapping("/admin/competencies")
 @PreAuthorize("hasRole('ADMIN')")
 public class CompetencyController {
@@ -35,7 +35,6 @@ public class CompetencyController {
         model.addAttribute("competencies", competencyService.findAll());
         return "competencies/add";
     }
-
 
     @PostMapping("/add")
     public String addCompetency(@ModelAttribute Competency competency) {
