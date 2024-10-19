@@ -41,7 +41,7 @@ public class HardSkillController {
         return ResponseEntity.ok(updatedHardSkill);
     }
 
-    @DeleteMapping("/{hardSkillId}")
+    @DeleteMapping("/{hardSkillId}/delete")
     public ResponseEntity<Void> deleteHardSkill(@PathVariable Integer hardSkillId) {
         HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
                 .orElseThrow(() -> new ResourceNotFoundException("HardSkill not found with id " + hardSkillId));

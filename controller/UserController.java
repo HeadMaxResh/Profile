@@ -22,7 +22,7 @@ import java.util.Set;
 public class UserController {
 
     @Autowired
-    UserRepo userRepo;
+    private UserRepo userRepo;
     @Autowired
     private ProfessionRepo professionRepo;
     @Autowired
@@ -37,7 +37,7 @@ public class UserController {
         return userList;
     }
 
-    @PostMapping("/users/{userId}/profession/{professionId}")
+    @PostMapping("/users/{userId}/profession/{professionId}/add")
     public ResponseEntity<User> addProfessionToUser(
             @PathVariable Integer userId,
             @PathVariable Integer professionId
@@ -55,7 +55,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @PostMapping("/users/{userId}/hard-skill/{hardSkillId}")
+    @PostMapping("/users/{userId}/hard-skill/{hardSkillId}/add")
     public ResponseEntity<User> addHardSkillToUser(
             @PathVariable Integer userId,
             @PathVariable Integer hardSkillId
@@ -81,7 +81,7 @@ public class UserController {
         return  ResponseEntity.ok(updatedUser);
     }
 
-    @PostMapping("/users/{userId}/profession/{professionId}")
+    @PostMapping("/users/{userId}/profession/{professionId}/update")
     public ResponseEntity<User> updateProfessionForUser(
             @PathVariable Integer userId,
             @PathVariable Integer professionId
@@ -111,7 +111,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @DeleteMapping("/users/{userId}/delete-hard-skill/{hardSkillId}")
+    @DeleteMapping("/users/{userId}/hard-skill/{hardSkillId}/delete")
     public ResponseEntity<Void> removeHardSkillFromUser(
             @PathVariable Integer userId,
             @PathVariable Integer hardSkillId
