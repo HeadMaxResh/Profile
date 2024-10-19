@@ -1,37 +1,28 @@
 package com.t1.profile.security;
 
-import com.t1.profile.model.Role;
 import com.t1.profile.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
-    private Integer id;
+
+    private Long id;
     private String username;
     private String password;
-    private Collection<? extends GrantedAuthority> authorities;
 
-    // Конструктор
     public UserDetailsImpl(User user) {
         this.id = user.getId();
-        this.username = user.getEmail(); // Используем email в качестве имени пользователя
+        this.username = user.getUsername();
         this.password = user.getPassword();
-        this.authorities = user.getRoles().stream()
-                .map(role -> (GrantedAuthority) () -> role.getName())
-                .collect(Collectors.toList());
     }
 
     // Реализация методов интерфейса UserDetails
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return null; // Реализуйте согласно вашей логике
     }
-
-    // Остальные методы
 
     @Override
     public String getPassword() {
@@ -43,7 +34,6 @@ public class UserDetailsImpl implements UserDetails {
         return username;
     }
 
-    // Эти методы можно настроить по необходимости
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -62,5 +52,10 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    // Геттер для id, если необходимо
+    public Long getId() {
+        return id;
     }
 }

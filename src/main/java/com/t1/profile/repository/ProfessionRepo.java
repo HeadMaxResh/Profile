@@ -1,7 +1,9 @@
 package com.t1.profile.repository;
 
 import com.t1.profile.model.Profession;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ProfessionRepo extends CrudRepository<Profession, Integer> {
+@Repository
+public interface ProfessionRepo extends JpaRepository<Profession, Integer> {
 }

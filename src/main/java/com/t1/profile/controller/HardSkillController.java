@@ -1,12 +1,13 @@
 package com.t1.profile.controller;
 
 import com.t1.profile.dto.HardSkillDto;
-import com.t1.profile.exeption.ResourceNotFoundException;
+import com.t1.profile.exception.ResourceNotFoundException;
 import com.t1.profile.model.HardSkill;
 import com.t1.profile.repository.HardSkillRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

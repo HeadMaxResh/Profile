@@ -13,7 +13,6 @@ public class SoftSkill {
 
     private String name;
 
-    @Enumerated(EnumType.STRING)
     private Integer level;
 
     @ManyToOne

@@ -1,9 +1,19 @@
 package com.t1.profile.controller;
 
-import com.t1.profile.dto.UserDto;
-import com.t1.profile.exeption.ResourceNotFoundException;
-import com.t1.profile.model.Role;
 import com.t1.profile.model.User;
+import com.t1.profile.model.Profession;
+import com.t1.profile.model.HardSkill;
+import com.t1.profile.enums.HardSkillType;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import com.t1.profile.dto.UserDto;
+import com.t1.profile.exception.ResourceNotFoundException;
+import com.t1.profile.model.Role;
+import com.t1.profile.repository.HardSkillRepo;
+import com.t1.profile.repository.ProfessionRepo;
 import com.t1.profile.repository.RoleRepo;
 import com.t1.profile.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder; // Импо
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
-import java.util.List;
-
+import java.util.Optional;
 @RestController
 @RequestMapping("/auth")
 public class UserController {
@@ -34,7 +43,7 @@ public class UserController {
     private HardSkillRepo hardSkillRepo;
 
     // Метод для регистрации
-    @PostMapping("/register")
+    @PostMapping("/auth/user/register")
     public ResponseEntity<User> registerUser(@RequestBody UserDto userDto) {
         if (userRepo.findByEmail(userDto.getEmail()) != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -64,7 +73,7 @@ public class UserController {
 
     @PostMapping("/users/{userId}/profession/{professionId}/add")
     public ResponseEntity<User> addProfessionToUser(
-            @PathVariable Integer userId,
+            @PathVariable Long userId,
             @PathVariable Integer professionId
     ) {
         User user = userRepo.findById(userId)
@@ -82,7 +91,7 @@ public class UserController {
 
     @PostMapping("/users/{userId}/hard-skill/{hardSkillId}/add")
     public ResponseEntity<User> addHardSkillToUser(
-            @PathVariable Integer userId,
+            @PathVariable Long userId,
             @PathVariable Integer hardSkillId
     ) {
         User user = userRepo.findById(userId)
@@ -108,7 +117,7 @@ public class UserController {
 
     @PostMapping("/users/{userId}/profession/{professionId}/update")
     public ResponseEntity<User> updateProfessionForUser(
-            @PathVariable Integer userId,
+            @PathVariable Long userId,
             @PathVariable Integer professionId
     ) {
         User user = userRepo.findById(userId)
@@ -138,7 +147,7 @@ public class UserController {
 
     @DeleteMapping("/users/{userId}/hard-skill/{hardSkillId}/delete")
     public ResponseEntity<Void> removeHardSkillFromUser(
-            @PathVariable Integer userId,
+            @PathVariable Long userId,
             @PathVariable Integer hardSkillId
     ) {
         User user = userRepo.findById(userId)

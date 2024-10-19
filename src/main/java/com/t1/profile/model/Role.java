@@ -1,6 +1,7 @@
 package com.t1.profile.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+
 import java.util.Set;
 
 @Entity

@@ -1,4 +1,4 @@
-package com.t1.profile.exeption;
+package com.t1.profile.exception;
 
 public class ResourceNotFoundException extends RuntimeException{
     public ResourceNotFoundException(String message) {

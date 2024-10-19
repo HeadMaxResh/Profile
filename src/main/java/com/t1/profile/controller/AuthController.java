@@ -1,8 +1,8 @@
 package com.t1.profile.controller;
 
+import com.t1.profile.model.User;
 import com.t1.profile.dto.*;
 import com.t1.profile.model.Role;
-import com.t1.profile.model.User;
 import com.t1.profile.repository.RoleRepo;
 import com.t1.profile.repository.UserRepo;
 import com.t1.profile.security.JwtTokenProvider;

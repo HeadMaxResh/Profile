@@ -1,20 +1,30 @@
 package com.t1.profile.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "users") // Избегаем использования зарезервированных слов
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    private String name;
+    private Long id;
 
     private String email;
-
-    private String password; // Добавляем поле для пароля
+    private String username;
+    private String password;
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "profession_id")
@@ -22,37 +32,37 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "user_roles", // Предполагая, что у нас есть таблица user_roles
+            name = "user_roles", // Assuming you have a user_roles table
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private Set<Role> roles = new HashSet<>(); // Добавляем роли пользователя
+    private Set<Role> roles = new HashSet<>();
 
-    // Геттеры и сеттеры
 
-    public Integer getId() {
-        return id;
-    }
+    @ManyToMany
+    @JoinTable(
+            name = "user_main_hard_skills",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "hard_skill_id")
+    )
+    private Set<HardSkill> mainHardSkills = new HashSet<>();
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    @ManyToMany
+    @JoinTable(
+            name = "user_additional_hard_skills",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "hard_skill_id")
+    )
+    private Set<HardSkill> additionalHardSkills = new HashSet<>();
 
-    // Остальные геттеры и сеттеры
-
-    public String getPassword() {
-        return password;
+    // If you're not using Lombok's @Data, add the missing setters
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
 }

@@ -2,7 +2,7 @@ package com.t1.profile.controller;
 
 import com.t1.profile.dto.HardSkillDto;
 import com.t1.profile.dto.ProfessionDto;
-import com.t1.profile.exeption.ResourceNotFoundException;
+import com.t1.profile.exception.ResourceNotFoundException;
 import com.t1.profile.model.HardSkill;
 import com.t1.profile.model.Profession;
 import com.t1.profile.repository.HardSkillRepo;

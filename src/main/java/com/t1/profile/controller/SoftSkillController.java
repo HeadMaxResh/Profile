@@ -2,7 +2,7 @@ package com.t1.profile.controller;
 
 import com.t1.profile.dto.SoftSkillCategoryDto;
 import com.t1.profile.dto.SoftSkillDto;
-import com.t1.profile.exeption.ResourceNotFoundException;
+import com.t1.profile.exception.ResourceNotFoundException;
 import com.t1.profile.model.SoftSkill;
 import com.t1.profile.model.SoftSkillCategory;
 import com.t1.profile.repository.SoftSkillCategoryRepo;

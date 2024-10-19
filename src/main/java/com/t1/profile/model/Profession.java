@@ -15,6 +15,7 @@ public class Profession {
 
     private String name;
 
-    @OneToMany(mappedBy = "profession", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<HardSkill> mainHardSkills = new HashSet<>();
+    @OneToMany(mappedBy = "profession", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<HardSkill> mainHardSkills;
+
 }

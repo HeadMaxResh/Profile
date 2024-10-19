@@ -1,7 +1,7 @@
 package com.t1.profile.controller;
 
 import com.t1.profile.dto.SoftSkillRatingDto;
-import com.t1.profile.exeption.ResourceNotFoundException;
+import com.t1.profile.exception.ResourceNotFoundException;
 import com.t1.profile.model.SoftSkill;
 import com.t1.profile.model.SoftSkillRating;
 import com.t1.profile.model.User;
@@ -33,11 +33,10 @@ public class SoftSkillRatingController {
         SoftSkill softSkill = softSkillRepo.findById(ratingDto.getSoftSkillId())
                 .orElseThrow(() -> new ResourceNotFoundException("SoftSkill not found с id " + ratingDto.getSoftSkillId()));
 
-        User ratedUser = userRepo.findById(ratingDto.getRatedUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("Rated user not found с id " + ratingDto.getRatedUserId()));
-
-        User raterUser = userRepo.findById(ratingDto.getRaterUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("Rater user not found " + ratingDto.getRaterUserId()));
+        User ratedUser = userRepo.findById(ratingDto.getRatedUserId().longValue())
+                .orElseThrow(() -> new ResourceNotFoundException("Rated user not found"));
+        User raterUser = userRepo.findById(ratingDto.getRaterUserId().longValue())
+                .orElseThrow(() -> new ResourceNotFoundException("Rater user not found"));
 
         SoftSkillRating rating = new SoftSkillRating();
         rating.setSoftSkill(softSkill);
