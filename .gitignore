@@ -1,0 +1,7 @@
+*.class
+*.log
+build/
+out/
+# Игнорировать настройки IDE
+.idea/
+.vscode/
