@@ -10,13 +10,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/hard-skills")
+@RequestMapping("/hard-skill")
 public class HardSkillController {
+
+
 
     @Autowired
     private HardSkillRepo hardSkillRepo;
 
-    @PostMapping("/add")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping
     public ResponseEntity<HardSkill> addHardSkill(@RequestBody HardSkillDto hardSkillDto) {
         HardSkill hardSkill = new HardSkill();
         hardSkill.setName(hardSkillDto.getName());
@@ -25,7 +28,7 @@ public class HardSkillController {
         HardSkill savedHardSkill = hardSkillRepo.save(hardSkill);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedHardSkill);
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{hardSkillId}/update")
     public ResponseEntity<HardSkill> updateHardSkill(
             @PathVariable Integer hardSkillId,
@@ -40,7 +43,7 @@ public class HardSkillController {
         HardSkill updatedHardSkill = hardSkillRepo.save(hardSkill);
         return ResponseEntity.ok(updatedHardSkill);
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{hardSkillId}/delete")
     public ResponseEntity<Void> deleteHardSkill(@PathVariable Integer hardSkillId) {
         HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
