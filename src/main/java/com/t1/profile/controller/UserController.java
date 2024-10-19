@@ -1,32 +1,57 @@
 package com.t1.profile.controller;
 
-import com.t1.profile.enums.HardSkillType;
+import com.t1.profile.dto.UserDto;
 import com.t1.profile.exeption.ResourceNotFoundException;
-import com.t1.profile.model.HardSkill;
-import com.t1.profile.model.Profession;
+import com.t1.profile.model.Role;
 import com.t1.profile.model.User;
-import com.t1.profile.repository.HardSkillRepo;
-import com.t1.profile.repository.ProfessionRepo;
+import com.t1.profile.repository.RoleRepo;
 import com.t1.profile.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder; // Импортируем PasswordEncoder
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/auth")
 public class UserController {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private RoleRepo roleRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
     private ProfessionRepo professionRepo;
     @Autowired
     private HardSkillRepo hardSkillRepo;
+
+    // Метод для регистрации
+    @PostMapping("/register")
+    public ResponseEntity<User> registerUser(@RequestBody UserDto userDto) {
+        if (userRepo.findByEmail(userDto.getEmail()) != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
+        User user = new User();
+        user.setEmail(userDto.getEmail());
+        user.setName(userDto.getName());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword())); // Шифруем пароль
+
+        // Назначаем роль по умолчанию
+        Role userRole = roleRepo.findByName("ROLE_USER");
+        user.setRoles(Collections.singleton(userRole));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(userRepo.save(user));
+    }
+
 
     @GetMapping("/users")
     List<User> getAll() {
