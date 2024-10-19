@@ -49,6 +49,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
+
         User user = new User();
         user.setEmail(userDto.getEmail());
         user.setName(userDto.getName());
