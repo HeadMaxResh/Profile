@@ -33,5 +33,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<SoftSkill> softSkills = new HashSet<>();
 
+    @ManyToOne
+    @JoinColumn(name = "profession_id")
     private Profession profession;
 }

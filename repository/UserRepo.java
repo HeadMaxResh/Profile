@@ -11,8 +11,8 @@ import java.util.List;
 
 public interface UserRepo extends CrudRepository<User, Integer> {
 
-    @Query("SELECT u FROM " + Table.TABLE_USER + " u WHERE u.role = :role")
-    List<User> findByRole(@Param("role") Profession profession);
+    @Query("SELECT u FROM " + Table.TABLE_USER + " u WHERE u.profession = :profession")
+    List<User> findByProfession(@Param("profession") Profession profession);
 
     @Query("SELECT u FROM " + Table.TABLE_USER + " u WHERE u.email = :email")
     User findByEmail(@Param("email") String email);
