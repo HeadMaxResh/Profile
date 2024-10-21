@@ -13,6 +13,14 @@ public class HardSkill {
 
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "profession_id")
+    private Profession profession;
+
     @Enumerated(EnumType.STRING)
     private HardSkillType type;
 }
