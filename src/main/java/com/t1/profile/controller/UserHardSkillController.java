@@ -2,10 +2,7 @@ package com.t1.profile.controller;
 
 import com.t1.profile.dto.UserDto;
 import com.t1.profile.dto.UserHardSkillsDto;
-import com.t1.profile.exeption.ResourceNotFoundException;
 import com.t1.profile.model.HardSkill;
-import com.t1.profile.model.User;
-import com.t1.profile.repository.UserRepo;
 import com.t1.profile.service.UserHardSkillServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,15 +17,10 @@ public class UserHardSkillController {
     @Autowired
     private UserHardSkillServiceImpl userHardSkillService;
 
-    @Autowired
-    private UserRepo userRepo;
-
     @GetMapping("/")
     public ResponseEntity<Set<HardSkill>> getHardSkillsByUser(@PathVariable Integer userId) {
-        User user = userRepo.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден с id " + userId));
-
-        return ResponseEntity.ok(user.getHardSkills());
+        Set<HardSkill> hardSkills = userHardSkillService.getHardSkillsByUser(userId);
+        return ResponseEntity.ok(hardSkills);
     }
 
     @PostMapping("/{hardSkillId}/add")

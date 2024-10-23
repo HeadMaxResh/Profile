@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserHardSkillServiceImpl implements UserHardSkillService {
@@ -21,6 +22,13 @@ public class UserHardSkillServiceImpl implements UserHardSkillService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Override
+    public Set<HardSkill> getHardSkillsByUser(Integer userId) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден с id " + userId));
+        return user.getHardSkills();
+    }
 
     @Override
     public UserDto addHardSkillToUser(Integer userId, Integer hardSkillId) {
