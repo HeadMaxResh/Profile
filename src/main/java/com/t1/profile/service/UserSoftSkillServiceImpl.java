@@ -1,26 +1,23 @@
-package com.t1.profile.controller;
+package com.t1.profile.service;
 
 import com.t1.profile.dto.SoftSkillRatingDto;
 import com.t1.profile.exeption.ResourceNotFoundException;
 import com.t1.profile.model.SoftSkill;
 import com.t1.profile.model.SoftSkillRating;
 import com.t1.profile.model.User;
-import com.t1.profile.repository.SoftSkillRatingRepo;
+import com.t1.profile.repository.UserSoftSkillRepo;
 import com.t1.profile.repository.SoftSkillRepo;
 import com.t1.profile.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/soft-skill-rating")
-public class SoftSkillRatingController {
+@Service
+public class UserSoftSkillServiceImpl implements UserSoftSkillService {
 
     @Autowired
-    private SoftSkillRatingRepo softSkillRatingRepo;
+    private UserSoftSkillRepo userSoftSkillRepo;
 
     @Autowired
     private SoftSkillRepo softSkillRepo;
@@ -28,8 +25,8 @@ public class SoftSkillRatingController {
     @Autowired
     private UserRepo userRepo;
 
-    @PostMapping("/add")
-    public ResponseEntity<SoftSkillRating> rateSoftSkill(@RequestBody SoftSkillRatingDto ratingDto) {
+    @Override
+    public SoftSkillRating rateSoftSkill(SoftSkillRatingDto ratingDto) {
         SoftSkill softSkill = softSkillRepo.findById(ratingDto.getSoftSkillId())
                 .orElseThrow(() -> new ResourceNotFoundException("SoftSkill not found с id " + ratingDto.getSoftSkillId()));
 
@@ -45,14 +42,11 @@ public class SoftSkillRatingController {
         rating.setRaterUser(raterUser);
         rating.setRating(ratingDto.getRating());
 
-        SoftSkillRating savedRating = softSkillRatingRepo.save(rating);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedRating);
+        return userSoftSkillRepo.save(rating);
     }
 
-    @GetMapping("/soft-skill/{softSkillId}")
-    public ResponseEntity<List<SoftSkillRating>> getRatingBySoftSkill(@PathVariable Integer softSkillId) {
-        List<SoftSkillRating> ratings = softSkillRatingRepo.findRatingsBySoftSkillId(softSkillId);
-        return ResponseEntity.ok(ratings);
+    @Override
+    public List<SoftSkillRating> getRatingBySoftSkill(Integer softSkillId) {
+        return userSoftSkillRepo.findRatingsBySoftSkillId(softSkillId);
     }
-
 }
