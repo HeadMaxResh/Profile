@@ -16,6 +16,7 @@ AuthController
 
 Описание: Аутентифицирует пользователя и возвращает JWT.
 
+
 HardSkillController
 
 1. POST /hard-skills/add addHardSkill
@@ -41,6 +42,7 @@ HardSkillController
 Возвращает: Void
 
 Описание: Удаляет хардскилл по ID.
+
 
 ProfessionController
 
@@ -92,6 +94,7 @@ ProfessionController
 
 Описание: Получает хардскиллы, связанные с профессией по ID.
 
+
 SoftSkillController
 
 1.POST /soft-skill/category/add addCategory
@@ -126,6 +129,7 @@ SoftSkillController
 
 Описание: Удаляет софт-скилл по ID.
 
+
 UserController
 
 1. GET /users/ getAll
@@ -135,6 +139,7 @@ UserController
 Возвращает: List<UserDto>
 
 Описание: Получает список всех пользователей.
+
 
 UserHardSkillController
 
@@ -177,6 +182,7 @@ UserHardSkillController
 Возвращает: UserHardSkillsDto
 
 Описание: Получает хардскиллы пользователя и его профессии по ID пользователя и профессии.
+
 
 UserProfessionController
 
