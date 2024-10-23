@@ -1,23 +1,27 @@
 package com.t1.profile.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import com.t1.profile.model.User;
 import lombok.Data;
+
+import java.time.LocalDate;
 
 @Data
 public class UserDto {
-
-    @NotBlank
+    private Integer id;
     private String firstName;
-    @NotBlank
     private String lastName;
-
-    @NotBlank
-    @Email
+    private LocalDate dateOfBirth;
+    private String gender;
+    private String city;
     private String email;
 
-    @NotBlank
-    @Size(min = 6, message = "Password must have at least 6 characters")
-    private String password; // Добавляем поле для пароля
+    public UserDto(User user) {
+        this.id = user.getId();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.dateOfBirth = user.getDateOfBirth();
+        this.gender = user.getGender();
+        this.city = user.getCity();
+        this.email = user.getEmail();
+    }
 }

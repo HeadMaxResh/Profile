@@ -2,32 +2,26 @@ package com.t1.profile.controller;
 
 import com.t1.profile.dto.HardSkillDto;
 import com.t1.profile.dto.ProfessionDto;
-import com.t1.profile.exeption.ResourceNotFoundException;
 import com.t1.profile.model.HardSkill;
 import com.t1.profile.model.Profession;
-import com.t1.profile.repository.HardSkillRepo;
-import com.t1.profile.repository.ProfessionRepo;
+import com.t1.profile.service.ProfessionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/professions")
 public class ProfessionController {
 
     @Autowired
-    private ProfessionRepo professionRepo;
-
-    @Autowired
-    private HardSkillRepo hardSkillRepo;
+    private ProfessionServiceImpl professionService;
 
     @PostMapping("/add")
     public ResponseEntity<Profession> addProfession(@RequestBody ProfessionDto professionDto) {
-        Profession profession = new Profession();
-        profession.setName(professionDto.getName());
-
-        Profession savedProfession = professionRepo.save(profession);
+        Profession savedProfession = professionService.addProfession(professionDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProfession);
     }
 
@@ -36,19 +30,8 @@ public class ProfessionController {
             @PathVariable Integer professionId,
             @RequestBody HardSkillDto hardSkillDto
     ) {
-        Profession profession = professionRepo.findById(professionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Profession not found with id " + professionId));
-
-        HardSkill hardSkill = new HardSkill();
-        hardSkill.setName(hardSkillDto.getName());
-        hardSkill.setType(hardSkillDto.getType());
-
-        profession.getMainHardSkills().add(hardSkill);
-
-        hardSkillRepo.save(hardSkill);
-        professionRepo.save(profession);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(hardSkill);
+        HardSkill savedHardSkill = professionService.addHardSkillToProfession(professionId, hardSkillDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedHardSkill);
     }
 
     @PostMapping("/{professionId}/add-existing-hard-skill/{hardSkillId}")
@@ -56,17 +39,8 @@ public class ProfessionController {
             @PathVariable Integer professionId,
             @PathVariable Integer hardSkillId
     ) {
-        Profession profession = professionRepo.findById(professionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Profession not found with id " + professionId));
-
-        HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
-                .orElseThrow(() -> new ResourceNotFoundException("HardSkill not found with id " + hardSkillId));
-
-        profession.getMainHardSkills().add(hardSkill);
-
-        professionRepo.save(profession);
-
-        return ResponseEntity.status(HttpStatus.OK).body(hardSkill);
+        HardSkill savedHardSkill = professionService.addExistingHardSkillToProfession(professionId, hardSkillId);
+        return ResponseEntity.status(HttpStatus.OK).body(savedHardSkill);
     }
 
     @DeleteMapping("/{professionId}/remove-hard-skills/{hardSkillId}")
@@ -74,26 +48,19 @@ public class ProfessionController {
             @PathVariable Integer professionId,
             @PathVariable Integer hardSkillId
     ) {
-        Profession profession = professionRepo.findById(professionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Profession not found with id " + professionId));
-
-        HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
-                .orElseThrow(() -> new ResourceNotFoundException("HardSkill not found with id " + hardSkillId));
-
-        profession.getMainHardSkills().remove(hardSkill);
-
-        professionRepo.save(profession);
-
+        professionService.removeHardSkillFromProfession(professionId, hardSkillId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{professionId}")
+    @DeleteMapping("/{professionId}/delete")
     public ResponseEntity<Void> deleteProfession(@PathVariable Integer professionId) {
-        Profession profession = professionRepo.findById(professionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Profession not found with id " + professionId));
-
-        professionRepo.delete(profession);
-
+        professionService.deleteProfession(professionId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{professionId}/hard-skills")
+    public ResponseEntity<Set<HardSkill>> getHardSkillsByProfession(@PathVariable Integer professionId) {
+        Set<HardSkill> hardSkills = professionService.getHardSkillsByProfession(professionId);
+        return ResponseEntity.ok(hardSkills);
     }
 }

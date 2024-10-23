@@ -1,9 +1,8 @@
 package com.t1.profile.controller;
 
 import com.t1.profile.dto.HardSkillDto;
-import com.t1.profile.exeption.ResourceNotFoundException;
 import com.t1.profile.model.HardSkill;
-import com.t1.profile.repository.HardSkillRepo;
+import com.t1.profile.service.HardSkillServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +13,11 @@ import org.springframework.web.bind.annotation.*;
 public class HardSkillController {
 
     @Autowired
-    private HardSkillRepo hardSkillRepo;
+    private HardSkillServiceImpl hardSkillService;
 
     @PostMapping("/add")
     public ResponseEntity<HardSkill> addHardSkill(@RequestBody HardSkillDto hardSkillDto) {
-        HardSkill hardSkill = new HardSkill();
-        hardSkill.setName(hardSkillDto.getName());
-        hardSkill.setType(hardSkillDto.getType());
-
-        HardSkill savedHardSkill = hardSkillRepo.save(hardSkill);
+        HardSkill savedHardSkill = hardSkillService.addHardSkill(hardSkillDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedHardSkill);
     }
 
@@ -31,23 +26,13 @@ public class HardSkillController {
             @PathVariable Integer hardSkillId,
             @RequestBody HardSkillDto hardSkillDto
     ) {
-        HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
-                .orElseThrow(() -> new ResourceNotFoundException("HardSkill not found with id " + hardSkillId));
-
-        hardSkill.setName(hardSkillDto.getName());
-        hardSkill.setType(hardSkillDto.getType());
-
-        HardSkill updatedHardSkill = hardSkillRepo.save(hardSkill);
+        HardSkill updatedHardSkill = hardSkillService.updateHardSkill(hardSkillId, hardSkillDto);
         return ResponseEntity.ok(updatedHardSkill);
     }
 
     @DeleteMapping("/{hardSkillId}/delete")
     public ResponseEntity<Void> deleteHardSkill(@PathVariable Integer hardSkillId) {
-        HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
-                .orElseThrow(() -> new ResourceNotFoundException("HardSkill not found with id " + hardSkillId));
-
-        hardSkillRepo.delete(hardSkill);
-
+        hardSkillService.deleteHardSkill(hardSkillId);
         return ResponseEntity.noContent().build();
     }
 }

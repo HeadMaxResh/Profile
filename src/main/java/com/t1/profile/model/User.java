@@ -25,13 +25,7 @@ public class User {
     private String passwordHash;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<HardSkill> mainHardSkills = new HashSet<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<HardSkill> additionalHardSkills = new HashSet<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<SoftSkill> softSkills = new HashSet<>();
+    private Set<HardSkill> hardSkills = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "profession_id")
