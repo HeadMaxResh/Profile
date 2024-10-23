@@ -147,7 +147,7 @@
    - **Возвращает:** `SoftSkillRating`
    - **Описание:** Оценивает софт-скилл.
 
-2. **GET /soft-skill-rating/soft-skill/{softSkillId}` `getRatingBySoftSkill`
+2. **GET /soft-skill-rating/soft-skill/{softSkillId}** `getRatingBySoftSkill`
    - **Вход:** `softSkillId`
    - **Возвращает:** `List<SoftSkillRating>`
    - **Описание:** Получает рейтинги по софт-скиллу по ID.
