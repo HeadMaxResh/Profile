@@ -119,7 +119,7 @@
    - **Возвращает:** `UserHardSkillsDto`
    - **Описание:** Получает хардскиллы пользователя и его профессии по ID пользователя.
 
-5. **GET /users/{userId}/hard-skills/user-profession/{professionId}` `getUserAndProfessionHardSkills`
+5. **GET /users/{userId}/hard-skills/user-profession/{professionId}** `getUserAndProfessionHardSkills`
    - **Вход:** `userId`, `professionId`
    - **Возвращает:** `UserHardSkillsDto`
    - **Описание:** Получает хардскиллы пользователя и его профессии по ID пользователя и профессии.
