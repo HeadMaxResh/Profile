@@ -1,5 +1,6 @@
 package com.t1.profile.service;
 
+import com.t1.profile.RoleType;
 import com.t1.profile.dto.ApiDto;
 import com.t1.profile.dto.JwtAuthenticationDto;
 import com.t1.profile.dto.LoginDto;
@@ -48,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
         user.setFirstName(registrationDto.getFirstName());
         user.setPasswordHash(passwordEncoder.encode(registrationDto.getPassword()));
 
-        Role userRole = roleRepo.findByName("ROLE_USER");
+        Role userRole = roleRepo.findByName(RoleType.USER);
         user.setRoles(Collections.singleton(userRole));
 
         userRepo.save(user);

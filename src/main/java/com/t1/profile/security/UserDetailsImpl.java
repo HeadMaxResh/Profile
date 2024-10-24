@@ -22,10 +22,10 @@ public class UserDetailsImpl implements UserDetails {
         this.password = user.getPasswordHash();
     }
 
-    // Реализация методов интерфейса UserDetails
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null; // Реализуйте согласно вашей логике
+        return null;
     }
 
     @Override

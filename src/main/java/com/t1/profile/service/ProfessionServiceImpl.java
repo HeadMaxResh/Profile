@@ -35,11 +35,11 @@ public class ProfessionServiceImpl implements ProfessionService {
 
         HardSkill hardSkill = new HardSkill();
         hardSkill.setName(hardSkillDto.getName());
-        hardSkill.setType(hardSkillDto.getType());
+        //hardSkill.setType(hardSkillDto.getType());
 
         profession.getMainHardSkills().add(hardSkill);
-        hardSkillRepo.save(hardSkill);
-        return hardSkill;
+        HardSkill savedHardSkill = hardSkillRepo.save(hardSkill);
+        return savedHardSkill;
     }
 
     @Override

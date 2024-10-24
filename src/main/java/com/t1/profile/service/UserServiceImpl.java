@@ -1,6 +1,8 @@
 package com.t1.profile.service;
 
 import com.t1.profile.dto.UserDto;
+import com.t1.profile.model.Profession;
+import com.t1.profile.model.User;
 import com.t1.profile.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,20 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getAllUsers() {
         return userRepo.findAll()
                 .stream()
+                .map(UserDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public UserDto findByEmail(String email) {
+        User user =  userRepo.findByEmail(email);
+        return user != null ? new UserDto(user) : null;
+    }
+
+    @Override
+    public List<UserDto> findByProfession(Profession profession) {
+        List<User> users = userRepo.findByProfession(profession);
+        return users.stream()
                 .map(UserDto::new)
                 .collect(Collectors.toList());
     }
