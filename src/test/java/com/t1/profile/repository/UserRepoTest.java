@@ -2,44 +2,66 @@ package com.t1.profile.repository;
 
 import com.t1.profile.model.Profession;
 import com.t1.profile.model.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // Используем реальную базу данных, если нужно
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class UserRepoTest {
 
     @Autowired
     private UserRepo userRepo;
 
     @Autowired
-    private ProfessionRepo professionRepo;  // Добавляем ProfessionRepo
+    private ProfessionRepo professionRepo;
+
+    private User user;
+
+    @BeforeEach
+    public void setUp() {
+        Profession profession = new Profession();
+        profession.setName("Software Developer");
+        profession = professionRepo.save(profession);
+
+        user = new User();
+        user.setProfession(profession);
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setEmail("john.doe@example.com");
+        user.setPasswordHash("hashed_password");
+        userRepo.save(user);
+    }
 
     @Test
-    void testFindByProfession() {
-        // Создаем и сохраняем Profession
-        Profession profession = new Profession();
-        profession.setName("Engineer");
-        professionRepo.save(profession);  // Сохраняем Profession
+    public void testFindByEmail() {
+        User foundUser = userRepo.findByEmail("john.doe@example.com");
 
-        // Создаем и сохраняем User с Profession
-        User user = new User();
-        user.setEmail("user@example.com");
-        user.setName("John Doe");
-        user.setProfession(profession);  // Связываем User с Profession
-        userRepo.save(user);  // Сохраняем User
+        assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getEmail()).isEqualTo("john.doe@example.com");
+    }
 
-        // Тестируем метод findByProfession
-        List<User> users = userRepo.findByProfession(profession);
-        assertNotNull(users);
-        assertEquals(1, users.size());
-        assertEquals("John Doe", users.get(0).getName());
+    @Test
+    public void testFindByProfession() {
+        Profession profession = user.getProfession();
+
+        List<User> usersWithProfession = userRepo.findByProfession(profession);
+
+        assertThat(usersWithProfession).isNotEmpty();
+        assertThat(usersWithProfession.get(0).getProfession().getName()).isEqualTo("Software Developer");
+    }
+
+    @Test
+    public void testFindAll() {
+        List<User> allUsers = userRepo.findAll();
+
+        assertThat(allUsers).isNotEmpty();
+        assertThat(allUsers.size()).isEqualTo(1);
     }
 }

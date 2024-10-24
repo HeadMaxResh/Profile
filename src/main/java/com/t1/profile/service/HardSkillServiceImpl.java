@@ -17,7 +17,7 @@ public class HardSkillServiceImpl implements HardSkillService {
     public HardSkill addHardSkill(HardSkillDto hardSkillDto) {
         HardSkill hardSkill = new HardSkill();
         hardSkill.setName(hardSkillDto.getName());
-        hardSkill.setType(hardSkillDto.getType());
+        //hardSkill.setType(hardSkillDto.getType());
         return hardSkillRepo.save(hardSkill);
     }
 
@@ -27,7 +27,7 @@ public class HardSkillServiceImpl implements HardSkillService {
                 .orElseThrow(() -> new ResourceNotFoundException("HardSkill not found with id " + hardSkillId));
 
         hardSkill.setName(hardSkillDto.getName());
-        hardSkill.setType(hardSkillDto.getType());
+        //hardSkill.setType(hardSkillDto.getType());
         return hardSkillRepo.save(hardSkill);
     }
 

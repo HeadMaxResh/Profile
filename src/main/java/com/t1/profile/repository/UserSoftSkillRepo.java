@@ -15,13 +15,14 @@ public interface UserSoftSkillRepo extends CrudRepository<SoftSkillRating, Integ
     @Query("SELECT r FROM SoftSkillRating r WHERE r.ratedUser.id = :ratedUserId")
     List<SoftSkillRating> findByRatedUserId(@Param("ratedUserId") Integer ratedUserId);
 
-    @Query("SELECT r FROM SoftSkillRating r WHERE r.rater.id = :raterId")
-    List<SoftSkillRating> findByRaterId(@Param("raterId") Integer raterId);
+    @Query("SELECT r FROM SoftSkillRating r WHERE r.raterUser.id = :raterUserId")
+    List<SoftSkillRating> findByRaterId(@Param("raterUserId") Integer raterUserId);
 
     @Query("SELECT AVG(r.rating) FROM SoftSkillRating r WHERE r.ratedUser.id = :ratedUserId AND r.softSkill.id = :softSkillId")
     Double findAverageRatingByUserAndSoftSkill(
             @Param("ratedUserId") Integer ratedUserId,
-            @Param("softSkillId") Integer softSkillId);
+            @Param("softSkillId") Integer softSkillId
+    );
 
 
 }

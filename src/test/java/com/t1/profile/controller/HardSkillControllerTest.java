@@ -1,7 +1,6 @@
 package com.t1.profile.controller;
 
 import com.t1.profile.dto.HardSkillDto;
-import com.t1.profile.enums.HardSkillType;
 import com.t1.profile.model.HardSkill;
 import com.t1.profile.repository.HardSkillRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,8 +14,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class HardSkillControllerTest {
 
@@ -38,11 +37,11 @@ public class HardSkillControllerTest {
     public void testAddHardSkill() throws Exception {
         HardSkillDto hardSkillDto = new HardSkillDto();
         hardSkillDto.setName("Java");
-        hardSkillDto.setType(HardSkillType.valueOf("PRIMARY"));
+        //hardSkillDto.setType(HardSkillType.valueOf("PRIMARY"));
 
         HardSkill hardSkill = new HardSkill();
         hardSkill.setName(hardSkillDto.getName());
-        hardSkill.setType(hardSkillDto.getType());
+        //hardSkill.setType(hardSkillDto.getType());
 
         when(hardSkillRepo.save(any(HardSkill.class))).thenReturn(hardSkill);
 
