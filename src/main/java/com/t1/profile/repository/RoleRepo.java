@@ -1,10 +1,10 @@
+// RoleRepo.java
 package com.t1.profile.repository;
 
 import com.t1.profile.model.Role;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
-public interface RoleRepo extends CrudRepository<Role, Integer> {
-
-    Role findByName(String name);
-
+public interface RoleRepo extends JpaRepository<Role, Integer> {
+    Optional<Role> findByName(String name);
 }

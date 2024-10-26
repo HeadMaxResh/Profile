@@ -4,13 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Getter
 @Setter
 @Entity
-public class SoftSkill {
+public class SoftSkillIndicator {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,11 +16,8 @@ public class SoftSkill {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    private SoftSkillCategory category;
-
-    @OneToMany(mappedBy = "softSkill", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<SoftSkillIndicator> indicators = new HashSet<>();
+    @JoinColumn(name = "soft_skill_id")
+    private SoftSkill softSkill;
 
     // Конструкторы, геттеры и сеттеры
 }

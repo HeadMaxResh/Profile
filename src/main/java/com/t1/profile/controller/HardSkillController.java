@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/hard-skills")
 public class HardSkillController {
@@ -35,4 +37,10 @@ public class HardSkillController {
         hardSkillService.deleteHardSkill(hardSkillId);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/all")
+    public ResponseEntity<List<HardSkillDto>> getAllHardSkills() {
+        List<HardSkillDto> hardSkills = hardSkillService.getAllHardSkills();
+        return ResponseEntity.ok(hardSkills);
+    }
+
 }

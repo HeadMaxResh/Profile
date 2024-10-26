@@ -13,4 +13,6 @@ public interface UserService {
 
     List<UserDto> findByProfession( Profession profession);
 
+    UserDto getUserById(Integer id);
+
 }

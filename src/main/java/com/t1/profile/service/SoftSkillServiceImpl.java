@@ -10,6 +10,8 @@ import com.t1.profile.repository.SoftSkillRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SoftSkillServiceImpl implements SoftSkillService {
 
@@ -19,6 +21,10 @@ public class SoftSkillServiceImpl implements SoftSkillService {
     @Autowired
     private CategorySoftSkillRepo categorySoftSkillRepo;
 
+    @Override
+    public List<SoftSkill> getAllSoftSkills() {
+        return (List<SoftSkill>) softSkillRepo.findAll(); // Получение всех soft skills из репозитория
+    }
     @Override
     public SoftSkillCategory addCategory(SoftSkillCategoryDto categoryDto) {
         SoftSkillCategory category = new SoftSkillCategory();

@@ -1,7 +1,11 @@
+// CategorySoftSkillRepo.java
 package com.t1.profile.repository;
 
 import com.t1.profile.model.SoftSkillCategory;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CategorySoftSkillRepo extends CrudRepository<SoftSkillCategory, Integer> {
+import java.util.Optional;
+
+public interface CategorySoftSkillRepo extends JpaRepository<SoftSkillCategory, Integer> {
+    Optional<SoftSkillCategory> findByName(String name);
 }

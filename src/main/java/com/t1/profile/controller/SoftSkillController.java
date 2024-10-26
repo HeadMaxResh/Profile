@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/soft-skill")
 public class SoftSkillController {
@@ -40,5 +42,13 @@ public class SoftSkillController {
         softSkillService.deleteSoftSkill(softSkillId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<SoftSkill>> getAllSoftSkills() {
+        List<SoftSkill> softSkills = softSkillService.getAllSoftSkills();
+        return ResponseEntity.ok(softSkills);
+    }
+
+
 
 }

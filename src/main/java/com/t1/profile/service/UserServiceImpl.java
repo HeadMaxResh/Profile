@@ -38,4 +38,10 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public UserDto getUserById(Integer id) {
+        User user = userRepo.findById(id).orElse(null);
+        return user != null ? new UserDto(user) : null;
+    }
+
 }
