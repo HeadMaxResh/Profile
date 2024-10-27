@@ -1,6 +1,7 @@
 package com.t1.profile.service;
 
 import com.t1.profile.dto.UserDto;
+import com.t1.profile.mapper.UserMapper;
 import com.t1.profile.model.Profession;
 import com.t1.profile.model.User;
 import com.t1.profile.repository.UserRepo;
@@ -10,11 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class UserServiceImplTest {
@@ -25,94 +25,87 @@ public class UserServiceImplTest {
     @Mock
     private UserRepo userRepo;
 
+    @Mock
+    private UserMapper userMapper;
+
+    private User user;
+    private UserDto userDto;
+    private List<User> userList;
+    private List<UserDto> userDtoList;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-    }
 
-    @Test
-    public void testGetAllUsers() {
-        User user1 = new User();
-        user1.setId(1);
-        user1.setFirstName("John");
-        user1.setLastName("Doe");
-        user1.setEmail("john.doe@example.com");
-        user1.setDateOfBirth(LocalDate.of(1990, 1, 1));
-
-        User user2 = new User();
-        user2.setId(2);
-        user2.setFirstName("Jane");
-        user2.setLastName("Doe");
-        user2.setEmail("jane.doe@example.com");
-        user2.setDateOfBirth(LocalDate.of(1995, 5, 15));
-
-        when(userRepo.findAll()).thenReturn(Arrays.asList(user1, user2));
-
-        List<UserDto> userDtos = userService.getAllUsers();
-
-        assertThat(userDtos).isNotNull();
-        assertThat(userDtos.size()).isEqualTo(2);
-        assertThat(userDtos.get(0).getFirstName()).isEqualTo("John");
-        assertThat(userDtos.get(1).getFirstName()).isEqualTo("Jane");
-
-        verify(userRepo, times(1)).findAll();
-    }
-
-    @Test
-    public void testFindByEmail_UserFound() {
-        User user = new User();
+        user = new User();
         user.setId(1);
-        user.setFirstName("Alice");
-        user.setLastName("Smith");
-        user.setEmail("alice.smith@example.com");
+        user.setEmail("test@example.com");
+        user.setFirstName("User 1");
 
-        when(userRepo.findByEmail("alice.smith@example.com")).thenReturn(user);
+        userDto = new UserDto();
+        userDto.setId(1);
+        userDto.setEmail("test@example.com");
+        userDto.setFirstName("User 1");
 
-        UserDto foundUserDto = userService.findByEmail("alice.smith@example.com");
+        userList = new ArrayList<>();
+        userList.add(user);
 
-        assertThat(foundUserDto).isNotNull();
-        assertThat(foundUserDto.getFirstName()).isEqualTo("Alice");
-
-        verify(userRepo, times(1)).findByEmail("alice.smith@example.com");
+        userDtoList = new ArrayList<>();
+        userDtoList.add(userDto);
     }
 
     @Test
-    public void testFindByEmail_UserNotFound() {
-        when(userRepo.findByEmail("unknown@example.com")).thenReturn(null);
+    public void getAllUsers_shouldReturnListOfUserDto() {
+        when(userRepo.findAll()).thenReturn(userList);
+        when(userMapper.toDtoList(anyList())).thenReturn(userDtoList);
 
-        UserDto foundUserDto = userService.findByEmail("unknown@example.com");
+        List<UserDto> result = userService.getAllUsers();
 
-        assertThat(foundUserDto).isNull();
-        verify(userRepo, times(1)).findByEmail("unknown@example.com");
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(userDto.getEmail(), result.get(0).getEmail());
+        verify(userRepo, times(1)).findAll();
+        verify(userMapper, times(1)).toDtoList(userList);
     }
 
     @Test
-    public void testFindByProfession() {
+    public void findByEmail_shouldReturnUserDto_whenUserExists() {
+        when(userRepo.findByEmail("test@example.com")).thenReturn(user);
+        when(userMapper.toDto(any(User.class))).thenReturn(userDto);
+
+        UserDto result = userService.findByEmail("test@example.com");
+
+        assertNotNull(result);
+        assertEquals(userDto.getEmail(), result.getEmail());
+        verify(userRepo, times(1)).findByEmail("test@example.com");
+        verify(userMapper, times(1)).toDto(user);
+    }
+
+    @Test
+    public void findByEmail_shouldReturnNull_whenUserDoesNotExist() {
+        when(userRepo.findByEmail("nonexistent@example.com")).thenReturn(null);
+
+        UserDto result = userService.findByEmail("nonexistent@example.com");
+
+        assertNull(result);
+        verify(userRepo, times(1)).findByEmail("nonexistent@example.com");
+    }
+
+    @Test
+    public void findByProfession_shouldReturnListOfUserDto() {
         Profession profession = new Profession();
-        profession.setName("Software Developer");
+        profession.setId(1);
+        profession.setName("Разработчик");
 
-        User user1 = new User();
-        user1.setId(1);
-        user1.setFirstName("John");
-        user1.setLastName("Doe");
-        user1.setEmail("john.doe@example.com");
-        user1.setProfession(profession);
+        when(userRepo.findByProfession(any(Profession.class))).thenReturn(userList);
+        when(userMapper.toDtoList(anyList())).thenReturn(userDtoList);
 
-        User user2 = new User();
-        user2.setId(2);
-        user2.setFirstName("Jane");
-        user2.setLastName("Doe");
-        user2.setEmail("jane.doe@example.com");
-        user2.setProfession(profession);
+        List<UserDto> result = userService.findByProfession(profession);
 
-        when(userRepo.findByProfession(profession)).thenReturn(Arrays.asList(user1, user2));
-
-        List<UserDto> userDtos = userService.findByProfession(profession);
-
-        assertThat(userDtos).isNotNull();
-        assertThat(userDtos.size()).isEqualTo(2);
-        assertThat(userDtos).extracting(UserDto::getFirstName).containsExactly("John", "Jane");
-
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(userDto.getEmail(), result.get(0).getEmail());
         verify(userRepo, times(1)).findByProfession(profession);
+        verify(userMapper, times(1)).toDtoList(userList);
     }
 }

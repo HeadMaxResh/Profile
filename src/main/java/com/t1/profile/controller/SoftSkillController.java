@@ -2,8 +2,6 @@ package com.t1.profile.controller;
 
 import com.t1.profile.dto.SoftSkillCategoryDto;
 import com.t1.profile.dto.SoftSkillDto;
-import com.t1.profile.model.SoftSkill;
-import com.t1.profile.model.SoftSkillCategory;
 import com.t1.profile.service.SoftSkillServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,8 +16,8 @@ public class SoftSkillController {
     private SoftSkillServiceImpl softSkillService;
 
     @PostMapping("/category/add")
-    public ResponseEntity<SoftSkillCategory> addCategory(@RequestBody SoftSkillCategoryDto categoryDto) {
-        SoftSkillCategory savedCategory = softSkillService.addCategory(categoryDto);
+    public ResponseEntity<SoftSkillCategoryDto> addCategory(@RequestBody SoftSkillCategoryDto categoryDto) {
+        SoftSkillCategoryDto savedCategory = softSkillService.addCategory(categoryDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
     }
 
@@ -30,8 +28,8 @@ public class SoftSkillController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<SoftSkill> addSoftSkill(@RequestBody SoftSkillDto softSkillDto) {
-        SoftSkill savedSoftSkill = softSkillService.addSoftSkill(softSkillDto);
+    public ResponseEntity<SoftSkillDto> addSoftSkill(@RequestBody SoftSkillDto softSkillDto) {
+        SoftSkillDto savedSoftSkill = softSkillService.addSoftSkill(softSkillDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedSoftSkill);
     }
 

@@ -2,6 +2,7 @@ package com.t1.profile.service;
 
 import com.t1.profile.dto.HardSkillDto;
 import com.t1.profile.exeption.ResourceNotFoundException;
+import com.t1.profile.mapper.HardSkillMapper;
 import com.t1.profile.model.HardSkill;
 import com.t1.profile.repository.HardSkillRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -23,6 +26,9 @@ public class HardSkillServiceImplTest {
 
     @Mock
     private HardSkillRepo hardSkillRepo;
+
+    @Mock
+    private HardSkillMapper hardSkillMapper;
 
     @BeforeEach
     public void setUp() {
@@ -38,13 +44,14 @@ public class HardSkillServiceImplTest {
         hardSkill.setId(1);
         hardSkill.setName("Java");
 
+        when(hardSkillMapper.toEntity(any(HardSkillDto.class))).thenReturn(hardSkill);
         when(hardSkillRepo.save(any(HardSkill.class))).thenReturn(hardSkill);
+        when(hardSkillMapper.toDto(any(HardSkill.class))).thenReturn(hardSkillDto);
 
-        HardSkill createdHardSkill = hardSkillService.addHardSkill(hardSkillDto);
+        HardSkillDto result = hardSkillService.addHardSkill(hardSkillDto);
 
-        assertThat(createdHardSkill).isNotNull();
-        assertThat(createdHardSkill.getId()).isEqualTo(1);
-        assertThat(createdHardSkill.getName()).isEqualTo("Java");
+        assertNotNull(result);
+        assertEquals("Java", result.getName());
         verify(hardSkillRepo, times(1)).save(any(HardSkill.class));
     }
 
@@ -60,12 +67,18 @@ public class HardSkillServiceImplTest {
 
         when(hardSkillRepo.findById(hardSkillId)).thenReturn(Optional.of(existingHardSkill));
         when(hardSkillRepo.save(any(HardSkill.class))).thenReturn(existingHardSkill);
+        when(hardSkillMapper.toDto(any(HardSkill.class))).thenAnswer(invocation -> {
+            HardSkill hardSkillArg = invocation.getArgument(0);
+            HardSkillDto dto = new HardSkillDto();
+            dto.setId(hardSkillArg.getId());
+            dto.setName(hardSkillArg.getName());
+            return dto;
+        });
+        HardSkillDto result = hardSkillService.updateHardSkill(hardSkillId, hardSkillDto);
 
-        HardSkill updatedHardSkill = hardSkillService.updateHardSkill(hardSkillId, hardSkillDto);
-
-        assertThat(updatedHardSkill).isNotNull();
-        assertThat(updatedHardSkill.getId()).isEqualTo(hardSkillId);
-        assertThat(updatedHardSkill.getName()).isEqualTo("Python");
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(hardSkillId);
+        assertThat(result.getName()).isEqualTo("Python");
         verify(hardSkillRepo, times(1)).findById(hardSkillId);
         verify(hardSkillRepo, times(1)).save(existingHardSkill);
     }

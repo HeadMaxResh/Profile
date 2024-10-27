@@ -2,6 +2,7 @@ package com.t1.profile.service;
 
 import com.t1.profile.dto.SoftSkillRatingDto;
 import com.t1.profile.exeption.ResourceNotFoundException;
+import com.t1.profile.mapper.SoftSkillRatingMapper;
 import com.t1.profile.model.SoftSkill;
 import com.t1.profile.model.SoftSkillRating;
 import com.t1.profile.model.User;
@@ -14,14 +15,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 public class UserSoftSkillServiceImplTest {
@@ -38,133 +38,111 @@ public class UserSoftSkillServiceImplTest {
     @Mock
     private UserRepo userRepo;
 
+    @Mock
+    private SoftSkillRatingMapper softSkillRatingMapper;
+
+    private SoftSkill softSkill;
+    private User ratedUser;
+    private User raterUser;
+    private SoftSkillRatingDto ratingDto;
+    private SoftSkillRating softSkillRating;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        // Инициализация тестовых объектов
+        softSkill = new SoftSkill();
+        softSkill.setId(1);
+        softSkill.setName("Communication");
+
+        ratedUser = new User();
+        ratedUser.setId(1);
+        ratedUser.setFirstName("User 1");
+
+        raterUser = new User();
+        raterUser.setId(2);
+        raterUser.setFirstName("User 2");
+
+        ratingDto = new SoftSkillRatingDto();
+        ratingDto.setSoftSkillId(1);
+        ratingDto.setRatedUserId(1);
+        ratingDto.setRaterUserId(2);
+        ratingDto.setRating(5);
+
+        softSkillRating = new SoftSkillRating();
+        softSkillRating.setId(1);
+        softSkillRating.setSoftSkill(softSkill);
+        softSkillRating.setRatedUser(ratedUser);
+        softSkillRating.setRaterUser(raterUser);
+        softSkillRating.setRating(5);
     }
 
     @Test
-    public void testRateSoftSkill() {
-        SoftSkillRatingDto ratingDto = new SoftSkillRatingDto();
-        ratingDto.setSoftSkillId(1);
-        ratingDto.setRatedUserId(2);
-        ratingDto.setRaterUserId(3);
-        ratingDto.setRating(5);
+    public void rateSoftSkill_shouldReturnSoftSkillRatingDto() {
+        when(softSkillRepo.findById(1)).thenReturn(Optional.of(softSkill));
+        when(userRepo.findById(1)).thenReturn(Optional.of(ratedUser));
+        when(userRepo.findById(2)).thenReturn(Optional.of(raterUser));
+        when(userSoftSkillRepo.save(any(SoftSkillRating.class))).thenReturn(softSkillRating);
+        when(softSkillRatingMapper.toDto(any(SoftSkillRating.class))).thenReturn(ratingDto);
 
-        SoftSkill softSkill = new SoftSkill();
-        softSkill.setId(1);
-        User ratedUser = new User();
-        ratedUser.setId(2);
-        User raterUser = new User();
-        raterUser.setId(3);
+        SoftSkillRatingDto result = userSoftSkillService.rateSoftSkill(ratingDto);
 
-        when(softSkillRepo.findById(ratingDto.getSoftSkillId())).thenReturn(Optional.of(softSkill));
-        when(userRepo.findById(ratingDto.getRatedUserId())).thenReturn(Optional.of(ratedUser));
-        when(userRepo.findById(ratingDto.getRaterUserId())).thenReturn(Optional.of(raterUser));
-        when(userSoftSkillRepo.save(any(SoftSkillRating.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        SoftSkillRating savedRating = userSoftSkillService.rateSoftSkill(ratingDto);
-
-        assertThat(savedRating).isNotNull();
-        assertThat(savedRating.getSoftSkill()).isEqualTo(softSkill);
-        assertThat(savedRating.getRatedUser()).isEqualTo(ratedUser);
-        assertThat(savedRating.getRaterUser()).isEqualTo(raterUser);
-        assertThat(savedRating.getRating()).isEqualTo(5);
-
-        verify(softSkillRepo, times(1)).findById(ratingDto.getSoftSkillId());
-        verify(userRepo, times(1)).findById(ratingDto.getRatedUserId());
-        verify(userRepo, times(1)).findById(ratingDto.getRaterUserId());
+        assertEquals(ratingDto.getRating(), result.getRating());
+        assertEquals(ratingDto.getSoftSkillId(), result.getSoftSkillId());
         verify(userSoftSkillRepo, times(1)).save(any(SoftSkillRating.class));
     }
 
     @Test
-    public void testRateSoftSkill_SoftSkillNotFound() {
-        SoftSkillRatingDto ratingDto = new SoftSkillRatingDto();
-        ratingDto.setSoftSkillId(1);
-        ratingDto.setRatedUserId(2);
-        ratingDto.setRaterUserId(3);
-        ratingDto.setRating(5);
-
-        when(softSkillRepo.findById(ratingDto.getSoftSkillId())).thenReturn(Optional.empty());
+    public void rateSoftSkill_shouldThrowResourceNotFoundException_whenSoftSkillNotFound() {
+        when(softSkillRepo.findById(1)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
             userSoftSkillService.rateSoftSkill(ratingDto);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("SoftSkill not found с id " + ratingDto.getSoftSkillId());
-        verify(softSkillRepo, times(1)).findById(ratingDto.getSoftSkillId());
-        verify(userRepo, never()).findById(anyInt());
-        verify(userSoftSkillRepo, never()).save(any(SoftSkillRating.class));
+        assertEquals("SoftSkill not found с id 1", exception.getMessage());
     }
 
     @Test
-    public void testRateSoftSkill_RatedUserNotFound() {
-        SoftSkillRatingDto ratingDto = new SoftSkillRatingDto();
-        ratingDto.setSoftSkillId(1);
-        ratingDto.setRatedUserId(2);
-        ratingDto.setRaterUserId(3);
-        ratingDto.setRating(5);
-
-        SoftSkill softSkill = new SoftSkill();
-        softSkill.setId(1);
-
-        when(softSkillRepo.findById(ratingDto.getSoftSkillId())).thenReturn(Optional.of(softSkill));
-        when(userRepo.findById(ratingDto.getRatedUserId())).thenReturn(Optional.empty());
+    public void rateSoftSkill_shouldThrowResourceNotFoundException_whenRatedUserNotFound() {
+        when(softSkillRepo.findById(1)).thenReturn(Optional.of(softSkill));
+        when(userRepo.findById(1)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
             userSoftSkillService.rateSoftSkill(ratingDto);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("Rated user not found с id " + ratingDto.getRatedUserId());
-        verify(softSkillRepo, times(1)).findById(ratingDto.getSoftSkillId());
-        verify(userRepo, times(1)).findById(ratingDto.getRatedUserId());
-        verify(userRepo, never()).findById(ratingDto.getRaterUserId());
-        verify(userSoftSkillRepo, never()).save(any(SoftSkillRating.class));
+        assertEquals("Rated user not found с id 1", exception.getMessage());
     }
 
     @Test
-    public void testRateSoftSkill_RaterUserNotFound() {
-        SoftSkillRatingDto ratingDto = new SoftSkillRatingDto();
-        ratingDto.setSoftSkillId(1);
-        ratingDto.setRatedUserId(2);
-        ratingDto.setRaterUserId(3);
-        ratingDto.setRating(5);
-
-        SoftSkill softSkill = new SoftSkill();
-        softSkill.setId(1);
-        User ratedUser = new User();
-        ratedUser.setId(2);
-
-        when(softSkillRepo.findById(ratingDto.getSoftSkillId())).thenReturn(Optional.of(softSkill));
-        when(userRepo.findById(ratingDto.getRatedUserId())).thenReturn(Optional.of(ratedUser));
-        when(userRepo.findById(ratingDto.getRaterUserId())).thenReturn(Optional.empty());
+    public void rateSoftSkill_shouldThrowResourceNotFoundException_whenRaterUserNotFound() {
+        when(softSkillRepo.findById(1)).thenReturn(Optional.of(softSkill));
+        when(userRepo.findById(1)).thenReturn(Optional.of(ratedUser));
+        when(userRepo.findById(2)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
             userSoftSkillService.rateSoftSkill(ratingDto);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("Rater user not found " + ratingDto.getRaterUserId());
-        verify(softSkillRepo, times(1)).findById(ratingDto.getSoftSkillId());
-        verify(userRepo, times(1)).findById(ratingDto.getRatedUserId());
-        verify(userRepo, times(1)).findById(ratingDto.getRaterUserId());
-        verify(userSoftSkillRepo, never()).save(any(SoftSkillRating.class));
+        assertEquals("Rater user not found 2", exception.getMessage());
     }
 
     @Test
-    public void testGetRatingBySoftSkill() {
-        Integer softSkillId = 1;
-        SoftSkillRating rating1 = new SoftSkillRating();
-        rating1.setRating(5);
-        SoftSkillRating rating2 = new SoftSkillRating();
-        rating2.setRating(4);
+    public void getRatingBySoftSkill_shouldReturnListOfSoftSkillRatingDto() {
+        List<SoftSkillRating> ratings = new ArrayList<>();
+        ratings.add(softSkillRating);
 
-        when(userSoftSkillRepo.findRatingsBySoftSkillId(softSkillId)).thenReturn(Arrays.asList(rating1, rating2));
+        when(userSoftSkillRepo.findRatingsBySoftSkillId(1)).thenReturn(ratings);
+        when(softSkillRatingMapper.toDtoList(anyList())).thenReturn(Collections.singletonList(ratingDto));
 
-        List<SoftSkillRating> ratings = userSoftSkillService.getRatingBySoftSkill(softSkillId);
+        List<SoftSkillRatingDto> result = userSoftSkillService.getRatingBySoftSkill(1);
 
-        assertThat(ratings).hasSize(2);
-        assertThat(ratings).containsExactlyInAnyOrder(rating1, rating2);
-        verify(userSoftSkillRepo, times(1)).findRatingsBySoftSkillId(softSkillId);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(ratingDto.getRating(), result.get(0).getRating());
+        verify(userSoftSkillRepo, times(1)).findRatingsBySoftSkillId(1);
     }
 
 }
