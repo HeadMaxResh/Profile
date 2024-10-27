@@ -1,9 +1,9 @@
 package com.t1.profile.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+// File: RegistrationDto.java
+
 import lombok.Data;
+import jakarta.validation.constraints.*;
 
 @Data
 public class RegistrationDto {
@@ -18,6 +18,18 @@ public class RegistrationDto {
     private String email;
 
     @NotBlank
-    @Size(min = 6, message = "Password must have at least 6 characters")
+    @Size(min = 6, message = "Пароль должен содержать минимум 6 символов")
     private String password;
+
+    @NotBlank
+    private String city; //добавил
+
+    @NotBlank
+    private String gender;//добавил
+
+    @NotBlank
+    private String dateOfBirth;//добавил
+
+    @NotNull
+    private Integer professionId;//добавил
 }

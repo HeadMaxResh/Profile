@@ -97,7 +97,7 @@
 
 ---
 
-### UserHardSkillController
+### UserHardSkillController(модератор)
 
 1. **GET /users/{userId}/hard-skills/** `getHardSkillsByUser`
    - **Вход:** `userId`

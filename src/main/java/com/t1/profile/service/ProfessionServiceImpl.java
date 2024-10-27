@@ -10,6 +10,7 @@ import com.t1.profile.repository.ProfessionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -81,6 +82,11 @@ public class ProfessionServiceImpl implements ProfessionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Profession not found with id " + professionId));
 
         return profession.getMainHardSkills();
+    }
+    //добавил
+    @Override
+    public List<Profession> getAllProfessions() {
+        return (List<Profession>) professionRepo.findAll();
     }
 
 }

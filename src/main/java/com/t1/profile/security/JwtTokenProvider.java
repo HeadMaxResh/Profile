@@ -1,7 +1,6 @@
 package com.t1.profile.security;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -10,8 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
-import java.security.Key;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import javax.crypto.SecretKey;
 
 @Component
 public class JwtTokenProvider {
@@ -22,24 +22,22 @@ public class JwtTokenProvider {
     @Value("${app.jwtExpirationInMs}")
     private int jwtExpirationInMs;
 
-    private Key key;
+    private SecretKey key;
 
     @PostConstruct
     public void init() {
-        // Создайте ключ с достаточной длиной для алгоритма HS512
-        key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
+        key = Keys.hmacShaKeyFor(keyBytes); // Используем HMAC SHA-512 для безопасности
     }
-
 
     public String generateToken(Authentication authentication) {
         String email = authentication.getName();
-
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
         return Jwts.builder()
                 .setSubject(email)
-                .setIssuedAt(new Date())
+                .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
@@ -62,7 +60,7 @@ public class JwtTokenProvider {
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

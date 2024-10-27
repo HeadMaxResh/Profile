@@ -5,6 +5,7 @@ import com.t1.profile.dto.ProfessionDto;
 import com.t1.profile.model.HardSkill;
 import com.t1.profile.model.Profession;
 
+import java.util.List;
 import java.util.Set;
 
 public interface ProfessionService {
@@ -15,5 +16,5 @@ public interface ProfessionService {
     void removeHardSkillFromProfession(Integer professionId, Integer hardSkillId);
     void deleteProfession(Integer professionId);
     Set<HardSkill> getHardSkillsByProfession(Integer professionId);
-
+    List<Profession> getAllProfessions();
 }

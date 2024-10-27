@@ -1,16 +1,18 @@
 package com.t1.profile.config;
 
-import com.t1.profile.model.Role;
-import com.t1.profile.model.SoftSkill;
-import com.t1.profile.model.SoftSkillCategory;
-import com.t1.profile.model.SoftSkillIndicator;
+import com.t1.profile.model.*;
 import com.t1.profile.repository.RoleRepo;
+import com.t1.profile.repository.UserRepo;
 import com.t1.profile.repository.CategorySoftSkillRepo;
 import com.t1.profile.repository.SoftSkillRepo;
 import com.t1.profile.repository.SoftSkillIndicatorRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Collections;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -27,9 +29,16 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private SoftSkillIndicatorRepo softSkillIndicatorRepo;
 
+    @Autowired
+    private UserRepo userRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void run(String... args) throws Exception {
         initializeRoles();
+        initializeAdminUser();
         initializeSoftSkillsData();
     }
 
@@ -45,6 +54,24 @@ public class DataInitializer implements CommandLineRunner {
             return roleRepo.save(role);
         });
     }
+
+    private void initializeAdminUser() {
+        if (userRepo.findByEmail("admin@example.com") == null) {
+            User admin = new User();
+            admin.setEmail("admin@example.com");
+            admin.setFirstName("Admin");
+            admin.setLastName("User");
+            admin.setPasswordHash(passwordEncoder.encode("admin_password"));
+
+            Role adminRole = roleRepo.findByName("ROLE_ADMIN")
+                    .orElseThrow(() -> new RuntimeException("Роль ROLE_ADMIN не найдена!"));
+
+            admin.setRoles(Collections.singleton(adminRole));
+            userRepo.save(admin);
+        }
+    }
+
+
 
     private void initializeSoftSkillsData() {
         SoftSkillCategory communicationCategory = categorySoftSkillRepo.findByName("Communication")

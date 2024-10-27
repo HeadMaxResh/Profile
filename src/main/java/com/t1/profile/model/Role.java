@@ -24,6 +24,10 @@ public class Role {
 
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
+//добавил
+    public Role(String name) {
+        this.name = name;
+    }
 
     @Override
     public final boolean equals(Object o) {

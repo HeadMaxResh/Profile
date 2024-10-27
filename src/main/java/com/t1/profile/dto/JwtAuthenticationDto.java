@@ -15,4 +15,5 @@ public class JwtAuthenticationDto {
     public JwtAuthenticationDto() {
 
     }
+
 }
