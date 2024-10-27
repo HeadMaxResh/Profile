@@ -1,9 +1,13 @@
 package com.t1.profile.service;
 
+import com.t1.profile.dto.HardSkillDto;
 import com.t1.profile.dto.UserDto;
 import com.t1.profile.dto.UserHardSkillsDto;
 import com.t1.profile.exeption.ResourceNotFoundException;
+import com.t1.profile.mapper.HardSkillMapper;
+import com.t1.profile.mapper.UserMapper;
 import com.t1.profile.model.HardSkill;
+import com.t1.profile.model.Profession;
 import com.t1.profile.model.User;
 import com.t1.profile.repository.HardSkillRepo;
 import com.t1.profile.repository.UserRepo;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserHardSkillServiceImpl implements UserHardSkillService {
@@ -23,11 +28,19 @@ public class UserHardSkillServiceImpl implements UserHardSkillService {
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private HardSkillMapper hardSkillMapper;
+
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
-    public Set<HardSkill> getHardSkillsByUser(Integer userId) {
+    public Set<HardSkillDto> getHardSkillsByUser(Integer userId) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден с id " + userId));
-        return user.getHardSkills();
+        return user.getHardSkills().stream()
+                .map(hardSkillMapper::toDto)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -39,7 +52,8 @@ public class UserHardSkillServiceImpl implements UserHardSkillService {
                 .orElseThrow(() -> new ResourceNotFoundException("Хардскилл не найден с id " + hardSkillId));
 
         user.getHardSkills().add(hardSkill);
-        return new UserDto(userRepo.save(user));
+        User savedUser = userRepo.save(user);
+        return userMapper.toDto(savedUser);
     }
 
     @Override
@@ -60,12 +74,17 @@ public class UserHardSkillServiceImpl implements UserHardSkillService {
     @Override
     public UserHardSkillsDto getUserAndProfessionHardSkills(Integer userId) {
 
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден с id " + userId));
+
+        Profession profession = user.getProfession();
+        if (profession == null) {
+            throw new ResourceNotFoundException("Профессия не найдена для пользователя с id " + userId);
+        }
+
+        Integer professionId = profession.getId();
+
         List<HardSkill> userHardSkills = hardSkillRepo.findByUserId(userId);
-
-        Integer professionId = userRepo.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден с id " + userId))
-                .getProfession().getId();
-
         List<HardSkill> professionHardSkills = hardSkillRepo.findByProfessionId(professionId);
 
         List<HardSkill> commonHardSkills = new ArrayList<>();

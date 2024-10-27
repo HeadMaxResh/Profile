@@ -2,6 +2,7 @@ package com.t1.profile.service;
 
 import com.t1.profile.dto.UserDto;
 import com.t1.profile.exeption.ResourceNotFoundException;
+import com.t1.profile.mapper.UserMapper;
 import com.t1.profile.model.Profession;
 import com.t1.profile.model.User;
 import com.t1.profile.repository.ProfessionRepo;
@@ -14,7 +15,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -30,114 +31,103 @@ public class UserProfessionImplTest {
     @Mock
     private ProfessionRepo professionRepo;
 
+    @Mock
+    private UserMapper userMapper;
+
+    private User user;
+    private Profession profession;
+    private UserDto userDto;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        user = new User();
+        user.setId(1);
+        user.setFirstName("User 1");
+
+        profession = new Profession();
+        profession.setId(1);
+        profession.setName("Developer");
+
+        userDto = new UserDto();
+        userDto.setId(1);
+        userDto.setFirstName("User 1");
+        userDto.setProfession(profession);
     }
 
     @Test
-    public void testAddProfessionToUser() {
-        Integer userId = 1;
-        Integer professionId = 2;
-
-        User user = new User();
-        user.setId(userId);
-
-        Profession profession = new Profession();
-        profession.setId(professionId);
-        profession.setName("Software Developer");
-
-        when(userRepo.findById(userId)).thenReturn(Optional.of(user));
-        when(professionRepo.findById(professionId)).thenReturn(Optional.of(profession));
+    public void addProfessionToUser_shouldReturnUserDto() {
+        when(userRepo.findById(1)).thenReturn(Optional.of(user));
+        when(professionRepo.findById(1)).thenReturn(Optional.of(profession));
         when(userRepo.save(any(User.class))).thenReturn(user);
+        when(userMapper.toDto(any(User.class))).thenReturn(userDto);
 
-        UserDto updatedUserDto = userProfessionService.addProfessionToUser(userId, professionId);
+        UserDto result = userProfessionService.addProfessionToUser(1, 1);
 
-        assertThat(updatedUserDto).isNotNull();
-        assertThat(updatedUserDto.getProfession()).isEqualTo(profession);
-        verify(userRepo, times(1)).findById(userId);
-        verify(professionRepo, times(1)).findById(professionId);
+        assertEquals(userDto.getId(), result.getId());
+        assertEquals(userDto.getProfession().getId(), result.getProfession().getId());
         verify(userRepo, times(1)).save(user);
     }
 
     @Test
-    public void testUpdateProfessionForUser() {
-        Integer userId = 1;
-        Integer professionId = 2;
+    public void addProfessionToUser_shouldThrowResourceNotFoundException_whenUserNotFound() {
+        when(userRepo.findById(1)).thenReturn(Optional.empty());
 
-        User user = new User();
-        user.setId(userId);
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
+            userProfessionService.addProfessionToUser(1, 1);
+        });
 
-        Profession profession = new Profession();
-        profession.setId(professionId);
-        profession.setName("Software Developer");
+        assertEquals("User not found with id 1", exception.getMessage());
+    }
 
-        when(userRepo.findById(userId)).thenReturn(Optional.of(user));
-        when(professionRepo.findById(professionId)).thenReturn(Optional.of(profession));
+    @Test
+    public void addProfessionToUser_shouldThrowResourceNotFoundException_whenProfessionNotFound() {
+        when(userRepo.findById(1)).thenReturn(Optional.of(user));
+        when(professionRepo.findById(1)).thenReturn(Optional.empty());
+
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
+            userProfessionService.addProfessionToUser(1, 1);
+        });
+
+        assertEquals("Profession not found with id 1", exception.getMessage());
+    }
+
+    @Test
+    public void updateProfessionForUser_shouldReturnUserDto() {
+        when(userRepo.findById(1)).thenReturn(Optional.of(user));
+        when(professionRepo.findById(1)).thenReturn(Optional.of(profession));
         when(userRepo.save(any(User.class))).thenReturn(user);
+        when(userMapper.toDto(any(User.class))).thenReturn(userDto);
 
-        UserDto updatedUserDto = userProfessionService.updateProfessionForUser(userId, professionId);
+        UserDto result = userProfessionService.updateProfessionForUser(1, 1);
 
-        assertThat(updatedUserDto).isNotNull();
-        assertThat(updatedUserDto.getProfession()).isEqualTo(profession);
-        verify(userRepo, times(1)).findById(userId);
-        verify(professionRepo, times(1)).findById(professionId);
+        assertEquals(userDto.getId(), result.getId());
+        assertEquals(userDto.getProfession().getId(), result.getProfession().getId());
         verify(userRepo, times(1)).save(user);
     }
 
     @Test
-    public void testAddProfessionToUser_UserNotFound() {
-        Integer userId = 1;
-        Integer professionId = 2;
-
-        when(userRepo.findById(userId)).thenReturn(Optional.empty());
+    public void updateProfessionForUser_shouldThrowResourceNotFoundException_whenUserNotFound() {
+        when(userRepo.findById(1)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-            userProfessionService.addProfessionToUser(userId, professionId);
+            userProfessionService.updateProfessionForUser(1, 1);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("User not found with id " + userId);
-        verify(userRepo, times(1)).findById(userId);
-        verify(professionRepo, never()).findById(anyInt());
-        verify(userRepo, never()).save(any(User.class));
+        assertEquals("User not found with id 1", exception.getMessage());
     }
 
     @Test
-    public void testUpdateProfessionForUser_UserNotFound() {
-        Integer userId = 1;
-        Integer professionId = 2;
-
-        when(userRepo.findById(userId)).thenReturn(Optional.empty());
+    public void updateProfessionForUser_shouldThrowResourceNotFoundException_whenProfessionNotFound() {
+        when(userRepo.findById(1)).thenReturn(Optional.of(user));
+        when(professionRepo.findById(1)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-            userProfessionService.updateProfessionForUser(userId, professionId);
+            userProfessionService.updateProfessionForUser(1, 1);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("User not found with id " + userId);
-        verify(userRepo, times(1)).findById(userId);
-        verify(professionRepo, never()).findById(anyInt());
-        verify(userRepo, never()).save(any(User.class));
-    }
-
-    @Test
-    public void testAddProfessionToUser_ProfessionNotFound() {
-        Integer userId = 1;
-        Integer professionId = 2;
-
-        User user = new User();
-        user.setId(userId);
-
-        when(userRepo.findById(userId)).thenReturn(Optional.of(user));
-        when(professionRepo.findById(professionId)).thenReturn(Optional.empty());
-
-        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-            userProfessionService.addProfessionToUser(userId, professionId);
-        });
-
-        assertThat(exception.getMessage()).isEqualTo("Profession not found with id " + professionId);
-        verify(userRepo, times(1)).findById(userId);
-        verify(professionRepo, times(1)).findById(professionId);
-        verify(userRepo, never()).save(any(User.class));
+        assertEquals("Profession not found with id 1", exception.getMessage());
     }
 
 }

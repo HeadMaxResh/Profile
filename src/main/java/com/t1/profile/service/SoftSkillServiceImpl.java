@@ -3,6 +3,8 @@ package com.t1.profile.service;
 import com.t1.profile.dto.SoftSkillCategoryDto;
 import com.t1.profile.dto.SoftSkillDto;
 import com.t1.profile.exeption.ResourceNotFoundException;
+import com.t1.profile.mapper.SoftSkillCategoryMapper;
+import com.t1.profile.mapper.SoftSkillMapper;
 import com.t1.profile.model.SoftSkill;
 import com.t1.profile.model.SoftSkillCategory;
 import com.t1.profile.repository.CategorySoftSkillRepo;
@@ -19,11 +21,18 @@ public class SoftSkillServiceImpl implements SoftSkillService {
     @Autowired
     private CategorySoftSkillRepo categorySoftSkillRepo;
 
+    @Autowired
+    private SoftSkillCategoryMapper softSkillCategoryMapper;
+
+    @Autowired
+    private SoftSkillMapper softSkillMapper;
+
     @Override
-    public SoftSkillCategory addCategory(SoftSkillCategoryDto categoryDto) {
+    public SoftSkillCategoryDto addCategory(SoftSkillCategoryDto categoryDto) {
         SoftSkillCategory category = new SoftSkillCategory();
         category.setName(categoryDto.getName());
-        return categorySoftSkillRepo.save(category);
+        SoftSkillCategory savedCategorySoftSkill = categorySoftSkillRepo.save(category);
+        return softSkillCategoryMapper.toDto(savedCategorySoftSkill);
     }
 
     @Override
@@ -34,15 +43,15 @@ public class SoftSkillServiceImpl implements SoftSkillService {
     }
 
     @Override
-    public SoftSkill addSoftSkill(SoftSkillDto softSkillDto) {
+    public SoftSkillDto addSoftSkill(SoftSkillDto softSkillDto) {
         SoftSkill softSkill = new SoftSkill();
         softSkill.setName(softSkillDto.getName());
 
         SoftSkillCategory category = categorySoftSkillRepo.findById(softSkillDto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id " + softSkillDto.getCategoryId()));
         softSkill.setCategory(category);
-
-        return softSkillRepo.save(softSkill);
+        SoftSkill savedSoftSkill = softSkillRepo.save(softSkill);
+        return softSkillMapper.toDto(savedSoftSkill);
     }
 
     @Override

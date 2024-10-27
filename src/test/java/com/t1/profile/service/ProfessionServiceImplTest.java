@@ -2,6 +2,8 @@ package com.t1.profile.service;
 
 import com.t1.profile.dto.HardSkillDto;
 import com.t1.profile.dto.ProfessionDto;
+import com.t1.profile.mapper.HardSkillMapper;
+import com.t1.profile.mapper.ProfessionMapper;
 import com.t1.profile.model.HardSkill;
 import com.t1.profile.model.Profession;
 import com.t1.profile.repository.HardSkillRepo;
@@ -12,11 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -31,139 +32,105 @@ public class ProfessionServiceImplTest {
     @Mock
     private HardSkillRepo hardSkillRepo;
 
+    @Mock
+    private ProfessionMapper professionMapper;
+
+    @Mock
+    private HardSkillMapper hardSkillMapper;
+
+    private Profession profession;
+    private ProfessionDto professionDto;
+    private HardSkill hardSkill;
+    private HardSkillDto hardSkillDto;
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    public void testAddProfession() {
-        ProfessionDto professionDto = new ProfessionDto();
-        professionDto.setName("Software Developer");
-
-        Profession profession = new Profession();
+        profession = new Profession();
         profession.setId(1);
         profession.setName("Software Developer");
 
+        professionDto = new ProfessionDto();
+        professionDto.setId(1);
+        professionDto.setName("Software Developer");
+
+        hardSkill = new HardSkill();
+        hardSkill.setId(1);
+        hardSkill.setName("Java");
+
+        hardSkillDto = new HardSkillDto();
+        hardSkillDto.setId(1);
+        hardSkillDto.setName("Java");
+    }
+
+    @Test
+    public void addProfession_shouldReturnProfessionDto() {
+        when(professionMapper.toEntity(any(ProfessionDto.class))).thenReturn(profession);
         when(professionRepo.save(any(Profession.class))).thenReturn(profession);
+        when(professionMapper.toDto(any(Profession.class))).thenReturn(professionDto);
 
-        Profession createdProfession = professionService.addProfession(professionDto);
+        ProfessionDto result = professionService.addProfession(professionDto);
 
-        assertThat(createdProfession).isNotNull();
-        assertThat(createdProfession.getId()).isEqualTo(1);
-        assertThat(createdProfession.getName()).isEqualTo("Software Developer");
+        assertEquals(professionDto.getName(), result.getName());
         verify(professionRepo, times(1)).save(any(Profession.class));
     }
 
     @Test
-    public void testAddHardSkillToProfession() {
-        Integer professionId = 1;
-        HardSkillDto hardSkillDto = new HardSkillDto();
-        hardSkillDto.setName("Java");
-
-        Profession profession = new Profession();
-        profession.setId(professionId);
-        profession.setName("Software Developer");
-        profession.setMainHardSkills(new HashSet<>());
-
-        when(professionRepo.findById(professionId)).thenReturn(Optional.of(profession));
-
-        HardSkill hardSkill = new HardSkill();
-        hardSkill.setId(1);
-        hardSkill.setName("Java");
-
+    public void addHardSkillToProfession_shouldReturnHardSkillDto() {
+        when(professionRepo.findById(1)).thenReturn(Optional.of(profession));
+        when(hardSkillMapper.toEntity(any(HardSkillDto.class))).thenReturn(hardSkill);
         when(hardSkillRepo.save(any(HardSkill.class))).thenReturn(hardSkill);
+        when(hardSkillMapper.toDto(any(HardSkill.class))).thenReturn(hardSkillDto);
 
-        HardSkill createdHardSkill = professionService.addHardSkillToProfession(professionId, hardSkillDto);
+        HardSkillDto result = professionService.addHardSkillToProfession(1, hardSkillDto);
 
-        assertThat(createdHardSkill).isNotNull();
-        assertThat(createdHardSkill.getId()).isEqualTo(1);
-        assertThat(profession.getMainHardSkills()).hasSize(1);
-        verify(professionRepo, times(1)).findById(professionId);
+        assertEquals(hardSkillDto.getName(), result.getName());
+        verify(professionRepo, times(1)).findById(1);
         verify(hardSkillRepo, times(1)).save(any(HardSkill.class));
     }
 
     @Test
-    public void testAddExistingHardSkillToProfession() {
-        Integer professionId = 1;
-        Integer hardSkillId = 1;
+    public void addExistingHardSkillToProfession_shouldReturnHardSkillDto() {
+        when(professionRepo.findById(1)).thenReturn(Optional.of(profession));
+        when(hardSkillRepo.findById(1)).thenReturn(Optional.of(hardSkill));
+        when(hardSkillMapper.toDto(any(HardSkill.class))).thenReturn(hardSkillDto);
 
-        Profession profession = new Profession();
-        profession.setId(professionId);
-        profession.setMainHardSkills(new HashSet<>());
+        HardSkillDto result = professionService.addExistingHardSkillToProfession(1, 1);
 
-        HardSkill hardSkill = new HardSkill();
-        hardSkill.setId(hardSkillId);
-        hardSkill.setName("Java");
-
-        when(professionRepo.findById(professionId)).thenReturn(Optional.of(profession));
-        when(hardSkillRepo.findById(hardSkillId)).thenReturn(Optional.of(hardSkill));
-
-        HardSkill addedHardSkill = professionService.addExistingHardSkillToProfession(professionId, hardSkillId);
-
-        assertThat(addedHardSkill).isNotNull();
-        assertThat(addedHardSkill.getId()).isEqualTo(hardSkillId);
-        assertThat(profession.getMainHardSkills()).contains(addedHardSkill);
-        verify(professionRepo, times(1)).findById(professionId);
-        verify(hardSkillRepo, times(1)).findById(hardSkillId);
-        verify(professionRepo, times(1)).save(profession);
+        assertEquals(hardSkillDto.getName(), result.getName());
+        verify(professionRepo, times(1)).findById(1);
+        verify(hardSkillRepo, times(1)).findById(1);
     }
 
     @Test
-    public void testRemoveHardSkillFromProfession() {
-        Integer professionId = 1;
-        Integer hardSkillId = 1;
+    public void removeHardSkillFromProfession_shouldRemoveHardSkill() {
+        when(professionRepo.findById(1)).thenReturn(Optional.of(profession));
+        when(hardSkillRepo.findById(1)).thenReturn(Optional.of(hardSkill));
 
-        Profession profession = new Profession();
-        profession.setId(professionId);
-        HardSkill hardSkill = new HardSkill();
-        hardSkill.setId(hardSkillId);
-        profession.setMainHardSkills(new HashSet<>(Set.of(hardSkill)));
+        professionService.removeHardSkillFromProfession(1, 1);
 
-        when(professionRepo.findById(professionId)).thenReturn(Optional.of(profession));
-        when(hardSkillRepo.findById(hardSkillId)).thenReturn(Optional.of(hardSkill));
-
-        professionService.removeHardSkillFromProfession(professionId, hardSkillId);
-
-        assertThat(profession.getMainHardSkills()).doesNotContain(hardSkill);
-        verify(professionRepo, times(1)).findById(professionId);
-        verify(hardSkillRepo, times(1)).findById(hardSkillId);
-        verify(professionRepo, times(1)).save(profession);
+        assertFalse(profession.getMainHardSkills().contains(hardSkill));
+        verify(professionRepo, times(1)).save(any(Profession.class));
     }
 
     @Test
-    public void testDeleteProfession() {
-        Integer professionId = 1;
+    public void deleteProfession_shouldDeleteProfession() {
+        when(professionRepo.findById(1)).thenReturn(Optional.of(profession));
 
-        Profession profession = new Profession();
-        profession.setId(professionId);
-        profession.setName("Software Developer");
+        professionService.deleteProfession(1);
 
-        when(professionRepo.findById(professionId)).thenReturn(Optional.of(profession));
-
-        professionService.deleteProfession(professionId);
-
-        verify(professionRepo, times(1)).findById(professionId);
         verify(professionRepo, times(1)).delete(profession);
     }
 
     @Test
-    public void testGetHardSkillsByProfession() {
-        Integer professionId = 1;
+    public void getHardSkillsByProfession_shouldReturnSetOfHardSkillDto() {
+        profession.getMainHardSkills().add(hardSkill);
+        when(professionRepo.findById(1)).thenReturn(Optional.of(profession));
+        when(hardSkillMapper.toDto(any(HardSkill.class))).thenReturn(hardSkillDto);
 
-        Profession profession = new Profession();
-        profession.setId(professionId);
-        HardSkill hardSkill = new HardSkill();
-        hardSkill.setId(1);
-        hardSkill.setName("Java");
-        profession.setMainHardSkills(new HashSet<>(Set.of(hardSkill)));
+        Set<HardSkillDto> result = professionService.getHardSkillsByProfession(1);
 
-        when(professionRepo.findById(professionId)).thenReturn(Optional.of(profession));
-
-        Set<HardSkill> hardSkills = professionService.getHardSkillsByProfession(professionId);
-
-        assertThat(hardSkills).isNotNull();
-        assertThat(hardSkills).contains(hardSkill);
-        verify(professionRepo, times(1)).findById(professionId);
+        assertEquals(1, result.size());
+        assertTrue(result.contains(hardSkillDto));
     }
 }

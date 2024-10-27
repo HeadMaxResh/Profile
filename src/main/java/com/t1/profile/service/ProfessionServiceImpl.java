@@ -3,6 +3,8 @@ package com.t1.profile.service;
 import com.t1.profile.dto.HardSkillDto;
 import com.t1.profile.dto.ProfessionDto;
 import com.t1.profile.exeption.ResourceNotFoundException;
+import com.t1.profile.mapper.HardSkillMapper;
+import com.t1.profile.mapper.ProfessionMapper;
 import com.t1.profile.model.HardSkill;
 import com.t1.profile.model.Profession;
 import com.t1.profile.repository.HardSkillRepo;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ProfessionServiceImpl implements ProfessionService {
@@ -21,15 +24,22 @@ public class ProfessionServiceImpl implements ProfessionService {
     @Autowired
     private HardSkillRepo hardSkillRepo;
 
+    @Autowired
+    private ProfessionMapper professionMapper;
+
+    @Autowired
+    private HardSkillMapper hardSkillMapper;
+
     @Override
-    public Profession addProfession(ProfessionDto professionDto) {
+    public ProfessionDto addProfession(ProfessionDto professionDto) {
         Profession profession = new Profession();
         profession.setName(professionDto.getName());
-        return professionRepo.save(profession);
+        Profession savedProfession = professionRepo.save(profession);
+        return professionMapper.toDto(savedProfession);
     }
 
     @Override
-    public HardSkill addHardSkillToProfession(Integer professionId, HardSkillDto hardSkillDto) {
+    public HardSkillDto addHardSkillToProfession(Integer professionId, HardSkillDto hardSkillDto) {
         Profession profession = professionRepo.findById(professionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profession not found with id " + professionId));
 
@@ -39,11 +49,11 @@ public class ProfessionServiceImpl implements ProfessionService {
 
         profession.getMainHardSkills().add(hardSkill);
         HardSkill savedHardSkill = hardSkillRepo.save(hardSkill);
-        return savedHardSkill;
+        return hardSkillMapper.toDto(savedHardSkill);
     }
 
     @Override
-    public HardSkill addExistingHardSkillToProfession(Integer professionId, Integer hardSkillId) {
+    public HardSkillDto addExistingHardSkillToProfession(Integer professionId, Integer hardSkillId) {
         Profession profession = professionRepo.findById(professionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profession not found with id " + professionId));
 
@@ -52,7 +62,7 @@ public class ProfessionServiceImpl implements ProfessionService {
 
         profession.getMainHardSkills().add(hardSkill);
         professionRepo.save(profession);
-        return hardSkill;
+        return hardSkillMapper.toDto(hardSkill);
     }
 
     @Override
@@ -76,11 +86,13 @@ public class ProfessionServiceImpl implements ProfessionService {
     }
 
     @Override
-    public Set<HardSkill> getHardSkillsByProfession(Integer professionId) {
+    public Set<HardSkillDto> getHardSkillsByProfession(Integer professionId) {
         Profession profession = professionRepo.findById(professionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profession not found with id " + professionId));
 
-        return profession.getMainHardSkills();
+        return profession.getMainHardSkills().stream()
+                .map(hardSkillMapper::toDto)
+                .collect(Collectors.toSet());
     }
 
 }

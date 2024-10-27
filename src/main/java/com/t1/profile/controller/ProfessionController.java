@@ -2,8 +2,6 @@ package com.t1.profile.controller;
 
 import com.t1.profile.dto.HardSkillDto;
 import com.t1.profile.dto.ProfessionDto;
-import com.t1.profile.model.HardSkill;
-import com.t1.profile.model.Profession;
 import com.t1.profile.service.ProfessionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,26 +18,26 @@ public class ProfessionController {
     private ProfessionServiceImpl professionService;
 
     @PostMapping("/add")
-    public ResponseEntity<Profession> addProfession(@RequestBody ProfessionDto professionDto) {
-        Profession savedProfession = professionService.addProfession(professionDto);
+    public ResponseEntity<ProfessionDto> addProfession(@RequestBody ProfessionDto professionDto) {
+        ProfessionDto savedProfession = professionService.addProfession(professionDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProfession);
     }
 
     @PostMapping("/{professionId}/add-new-hard-skill")
-    public ResponseEntity<HardSkill> addHardSkillToProfession(
+    public ResponseEntity<HardSkillDto> addHardSkillToProfession(
             @PathVariable Integer professionId,
             @RequestBody HardSkillDto hardSkillDto
     ) {
-        HardSkill savedHardSkill = professionService.addHardSkillToProfession(professionId, hardSkillDto);
+        HardSkillDto savedHardSkill = professionService.addHardSkillToProfession(professionId, hardSkillDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedHardSkill);
     }
 
     @PostMapping("/{professionId}/add-existing-hard-skill/{hardSkillId}")
-    public ResponseEntity<HardSkill> addExistingHardSkillToProfession(
+    public ResponseEntity<HardSkillDto> addExistingHardSkillToProfession(
             @PathVariable Integer professionId,
             @PathVariable Integer hardSkillId
     ) {
-        HardSkill savedHardSkill = professionService.addExistingHardSkillToProfession(professionId, hardSkillId);
+        HardSkillDto savedHardSkill = professionService.addExistingHardSkillToProfession(professionId, hardSkillId);
         return ResponseEntity.status(HttpStatus.OK).body(savedHardSkill);
     }
 
@@ -59,8 +57,8 @@ public class ProfessionController {
     }
 
     @GetMapping("/{professionId}/hard-skills")
-    public ResponseEntity<Set<HardSkill>> getHardSkillsByProfession(@PathVariable Integer professionId) {
-        Set<HardSkill> hardSkills = professionService.getHardSkillsByProfession(professionId);
+    public ResponseEntity<Set<HardSkillDto>> getHardSkillsByProfession(@PathVariable Integer professionId) {
+        Set<HardSkillDto> hardSkills = professionService.getHardSkillsByProfession(professionId);
         return ResponseEntity.ok(hardSkills);
     }
 }

@@ -1,8 +1,8 @@
 package com.t1.profile.controller;
 
+import com.t1.profile.dto.HardSkillDto;
 import com.t1.profile.dto.UserDto;
 import com.t1.profile.dto.UserHardSkillsDto;
-import com.t1.profile.model.HardSkill;
 import com.t1.profile.service.UserHardSkillServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +18,8 @@ public class UserHardSkillController {
     private UserHardSkillServiceImpl userHardSkillService;
 
     @GetMapping("/")
-    public ResponseEntity<Set<HardSkill>> getHardSkillsByUser(@PathVariable Integer userId) {
-        Set<HardSkill> hardSkills = userHardSkillService.getHardSkillsByUser(userId);
+    public ResponseEntity<Set<HardSkillDto>> getHardSkillsByUser(@PathVariable Integer userId) {
+        Set<HardSkillDto> hardSkills = userHardSkillService.getHardSkillsByUser(userId);
         return ResponseEntity.ok(hardSkills);
     }
 
