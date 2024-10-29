@@ -8,6 +8,8 @@ import com.t1.profile.repository.HardSkillRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class HardSkillServiceImpl implements HardSkillService {
 
@@ -16,6 +18,11 @@ public class HardSkillServiceImpl implements HardSkillService {
 
     @Autowired
     private HardSkillMapper hardSkillMapper;
+
+    @Override
+    public List<HardSkillDto> getAllHardSkills() {
+        return hardSkillMapper.toDtoList(hardSkillRepo.findAll());
+    }
 
     @Override
     public HardSkillDto addHardSkill(HardSkillDto hardSkillDto) {

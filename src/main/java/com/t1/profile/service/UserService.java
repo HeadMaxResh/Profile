@@ -11,6 +11,8 @@ public interface UserService {
 
     UserDto findByEmail(String email);
 
-    List<UserDto> findByProfession( Profession profession);
+    List<UserDto> findByProfession(Profession profession);
+
+    UserDto findById(Integer id);
 
 }

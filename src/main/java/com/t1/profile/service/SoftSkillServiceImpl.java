@@ -12,6 +12,9 @@ import com.t1.profile.repository.SoftSkillRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class SoftSkillServiceImpl implements SoftSkillService {
 
@@ -28,11 +31,27 @@ public class SoftSkillServiceImpl implements SoftSkillService {
     private SoftSkillMapper softSkillMapper;
 
     @Override
+    public List<SoftSkillCategoryDto> getAllSoftSkillCategory() {
+        return softSkillCategoryMapper.toDtoList(categorySoftSkillRepo.findAll());
+    }
+
+    @Override
     public SoftSkillCategoryDto addCategory(SoftSkillCategoryDto categoryDto) {
         SoftSkillCategory category = new SoftSkillCategory();
         category.setName(categoryDto.getName());
         SoftSkillCategory savedCategorySoftSkill = categorySoftSkillRepo.save(category);
         return softSkillCategoryMapper.toDto(savedCategorySoftSkill);
+    }
+
+    @Override
+    public List<SoftSkillDto> getSoftSkillsByCategory(Integer categoryId) {
+        SoftSkillCategory category = categorySoftSkillRepo.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id " + categoryId));
+
+        List<SoftSkill> softSkills = softSkillRepo.findByCategory(category);
+        return softSkills.stream()
+                .map(softSkillMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override

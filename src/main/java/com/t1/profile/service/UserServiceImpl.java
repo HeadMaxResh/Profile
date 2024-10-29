@@ -36,4 +36,11 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDtoList(users);
     }
 
+    @Override
+    public UserDto findById(Integer id) {
+        return userRepo.findById(id)
+                .map(userMapper::toDto)
+                .orElse(null);
+    }
+
 }
