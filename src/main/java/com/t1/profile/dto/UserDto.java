@@ -16,5 +16,5 @@ public class UserDto {
     private String city;
     private String email;
     private Profession profession;
-    private Set<HardSkillDto> hardSkills;
+    private Set<UserHardSkillDto> userHardSkills;
 }

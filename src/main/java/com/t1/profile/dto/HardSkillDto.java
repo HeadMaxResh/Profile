@@ -8,4 +8,5 @@ public class HardSkillDto {
     private Integer id;
     private String name;
 
+
 }

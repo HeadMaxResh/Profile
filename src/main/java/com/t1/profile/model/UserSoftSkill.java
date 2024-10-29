@@ -1,6 +1,5 @@
 package com.t1.profile.model;
 
-import com.t1.profile.Table;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,21 +12,25 @@ import java.util.Objects;
 @Setter
 @RequiredArgsConstructor
 @Entity
-public class SoftSkill {
+public class UserSoftSkill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "soft_skill_id")
+    private SoftSkill softSkill;
 
     @ManyToOne
-    @JoinColumn(name = Table.USER_ID)
-    private User user;
+    @JoinColumn(name = "rated_user_id")
+    private User ratedUser;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    private SoftSkillCategory category;
+    @JoinColumn(name = "rater_user_id")
+    private User raterUser;
+
+    private Integer rating;
 
     @Override
     public final boolean equals(Object o) {
@@ -42,8 +45,8 @@ public class SoftSkill {
                 .getPersistentClass()
                 : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        SoftSkill softSkill = (SoftSkill) o;
-        return getId() != null && Objects.equals(getId(), softSkill.getId());
+        UserSoftSkill userSoftSkill = (UserSoftSkill) o;
+        return getId() != null && Objects.equals(getId(), userSoftSkill.getId());
     }
 
     @Override

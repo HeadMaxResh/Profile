@@ -1,18 +1,22 @@
 package com.t1.profile.service;
 
-import com.t1.profile.dto.HardSkillDto;
 import com.t1.profile.dto.UserDto;
-import com.t1.profile.dto.UserHardSkillsDto;
+import com.t1.profile.dto.UserHardSkillDto;
+import com.t1.profile.dto.UserHardSkillsCategorizedDto;
 import com.t1.profile.exeption.ResourceNotFoundException;
-import com.t1.profile.mapper.HardSkillMapper;
+import com.t1.profile.mapper.UserHardSkillMapper;
 import com.t1.profile.mapper.UserMapper;
 import com.t1.profile.model.HardSkill;
 import com.t1.profile.model.Profession;
 import com.t1.profile.model.User;
+import com.t1.profile.model.UserHardSkill;
 import com.t1.profile.repository.HardSkillRepo;
+import com.t1.profile.repository.ProfessionRepo;
+import com.t1.profile.repository.UserHardSkillRepo;
 import com.t1.profile.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,40 +24,83 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class UserHardSkillServiceImpl implements UserHardSkillService {
 
     @Autowired
     private HardSkillRepo hardSkillRepo;
 
     @Autowired
+    private UserHardSkillRepo userHardSkillRepo;
+
+    @Autowired
+    private ProfessionRepo professionRepo;
+
+    @Autowired
     private UserRepo userRepo;
 
     @Autowired
-    private HardSkillMapper hardSkillMapper;
+    private UserHardSkillMapper userHardSkillMapper;
 
     @Autowired
     private UserMapper userMapper;
 
     @Override
-    public Set<HardSkillDto> getHardSkillsByUser(Integer userId) {
+    public Set<UserHardSkillDto> getHardSkillsByUser(Integer userId) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден с id " + userId));
-        return user.getHardSkills().stream()
-                .map(hardSkillMapper::toDto)
+        return user.getUserHardSkills().stream()
+                .map(userHardSkillMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
     @Override
-    public UserDto addHardSkillToUser(Integer userId, Integer hardSkillId) {
+    public UserDto addHardSkillToUser(Integer userId, Integer hardSkillId, Integer rating) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден с id " + userId));
 
         HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
                 .orElseThrow(() -> new ResourceNotFoundException("Хардскилл не найден с id " + hardSkillId));
 
-        user.getHardSkills().add(hardSkill);
-        User savedUser = userRepo.save(user);
-        return userMapper.toDto(savedUser);
+        List<UserHardSkill> existingUserHardSkills = userHardSkillRepo.findByUserId(userId);
+        for (UserHardSkill uhs : existingUserHardSkills) {
+            if (uhs.getHardSkill().getId().equals(hardSkillId)) {
+                throw new IllegalArgumentException("Хардскилл уже ассоциирован с пользователем.");
+            }
+        }
+        UserHardSkill userHardSkill = new UserHardSkill();
+        userHardSkill.setUser(user);
+        userHardSkill.setHardSkill(hardSkill);
+        userHardSkill.setRating(rating);
+
+        userHardSkillRepo.save(userHardSkill);
+        return userMapper.toDto(user);
+    }
+
+
+    @Override
+    @Transactional
+    public UserHardSkillDto updateHardSkillRating(Integer userId, Integer hardSkillId, Integer newRating) {
+        UserHardSkill userHardSkill = userHardSkillRepo.findByUserId(userId).stream()
+                .filter(uhs -> uhs.getHardSkill().getId().equals(hardSkillId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Хардскилл не ассоциирован с пользователем."));
+
+        userHardSkill.setRating(newRating);
+        userHardSkillRepo.save(userHardSkill);
+
+        return userHardSkillMapper.toDto(userHardSkill);
+    }
+
+    @Override
+    public UserHardSkillDto updateHardSkillRating(Integer userHardSkillId, Integer newRating) {
+        UserHardSkill userHardSkill = userHardSkillRepo.findById(userHardSkillId)
+                .orElseThrow(() -> new ResourceNotFoundException("Хардскилл не найден с id " + userHardSkillId));
+
+        userHardSkill.setRating(newRating);
+        userHardSkillRepo.save(userHardSkill);
+
+        return userHardSkillMapper.toDto(userHardSkill);
     }
 
     @Override
@@ -61,19 +108,32 @@ public class UserHardSkillServiceImpl implements UserHardSkillService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден с id " + userId));
 
-        HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
-                .orElseThrow(() -> new ResourceNotFoundException("Хардскилл не найден с id " + hardSkillId));
+        UserHardSkill userHardSkill = userHardSkillRepo.findByUserId(userId).stream()
+                .filter(uhs -> uhs.getHardSkill().getId().equals(hardSkillId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Хардскилл не ассоциирован с пользователем."));
 
-        if (user.getHardSkills().remove(hardSkill)) {
-            userRepo.save(user);
-        } else {
-            throw new IllegalArgumentException("Хардскилл не ассоциирован с пользователем.");
-        }
+        userHardSkillRepo.delete(userHardSkill);
+        user.getUserHardSkills().remove(userHardSkill);
     }
 
     @Override
-    public UserHardSkillsDto getUserAndProfessionHardSkills(Integer userId) {
+    public void removeHardSkillFromUser(Integer userHardSkillId) {
+        UserHardSkill userHardSkill = userHardSkillRepo.findById(userHardSkillId)
+                .orElseThrow(() -> new IllegalArgumentException("Хардскилл не найден с id " + userHardSkillId));
 
+        userHardSkillRepo.delete(userHardSkill);
+
+        User user = userRepo.findById(userHardSkill.getUser().getId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                                "Пользователь не найден с id " + userHardSkill.getUser().getId())
+                );
+
+        user.getUserHardSkills().remove(userHardSkill);
+    }
+
+    @Override
+    public UserHardSkillsCategorizedDto getUserAndProfessionHardSkills(Integer userId) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден с id " + userId));
 
@@ -84,42 +144,54 @@ public class UserHardSkillServiceImpl implements UserHardSkillService {
 
         Integer professionId = profession.getId();
 
-        List<HardSkill> userHardSkills = hardSkillRepo.findByUserId(userId);
+        List<UserHardSkill> userHardSkills = userHardSkillRepo.findByUserId(userId);
         List<HardSkill> professionHardSkills = hardSkillRepo.findByProfessionId(professionId);
 
-        List<HardSkill> commonHardSkills = new ArrayList<>();
-        List<HardSkill> remainingUserHardSkills = new ArrayList<>(userHardSkills);
+        Set<Integer> professionSkillIds = professionHardSkills.stream()
+                .map(HardSkill::getId)
+                .collect(Collectors.toSet());
 
-        for (HardSkill professionSkill : professionHardSkills) {
-            if (userHardSkills.contains(professionSkill)) {
+        List<UserHardSkill> commonHardSkills = new ArrayList<>();
+        List<UserHardSkill> remainingUserHardSkills = new ArrayList<>(userHardSkills);
 
-                commonHardSkills.add(professionSkill);
-                remainingUserHardSkills.remove(professionSkill);
-
+        for (UserHardSkill userHardSkill : userHardSkills) {
+            if (professionSkillIds.contains(userHardSkill.getHardSkill().getId())) {
+                commonHardSkills.add(userHardSkill);
+                remainingUserHardSkills.remove(userHardSkill);
             }
         }
-        return new UserHardSkillsDto(commonHardSkills, remainingUserHardSkills);
+
+        return new UserHardSkillsCategorizedDto(commonHardSkills, remainingUserHardSkills);
     }
 
     @Override
-    public UserHardSkillsDto getUserAndProfessionHardSkills(Integer userId, Integer professionId) {
+    public UserHardSkillsCategorizedDto getUserAndProfessionHardSkills(Integer userId, Integer professionId) {
 
-        List<HardSkill> userHardSkills = hardSkillRepo.findByUserId(userId);
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден с id " + userId));
 
+        Profession profession = professionRepo.findById(professionId)
+                .orElseThrow(()
+                        -> new ResourceNotFoundException("Профессия не найдена для пользователя с id " + userId));
+
+        List<UserHardSkill> userHardSkills = userHardSkillRepo.findByUserId(userId);
         List<HardSkill> professionHardSkills = hardSkillRepo.findByProfessionId(professionId);
 
-        List<HardSkill> commonHardSkills = new ArrayList<>();
-        List<HardSkill> remainingUserHardSkills = new ArrayList<>(userHardSkills);
+        Set<Integer> professionSkillIds = professionHardSkills.stream()
+                .map(HardSkill::getId)
+                .collect(Collectors.toSet());
 
-        for (HardSkill professionSkill : professionHardSkills) {
-            if (userHardSkills.contains(professionSkill)) {
+        List<UserHardSkill> commonHardSkills = new ArrayList<>();
+        List<UserHardSkill> remainingUserHardSkills = new ArrayList<>(userHardSkills);
 
-                commonHardSkills.add(professionSkill);
-                remainingUserHardSkills.remove(professionSkill);
-
+        for (UserHardSkill userHardSkill : userHardSkills) {
+            if (professionSkillIds.contains(userHardSkill.getHardSkill().getId())) {
+                commonHardSkills.add(userHardSkill);
+                remainingUserHardSkills.remove(userHardSkill);
             }
         }
-        return new UserHardSkillsDto(commonHardSkills, remainingUserHardSkills);
+
+        return new UserHardSkillsCategorizedDto(commonHardSkills, remainingUserHardSkills);
     }
 
 }

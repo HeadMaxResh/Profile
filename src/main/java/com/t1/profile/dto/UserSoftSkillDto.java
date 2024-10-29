@@ -3,7 +3,7 @@ package com.t1.profile.dto;
 import lombok.Data;
 
 @Data
-public class SoftSkillRatingDto {
+public class UserSoftSkillDto {
 
     private Integer softSkillId;
     private Integer ratedUserId;
