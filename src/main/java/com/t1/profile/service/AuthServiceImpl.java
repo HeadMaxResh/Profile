@@ -1,6 +1,5 @@
 package com.t1.profile.service;
 
-import com.t1.profile.RoleType;
 import com.t1.profile.dto.ApiDto;
 import com.t1.profile.dto.JwtAuthenticationDto;
 import com.t1.profile.dto.LoginDto;
@@ -12,6 +11,8 @@ import com.t1.profile.repository.UserRepo;
 import com.t1.profile.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+// Импортируйте необходимые пакеты
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,34 +42,43 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiDto registerUser(RegistrationDto registrationDto) {
         if (userRepo.findByEmail(registrationDto.getEmail()) != null) {
-            return new ApiDto(false, "Email Address already in use!");
+            return new ApiDto(false, "Email уже используется!");
         }
 
         User user = new User();
         user.setEmail(registrationDto.getEmail());
         user.setFirstName(registrationDto.getFirstName());
+        user.setLastName(registrationDto.getLastName()); // Убедитесь, что lastName установлен
         user.setPasswordHash(passwordEncoder.encode(registrationDto.getPassword()));
 
-        Role userRole = roleRepo.findByName(RoleType.USER);
+        Role userRole = roleRepo.findByName("ROLE_USER"); // Убедитесь, что роль существует
+        if (userRole == null) {
+            userRole = new Role();
+            userRole.setName("ROLE_USER");
+            roleRepo.save(userRole);
+        }
         user.setRoles(Collections.singleton(userRole));
 
         userRepo.save(user);
 
-        return new ApiDto(true, "User registered successfully");
+        return new ApiDto(true, "Пользователь успешно зарегистрирован");
     }
 
     @Override
     public JwtAuthenticationDto authenticateUser(LoginDto loginDto) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginDto.getEmail(),
-                        loginDto.getPassword()
-                )
-        );
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDto.getEmail(),
+                            loginDto.getPassword()
+                    )
+            );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = tokenProvider.generateToken(authentication);
-        return new JwtAuthenticationDto(jwt);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = tokenProvider.generateToken(authentication);
+            return new JwtAuthenticationDto(jwt);
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("Неверный email или пароль");
+        }
     }
-
 }
