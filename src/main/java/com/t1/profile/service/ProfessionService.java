@@ -3,10 +3,12 @@ package com.t1.profile.service;
 import com.t1.profile.dto.HardSkillDto;
 import com.t1.profile.dto.ProfessionDto;
 
+import java.util.List;
 import java.util.Set;
 
 public interface ProfessionService {
 
+    List<ProfessionDto> getAllProfessions();
     ProfessionDto addProfession(ProfessionDto professionDto);
     HardSkillDto addHardSkillToProfession(Integer professionId, HardSkillDto hardSkillDto);
     HardSkillDto addExistingHardSkillToProfession(Integer professionId, Integer hardSkillId);

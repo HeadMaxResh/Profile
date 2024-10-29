@@ -11,4 +11,6 @@ public interface HardSkillRepo extends CrudRepository<HardSkill, Integer> {
     @Query("SELECT h FROM HardSkill h WHERE h.profession.id = :professionId")
     List<HardSkill> findByProfessionId(Integer professionId);
 
+    List<HardSkill> findAll();
+
 }

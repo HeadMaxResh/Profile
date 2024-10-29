@@ -7,12 +7,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/hard-skills")
 public class HardSkillController {
 
     @Autowired
     private HardSkillServiceImpl hardSkillService;
+
+    @GetMapping("/all")
+    public List<HardSkillDto> getAllHardSkills() {
+        return hardSkillService.getAllHardSkills();
+    }
 
     @PostMapping("/add")
     public ResponseEntity<HardSkillDto> addHardSkill(@RequestBody HardSkillDto hardSkillDto) {

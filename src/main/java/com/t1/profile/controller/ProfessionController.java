@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -16,6 +17,11 @@ public class ProfessionController {
 
     @Autowired
     private ProfessionServiceImpl professionService;
+
+    @GetMapping("/all")
+    public List<ProfessionDto> getAllProfessions() {
+        return professionService.getAllProfessions();
+    }
 
     @PostMapping("/add")
     public ResponseEntity<ProfessionDto> addProfession(@RequestBody ProfessionDto professionDto) {

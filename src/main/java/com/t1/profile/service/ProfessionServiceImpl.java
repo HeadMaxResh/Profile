@@ -12,6 +12,7 @@ import com.t1.profile.repository.ProfessionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,14 @@ public class ProfessionServiceImpl implements ProfessionService {
 
     @Autowired
     private HardSkillMapper hardSkillMapper;
+
+    @Override
+    public List<ProfessionDto> getAllProfessions() {
+        List<Profession> professions = professionRepo.findAll(); // Получите все профессии
+        return professions.stream()
+                .map(professionMapper::toDto) // Преобразуйте их в ProfessionDto
+                .collect(Collectors.toList());
+    }
 
     @Override
     public ProfessionDto addProfession(ProfessionDto professionDto) {
@@ -53,7 +62,7 @@ public class ProfessionServiceImpl implements ProfessionService {
     }
 
     @Override
-    public HardSkillDto addExistingHardSkillToProfession(Integer professionId, Integer hardSkillId) {
+    public HardSkillDto  addExistingHardSkillToProfession(Integer professionId, Integer hardSkillId) {
         Profession profession = professionRepo.findById(professionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profession not found with id " + professionId));
 
