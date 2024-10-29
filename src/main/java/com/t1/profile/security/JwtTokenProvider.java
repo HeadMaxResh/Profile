@@ -12,7 +12,9 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private final Key jwtSecret = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+   // private final Key jwtSecret = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    @Value("${app.jwtSecret}")
+    private String jwtSecret;
 
     @Value("${app.jwtExpirationInMs}")
     private int jwtExpirationInMs;
