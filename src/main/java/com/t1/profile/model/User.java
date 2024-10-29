@@ -31,7 +31,7 @@ public class User {
     private String passwordHash;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<HardSkill> hardSkills = new HashSet<>();
+    private Set<UserHardSkill> userHardSkills = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "profession_id")

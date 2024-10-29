@@ -9,4 +9,5 @@ public class SoftSkillDto {
     private String name;
     private Integer categoryId;
 
+
 }

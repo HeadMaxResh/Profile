@@ -1,8 +1,8 @@
 package com.t1.profile.controller;
 
-import com.t1.profile.dto.HardSkillDto;
 import com.t1.profile.dto.UserDto;
-import com.t1.profile.dto.UserHardSkillsDto;
+import com.t1.profile.dto.UserHardSkillDto;
+import com.t1.profile.dto.UserHardSkillsCategorizedDto;
 import com.t1.profile.service.UserHardSkillServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +18,18 @@ public class UserHardSkillController {
     private UserHardSkillServiceImpl userHardSkillService;
 
     @GetMapping("/")
-    public ResponseEntity<Set<HardSkillDto>> getHardSkillsByUser(@PathVariable Integer userId) {
-        Set<HardSkillDto> hardSkills = userHardSkillService.getHardSkillsByUser(userId);
+    public ResponseEntity<Set<UserHardSkillDto>> getHardSkillsByUser(@PathVariable Integer userId) {
+        Set<UserHardSkillDto> hardSkills = userHardSkillService.getHardSkillsByUser(userId);
         return ResponseEntity.ok(hardSkills);
     }
 
-    @PostMapping("/{hardSkillId}/add")
+    @PostMapping("/{hardSkillId}/add/{rating}")
     public ResponseEntity<UserDto> addHardSkillToUser(
             @PathVariable Integer userId,
-            @PathVariable Integer hardSkillId
+            @PathVariable Integer hardSkillId,
+            @PathVariable Integer rating
     ) {
-        UserDto updatedUser = userHardSkillService.addHardSkillToUser(userId, hardSkillId);
+        UserDto updatedUser = userHardSkillService.addHardSkillToUser(userId, hardSkillId, rating);
         return ResponseEntity.ok(updatedUser);
     }
 
@@ -42,19 +43,19 @@ public class UserHardSkillController {
     }
 
     @GetMapping("/user-profession")
-    public ResponseEntity<UserHardSkillsDto> getUserAndProfessionHardSkills(
+    public ResponseEntity<UserHardSkillsCategorizedDto> getUserAndProfessionHardSkills(
             @PathVariable Integer userId
     ) {
-        UserHardSkillsDto response = userHardSkillService.getUserAndProfessionHardSkills(userId);
+        UserHardSkillsCategorizedDto response = userHardSkillService.getUserAndProfessionHardSkills(userId);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/user-profession/{professionId}")
-    public ResponseEntity<UserHardSkillsDto> getUserAndProfessionHardSkills(
+    public ResponseEntity<UserHardSkillsCategorizedDto> getUserAndProfessionHardSkills(
             @PathVariable Integer userId,
             @PathVariable Integer professionId
     ) {
-        UserHardSkillsDto response = userHardSkillService.getUserAndProfessionHardSkills(userId, professionId);
+        UserHardSkillsCategorizedDto response = userHardSkillService.getUserAndProfessionHardSkills(userId, professionId);
         return ResponseEntity.ok(response);
     }
 

@@ -1,7 +1,7 @@
 package com.t1.profile.repository;
 
 import com.t1.profile.model.SoftSkill;
-import com.t1.profile.model.SoftSkillRating;
+import com.t1.profile.model.UserSoftSkill;
 import com.t1.profile.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,14 +44,14 @@ public class UserSoftSkillRepoTest {
         softSkill.setName("Communication");
         softSkill = softSkillRepo.save(softSkill);
 
-        SoftSkillRating rating1 = new SoftSkillRating();
+        UserSoftSkill rating1 = new UserSoftSkill();
         rating1.setRatedUser(ratedUser);
         rating1.setRaterUser(raterUser);
         rating1.setSoftSkill(softSkill);
         rating1.setRating(3);
         userSoftSkillRepo.save(rating1);
 
-        SoftSkillRating rating2 = new SoftSkillRating();
+        UserSoftSkill rating2 = new UserSoftSkill();
         rating2.setRatedUser(ratedUser);
         rating2.setRaterUser(raterUser);
         rating2.setSoftSkill(softSkill);
@@ -61,7 +61,7 @@ public class UserSoftSkillRepoTest {
 
     @Test
     public void testFindRatingsBySoftSkillId() {
-        List<SoftSkillRating> ratings = userSoftSkillRepo.findRatingsBySoftSkillId(softSkill.getId());
+        List<UserSoftSkill> ratings = userSoftSkillRepo.findRatingsBySoftSkillId(softSkill.getId());
 
         assertThat(ratings).isNotEmpty();
         assertThat(ratings.size()).isEqualTo(2);
@@ -69,7 +69,7 @@ public class UserSoftSkillRepoTest {
 
     @Test
     public void testFindByRatedUserId() {
-        List<SoftSkillRating> ratings = userSoftSkillRepo.findByRatedUserId(ratedUser.getId());
+        List<UserSoftSkill> ratings = userSoftSkillRepo.findByRatedUserId(ratedUser.getId());
 
         assertThat(ratings).isNotEmpty();
         assertThat(ratings.size()).isEqualTo(2);
@@ -77,7 +77,7 @@ public class UserSoftSkillRepoTest {
 
     @Test
     public void testFindByRaterId() {
-        List<SoftSkillRating> ratings = userSoftSkillRepo.findByRaterId(raterUser.getId());
+        List<UserSoftSkill> ratings = userSoftSkillRepo.findByRaterId(raterUser.getId());
 
         assertThat(ratings).isNotEmpty();
         assertThat(ratings.size()).isEqualTo(2);

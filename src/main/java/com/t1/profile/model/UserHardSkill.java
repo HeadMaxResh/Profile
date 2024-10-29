@@ -12,23 +12,19 @@ import java.util.Objects;
 @Setter
 @RequiredArgsConstructor
 @Entity
-public class SoftSkillRating {
+public class UserHardSkill {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "soft_skill_id")
-    private SoftSkill softSkill;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "rated_user_id")
-    private User ratedUser;
-
-    @ManyToOne
-    @JoinColumn(name = "rater_user_id")
-    private User raterUser;
+    @JoinColumn(name = "hard_skill_id", nullable = false)
+    private HardSkill hardSkill;
 
     private Integer rating;
 
@@ -45,8 +41,8 @@ public class SoftSkillRating {
                 .getPersistentClass()
                 : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        SoftSkillRating softSkillRating = (SoftSkillRating) o;
-        return getId() != null && Objects.equals(getId(), softSkillRating.getId());
+        UserHardSkill userHardSkill = (UserHardSkill) o;
+        return getId() != null && Objects.equals(getId(), userHardSkill.getId());
     }
 
     @Override

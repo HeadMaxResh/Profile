@@ -1,12 +1,12 @@
 package com.t1.profile.service;
 
-import com.t1.profile.dto.SoftSkillRatingDto;
+import com.t1.profile.dto.UserSoftSkillDto;
 
 import java.util.List;
 
 public interface UserSoftSkillService {
 
-    SoftSkillRatingDto rateSoftSkill(SoftSkillRatingDto ratingDto);
-    List<SoftSkillRatingDto> getRatingBySoftSkill(Integer softSkillId);
+    UserSoftSkillDto rateSoftSkill(UserSoftSkillDto ratingDto);
+    List<UserSoftSkillDto> getRatingBySoftSkill(Integer softSkillId);
 
 }

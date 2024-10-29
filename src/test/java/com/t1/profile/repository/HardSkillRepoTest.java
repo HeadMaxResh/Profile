@@ -32,37 +32,22 @@ public class HardSkillRepoTest {
     @BeforeEach
     public void setUp() {
         user = new User();
-        user.setId(1);
         user.setEmail("test.user@example.com");
         user = userRepo.save(user);
 
         profession = new Profession();
-        profession.setId(1);
         profession.setName("Software Developer");
         profession = professionRepo.save(profession);
 
         HardSkill skill1 = new HardSkill();
-        skill1.setId(1);
         skill1.setName("Java");
-        skill1.setUser(user);
         skill1.setProfession(profession);
+        hardSkillRepo.save(skill1);
 
         HardSkill skill2 = new HardSkill();
-        skill2.setId(2);
         skill2.setName("Python");
-        skill2.setUser(user);
         skill2.setProfession(profession);
-
-        hardSkillRepo.save(skill1);
         hardSkillRepo.save(skill2);
-    }
-
-    @Test
-    public void testFindByUserId() {
-        List<HardSkill> skills = hardSkillRepo.findByUserId(user.getId());
-
-        assertThat(skills).isNotEmpty();
-        assertThat(skills.size()).isEqualTo(2);
     }
 
     @Test
@@ -70,14 +55,7 @@ public class HardSkillRepoTest {
         List<HardSkill> skills = hardSkillRepo.findByProfessionId(profession.getId());
 
         assertThat(skills).isNotEmpty();
-        assertThat(skills.size()).isEqualTo(2);
-    }
-
-    @Test
-    public void testFindByUserId_NotFound() {
-        List<HardSkill> skills = hardSkillRepo.findByUserId(999);
-
-        assertThat(skills).isEmpty();
+        assertThat(skills).hasSize(2);
     }
 
     @Test
@@ -86,5 +64,4 @@ public class HardSkillRepoTest {
 
         assertThat(skills).isEmpty();
     }
-
 }

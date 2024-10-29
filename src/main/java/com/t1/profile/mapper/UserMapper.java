@@ -3,10 +3,12 @@ package com.t1.profile.mapper;
 import com.t1.profile.dto.UserDto;
 import com.t1.profile.model.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserMapper extends BaseMapper<UserDto, User>{
 
     @Override

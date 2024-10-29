@@ -1,10 +1,10 @@
 package com.t1.profile.service;
 
-import com.t1.profile.dto.SoftSkillRatingDto;
+import com.t1.profile.dto.UserSoftSkillDto;
 import com.t1.profile.exeption.ResourceNotFoundException;
-import com.t1.profile.mapper.SoftSkillRatingMapper;
+import com.t1.profile.mapper.UserSoftSkillMapper;
 import com.t1.profile.model.SoftSkill;
-import com.t1.profile.model.SoftSkillRating;
+import com.t1.profile.model.UserSoftSkill;
 import com.t1.profile.model.User;
 import com.t1.profile.repository.UserSoftSkillRepo;
 import com.t1.profile.repository.SoftSkillRepo;
@@ -27,10 +27,10 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
     private UserRepo userRepo;
 
     @Autowired
-    private SoftSkillRatingMapper softSkillRatingMapper;
+    private UserSoftSkillMapper userSoftSkillMapper;
 
     @Override
-    public SoftSkillRatingDto rateSoftSkill(SoftSkillRatingDto ratingDto) {
+    public UserSoftSkillDto rateSoftSkill(UserSoftSkillDto ratingDto) {
         SoftSkill softSkill = softSkillRepo.findById(ratingDto.getSoftSkillId())
                 .orElseThrow(() -> new ResourceNotFoundException("SoftSkill not found с id " + ratingDto.getSoftSkillId()));
 
@@ -40,17 +40,17 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
         User raterUser = userRepo.findById(ratingDto.getRaterUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("Rater user not found " + ratingDto.getRaterUserId()));
 
-        SoftSkillRating rating = new SoftSkillRating();
+        UserSoftSkill rating = new UserSoftSkill();
         rating.setSoftSkill(softSkill);
         rating.setRatedUser(ratedUser);
         rating.setRaterUser(raterUser);
         rating.setRating(ratingDto.getRating());
-        SoftSkillRating savedSoftSkillRating = userSoftSkillRepo.save(rating);
-        return softSkillRatingMapper.toDto(savedSoftSkillRating);
+        UserSoftSkill savedUserSoftSkill = userSoftSkillRepo.save(rating);
+        return userSoftSkillMapper.toDto(savedUserSoftSkill);
     }
 
     @Override
-    public List<SoftSkillRatingDto> getRatingBySoftSkill(Integer softSkillId) {
-        return softSkillRatingMapper.toDtoList(userSoftSkillRepo.findRatingsBySoftSkillId(softSkillId));
+    public List<UserSoftSkillDto> getRatingBySoftSkill(Integer softSkillId) {
+        return userSoftSkillMapper.toDtoList(userSoftSkillRepo.findRatingsBySoftSkillId(softSkillId));
     }
 }

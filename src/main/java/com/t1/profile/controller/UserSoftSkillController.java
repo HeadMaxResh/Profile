@@ -1,6 +1,6 @@
 package com.t1.profile.controller;
 
-import com.t1.profile.dto.SoftSkillRatingDto;
+import com.t1.profile.dto.UserSoftSkillDto;
 import com.t1.profile.service.UserSoftSkillServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,14 +17,14 @@ public class UserSoftSkillController {
     private UserSoftSkillServiceImpl userSoftSkillService;
 
     @PostMapping("/add")
-    public ResponseEntity<SoftSkillRatingDto> rateSoftSkill(@RequestBody SoftSkillRatingDto ratingDto) {
-        SoftSkillRatingDto savedRating = userSoftSkillService.rateSoftSkill(ratingDto);
+    public ResponseEntity<UserSoftSkillDto> rateSoftSkill(@RequestBody UserSoftSkillDto ratingDto) {
+        UserSoftSkillDto savedRating = userSoftSkillService.rateSoftSkill(ratingDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRating);
     }
 
     @GetMapping("/soft-skill/{softSkillId}")
-    public ResponseEntity<List<SoftSkillRatingDto>> getRatingBySoftSkill(@PathVariable Integer softSkillId) {
-        List<SoftSkillRatingDto> ratings = userSoftSkillService.getRatingBySoftSkill(softSkillId);
+    public ResponseEntity<List<UserSoftSkillDto>> getRatingBySoftSkill(@PathVariable Integer softSkillId) {
+        List<UserSoftSkillDto> ratings = userSoftSkillService.getRatingBySoftSkill(softSkillId);
         return ResponseEntity.ok(ratings);
     }
 

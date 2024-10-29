@@ -8,9 +8,6 @@ import java.util.List;
 
 public interface HardSkillRepo extends CrudRepository<HardSkill, Integer> {
 
-    @Query("SELECT h FROM HardSkill h WHERE h.user.id = :userId")
-    List<HardSkill> findByUserId(Integer userId);
-
     @Query("SELECT h FROM HardSkill h WHERE h.profession.id = :professionId")
     List<HardSkill> findByProfessionId(Integer professionId);
 
