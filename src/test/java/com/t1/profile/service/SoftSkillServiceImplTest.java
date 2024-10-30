@@ -43,6 +43,7 @@ public class SoftSkillServiceImplTest {
     private SoftSkillDto softSkillDto;
     private SoftSkillCategory category;
     private SoftSkillCategoryDto categoryDto;
+    Integer categoryId;
 
     @BeforeEach
     public void setUp() {
@@ -53,7 +54,8 @@ public class SoftSkillServiceImplTest {
         category.setName("Communication");
 
         categoryDto = new SoftSkillCategoryDto();
-        categoryDto.setId(1);
+        categoryId = 1;
+        categoryDto.setId(categoryId);
         categoryDto.setName("Communication");
 
         softSkill = new SoftSkill();
@@ -64,7 +66,7 @@ public class SoftSkillServiceImplTest {
         softSkillDto = new SoftSkillDto();
         softSkillDto.setId(1);
         softSkillDto.setName("Listening skills");
-        softSkillDto.setCategoryId(1);
+        //softSkillDto.setCategory(categoryDto);
     }
 
     @Test
@@ -91,9 +93,8 @@ public class SoftSkillServiceImplTest {
     public void deleteCategory_shouldThrowResourceNotFoundException() {
         when(categorySoftSkillRepo.findById(1)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-            softSkillService.deleteCategory(1);
-        });
+        Exception exception = assertThrows(ResourceNotFoundException.class, ()
+                -> softSkillService.deleteCategory(1));
 
         assertEquals("Category not found with id 1", exception.getMessage());
     }
@@ -104,7 +105,7 @@ public class SoftSkillServiceImplTest {
         when(softSkillMapper.toDto(any(SoftSkill.class))).thenReturn(softSkillDto);
         when(softSkillRepo.save(any(SoftSkill.class))).thenReturn(softSkill);
 
-        SoftSkillDto result = softSkillService.addSoftSkill(softSkillDto);
+        SoftSkillDto result = softSkillService.addSoftSkill(categoryId, softSkillDto);
 
         assertEquals(softSkillDto.getName(), result.getName());
         verify(softSkillRepo, times(1)).save(any(SoftSkill.class));
@@ -114,9 +115,8 @@ public class SoftSkillServiceImplTest {
     public void addSoftSkill_shouldThrowResourceNotFoundException_whenCategoryNotFound() {
         when(categorySoftSkillRepo.findById(1)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-            softSkillService.addSoftSkill(softSkillDto);
-        });
+        Exception exception = assertThrows(ResourceNotFoundException.class, ()
+                -> softSkillService.addSoftSkill(categoryId, softSkillDto));
 
         assertEquals("Category not found with id 1", exception.getMessage());
     }
@@ -134,9 +134,8 @@ public class SoftSkillServiceImplTest {
     public void deleteSoftSkill_shouldThrowResourceNotFoundException() {
         when(softSkillRepo.findById(1)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-            softSkillService.deleteSoftSkill(1);
-        });
+        Exception exception = assertThrows(ResourceNotFoundException.class, ()
+                -> softSkillService.deleteSoftSkill(1));
 
         assertEquals("SoftSkill not found with id 1", exception.getMessage());
     }

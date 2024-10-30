@@ -56,6 +56,7 @@ public class ProfessionServiceImpl implements ProfessionService {
         hardSkill.setName(hardSkillDto.getName());
         //hardSkill.setType(hardSkillDto.getType());
 
+        hardSkill.setProfession(profession);
         profession.getMainHardSkills().add(hardSkill);
         HardSkill savedHardSkill = hardSkillRepo.save(hardSkill);
         return hardSkillMapper.toDto(savedHardSkill);
@@ -69,6 +70,7 @@ public class ProfessionServiceImpl implements ProfessionService {
         HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
                 .orElseThrow(() -> new ResourceNotFoundException("HardSkill not found with id " + hardSkillId));
 
+        hardSkill.setProfession(profession);
         profession.getMainHardSkills().add(hardSkill);
         professionRepo.save(profession);
         return hardSkillMapper.toDto(hardSkill);
@@ -82,6 +84,7 @@ public class ProfessionServiceImpl implements ProfessionService {
         HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
                 .orElseThrow(() -> new ResourceNotFoundException("HardSkill not found with id " + hardSkillId));
 
+        hardSkill.setProfession(null);
         profession.getMainHardSkills().remove(hardSkill);
         professionRepo.save(profession);
     }

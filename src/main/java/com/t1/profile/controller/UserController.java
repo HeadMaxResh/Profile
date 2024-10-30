@@ -1,7 +1,7 @@
 package com.t1.profile.controller;
 
 import com.t1.profile.dto.UserDto;
-import com.t1.profile.service.UserServiceImpl;
+import com.t1.profile.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +13,7 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @GetMapping("/all")
     List<UserDto> getAll() {

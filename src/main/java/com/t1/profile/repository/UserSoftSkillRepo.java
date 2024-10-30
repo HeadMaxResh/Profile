@@ -24,5 +24,4 @@ public interface UserSoftSkillRepo extends CrudRepository<UserSoftSkill, Integer
             @Param("softSkillId") Integer softSkillId
     );
 
-
 }

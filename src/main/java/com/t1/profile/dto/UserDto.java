@@ -1,6 +1,5 @@
 package com.t1.profile.dto;
 
-import com.t1.profile.model.Profession;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -15,6 +14,6 @@ public class UserDto {
     private String gender;
     private String city;
     private String email;
-    private Profession profession;
+    private ProfessionDto profession;
     private Set<UserHardSkillDto> userHardSkills;
 }

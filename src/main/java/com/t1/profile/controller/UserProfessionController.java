@@ -1,7 +1,7 @@
 package com.t1.profile.controller;
 
 import com.t1.profile.dto.UserDto;
-import com.t1.profile.service.UserProfessionServiceImpl;
+import com.t1.profile.service.UserProfessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserProfessionController {
 
     @Autowired
-    private UserProfessionServiceImpl userProfessionService;
+    private UserProfessionService userProfessionService;
 
     @PostMapping("/add")
     public ResponseEntity<UserDto> addProfessionToUser(
@@ -22,7 +22,7 @@ public class UserProfessionController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @PutMapping("/")
+    @PutMapping("/update")
     public ResponseEntity<UserDto> updateProfessionForUser(
             @PathVariable Integer userId,
             @PathVariable Integer professionId) {

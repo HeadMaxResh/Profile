@@ -161,7 +161,10 @@ public class UserHardSkillServiceImpl implements UserHardSkillService {
             }
         }
 
-        return new UserHardSkillsCategorizedDto(commonHardSkills, remainingUserHardSkills);
+        var commonHardSkillsDto = userHardSkillMapper.toDtoList(commonHardSkills);
+        var remainingUserHardSkillsDto = userHardSkillMapper.toDtoList(remainingUserHardSkills);
+
+        return new UserHardSkillsCategorizedDto(commonHardSkillsDto, remainingUserHardSkillsDto);
     }
 
     @Override
@@ -191,7 +194,10 @@ public class UserHardSkillServiceImpl implements UserHardSkillService {
             }
         }
 
-        return new UserHardSkillsCategorizedDto(commonHardSkills, remainingUserHardSkills);
+        var commonHardSkillsDto = userHardSkillMapper.toDtoList(commonHardSkills);
+        var remainingUserHardSkillsDto = userHardSkillMapper.toDtoList(remainingUserHardSkills);
+
+        return new UserHardSkillsCategorizedDto(commonHardSkillsDto, remainingUserHardSkillsDto);
     }
 
 }

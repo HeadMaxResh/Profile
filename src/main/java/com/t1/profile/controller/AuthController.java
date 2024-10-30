@@ -4,7 +4,7 @@ import com.t1.profile.dto.ApiDto;
 import com.t1.profile.dto.JwtAuthenticationDto;
 import com.t1.profile.dto.LoginDto;
 import com.t1.profile.dto.RegistrationDto;
-import com.t1.profile.service.AuthServiceImpl;
+import com.t1.profile.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     @Autowired
-    private AuthServiceImpl authService;
+    private AuthService authService;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegistrationDto registrationDto) {
