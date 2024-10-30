@@ -1,7 +1,8 @@
 package com.t1.profile.controller;
 
+import com.t1.profile.dto.SoftSkillCategoryWithRatingsDto;
 import com.t1.profile.dto.UserSoftSkillDto;
-import com.t1.profile.service.UserSoftSkillServiceImpl;
+import com.t1.profile.service.UserSoftSkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,10 @@ import java.util.List;
 public class UserSoftSkillController {
 
     @Autowired
-    private UserSoftSkillServiceImpl userSoftSkillService;
+    private UserSoftSkillService userSoftSkillService;
+
+    @Autowired
+    private UserSoftSkillService softSkillService;
 
     @PostMapping("/add")
     public ResponseEntity<UserSoftSkillDto> rateSoftSkill(@RequestBody UserSoftSkillDto ratingDto) {
@@ -26,6 +30,12 @@ public class UserSoftSkillController {
     public ResponseEntity<List<UserSoftSkillDto>> getRatingBySoftSkill(@PathVariable Integer softSkillId) {
         List<UserSoftSkillDto> ratings = userSoftSkillService.getRatingBySoftSkill(softSkillId);
         return ResponseEntity.ok(ratings);
+    }
+
+    @GetMapping("/user/{userId}/soft-skills-with-ratings")
+    public ResponseEntity<List<SoftSkillCategoryWithRatingsDto>> getSoftSkillsWithRatingsByUser(@PathVariable Integer userId) {
+        List<SoftSkillCategoryWithRatingsDto> result = userSoftSkillService.getSoftSkillsWithRatingsByUser(userId);
+        return ResponseEntity.ok(result);
     }
 
 }

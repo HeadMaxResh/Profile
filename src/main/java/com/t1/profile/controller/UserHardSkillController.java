@@ -3,7 +3,7 @@ package com.t1.profile.controller;
 import com.t1.profile.dto.UserDto;
 import com.t1.profile.dto.UserHardSkillDto;
 import com.t1.profile.dto.UserHardSkillsCategorizedDto;
-import com.t1.profile.service.UserHardSkillServiceImpl;
+import com.t1.profile.service.UserHardSkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import java.util.Set;
 public class UserHardSkillController {
 
     @Autowired
-    private UserHardSkillServiceImpl userHardSkillService;
+    private UserHardSkillService userHardSkillService;
 
     @GetMapping("/")
     public ResponseEntity<Set<UserHardSkillDto>> getHardSkillsByUser(@PathVariable Integer userId) {

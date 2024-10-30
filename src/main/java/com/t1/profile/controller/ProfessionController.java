@@ -2,7 +2,7 @@ package com.t1.profile.controller;
 
 import com.t1.profile.dto.HardSkillDto;
 import com.t1.profile.dto.ProfessionDto;
-import com.t1.profile.service.ProfessionServiceImpl;
+import com.t1.profile.service.ProfessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import java.util.Set;
 public class ProfessionController {
 
     @Autowired
-    private ProfessionServiceImpl professionService;
+    private ProfessionService professionService;
 
     @GetMapping("/all")
     public List<ProfessionDto> getAllProfessions() {

@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class UserSoftSkillDto {
 
-    private Integer softSkillId;
-    private Integer ratedUserId;
-    private Integer raterUserId;
+    private SoftSkillDto softSkill;
+    private UserSummaryDto ratedUser;
+    private UserSummaryDto raterUser;
     private Integer rating;
 
 }

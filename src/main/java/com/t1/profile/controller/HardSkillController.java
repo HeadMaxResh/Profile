@@ -1,7 +1,7 @@
 package com.t1.profile.controller;
 
 import com.t1.profile.dto.HardSkillDto;
-import com.t1.profile.service.HardSkillServiceImpl;
+import com.t1.profile.service.HardSkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ import java.util.List;
 public class HardSkillController {
 
     @Autowired
-    private HardSkillServiceImpl hardSkillService;
+    private HardSkillService hardSkillService;
 
     @GetMapping("/all")
     public List<HardSkillDto> getAllHardSkills() {

@@ -1,6 +1,7 @@
 package com.t1.profile.service;
 
 import com.t1.profile.dto.SoftSkillCategoryDto;
+import com.t1.profile.dto.SoftSkillCategoryWithSkillsDto;
 import com.t1.profile.dto.SoftSkillDto;
 import com.t1.profile.exeption.ResourceNotFoundException;
 import com.t1.profile.mapper.SoftSkillCategoryMapper;
@@ -55,6 +56,25 @@ public class SoftSkillServiceImpl implements SoftSkillService {
     }
 
     @Override
+    public List<SoftSkillCategoryWithSkillsDto> getAllSoftSkillCategoriesWithSkills() {
+        List<SoftSkillCategory> categories = categorySoftSkillRepo.findAll();
+        return categories.stream()
+                .map(category -> {
+                    SoftSkillCategoryWithSkillsDto dto = new SoftSkillCategoryWithSkillsDto();
+                    dto.setId(category.getId());
+                    dto.setName(category.getName());
+
+                    List<SoftSkillDto> skillDtos = category.getSoftSkills().stream()
+                            .map(softSkillMapper::toDto)
+                            .collect(Collectors.toList());
+                    dto.setSoftSkills(skillDtos);
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void deleteCategory(Integer categoryId) {
         SoftSkillCategory category = categorySoftSkillRepo.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id " + categoryId));
@@ -62,12 +82,14 @@ public class SoftSkillServiceImpl implements SoftSkillService {
     }
 
     @Override
-    public SoftSkillDto addSoftSkill(SoftSkillDto softSkillDto) {
+    public SoftSkillDto addSoftSkill(Integer categoryId, SoftSkillDto softSkillDto) {
         SoftSkill softSkill = new SoftSkill();
         softSkill.setName(softSkillDto.getName());
 
-        SoftSkillCategory category = categorySoftSkillRepo.findById(softSkillDto.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id " + softSkillDto.getCategoryId()));
+        SoftSkillCategory category = categorySoftSkillRepo.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Category not found with id " + categoryId /*softSkillDto.getCategory().getId()*/)
+                );
         softSkill.setCategory(category);
         SoftSkill savedSoftSkill = softSkillRepo.save(softSkill);
         return softSkillMapper.toDto(savedSoftSkill);

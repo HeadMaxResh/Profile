@@ -1,8 +1,9 @@
 package com.t1.profile.controller;
 
 import com.t1.profile.dto.SoftSkillCategoryDto;
+import com.t1.profile.dto.SoftSkillCategoryWithSkillsDto;
 import com.t1.profile.dto.SoftSkillDto;
-import com.t1.profile.service.SoftSkillServiceImpl;
+import com.t1.profile.service.SoftSkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,9 @@ import java.util.List;
 public class SoftSkillController {
 
     @Autowired
-    private SoftSkillServiceImpl softSkillService;
+    private SoftSkillService softSkillService;
 
-    @GetMapping("/categories")
+    @GetMapping("/category/all")
     public List<SoftSkillCategoryDto> getAllSoftSkillCategories() {
         return softSkillService.getAllSoftSkillCategory();
     }
@@ -39,10 +40,15 @@ public class SoftSkillController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<SoftSkillDto> addSoftSkill(@RequestBody SoftSkillDto softSkillDto) {
-        SoftSkillDto savedSoftSkill = softSkillService.addSoftSkill(softSkillDto);
+    @PostMapping("/category/{categoryId}/add-soft-skill")
+    public ResponseEntity<SoftSkillDto> addSoftSkill(@PathVariable Integer categoryId, @RequestBody SoftSkillDto softSkillDto) {
+        SoftSkillDto savedSoftSkill = softSkillService.addSoftSkill(categoryId, softSkillDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedSoftSkill);
+    }
+
+    @GetMapping("/categories-with-skills")
+    public List<SoftSkillCategoryWithSkillsDto> getAllSoftSkillCategoriesWithSkills() {
+        return softSkillService.getAllSoftSkillCategoriesWithSkills();
     }
 
     @DeleteMapping("/{softSkillId}/delete")
