@@ -81,7 +81,7 @@ public class UserHardSkillServiceImplTest {
 
         userHardSkillDto = new UserHardSkillDto();
         userHardSkillDto.setId(1);
-        userHardSkillDto.setHardSkill(hardSkill);
+        userHardSkillDto.setHardSkill(hardSkillMapper.toDto(hardSkill));
         userHardSkillDto.setRating(5);
 
         userDto = new UserDto();
