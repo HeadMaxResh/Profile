@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class UserSoftSkillResponseDto {
 
+    private Integer id;
     private SoftSkillDto softSkill;
     private UserSummaryDto ratedUser;
     private UserSummaryDto raterUser;

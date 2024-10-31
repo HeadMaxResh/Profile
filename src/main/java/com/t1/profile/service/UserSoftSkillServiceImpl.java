@@ -1,9 +1,6 @@
 package com.t1.profile.service;
 
-import com.t1.profile.dto.SoftSkillCategoryWithRatingsDto;
-import com.t1.profile.dto.SoftSkillWithAverageRatingDto;
-import com.t1.profile.dto.UserSoftSkillResponseDto;
-import com.t1.profile.dto.UserSoftSkillRequestDto;
+import com.t1.profile.dto.*;
 import com.t1.profile.exeption.ResourceNotFoundException;
 import com.t1.profile.mapper.SoftSkillCategoryMapper;
 import com.t1.profile.mapper.UserSoftSkillMapper;
@@ -14,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalDouble;
 
 @Service
 public class UserSoftSkillServiceImpl implements UserSoftSkillService {
@@ -69,6 +67,17 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
     }
 
     @Override
+    public List<UserSoftSkillResponseDto> rateMultipleSoftSkills(UserSoftSkillBatchRequestDto batchRequestDto) {
+        List<UserSoftSkillResponseDto> responseDtos = new ArrayList<>();
+
+        for (UserSoftSkillRequestDto ratingDto : batchRequestDto.getRatings()) {
+            responseDtos.add(rateSoftSkill(ratingDto));
+        }
+
+        return responseDtos;
+    }
+
+    @Override
     public List<UserSoftSkillResponseDto> getRatingBySoftSkill(Integer softSkillId) {
         return userSoftSkillMapper.toDtoList(userSoftSkillRepo.findRatingsBySoftSkillId(softSkillId));
     }
@@ -93,9 +102,6 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
                         softSkill
                 );
 
-                /*Double averageRating =
-                        userSoftSkillRepo.findAverageRatingByUserAndSoftSkill(userId, softSkill.getId());*/
-
                 SoftSkillWithAverageRatingDto skillDto = new SoftSkillWithAverageRatingDto();
                 skillDto.setId(softSkill.getId());
                 skillDto.setName(softSkill.getName());
@@ -111,14 +117,39 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
         return result;
     }
 
+    @Override
+    public void deleteUserSoftSkill(Integer userSoftSkillId) {
+        UserSoftSkill userSoftSkill = userSoftSkillRepo.findById(userSoftSkillId)
+                .orElseThrow(() -> new ResourceNotFoundException("UserSoftSkill not found с id " + userSoftSkillId));
+
+        userSoftSkillRepo.delete(userSoftSkill);
+
+        updateSoftSkillRating(userSoftSkill.getRatedUser(), userSoftSkill.getSoftSkill());
+    }
+
+    @Override
+    public void deleteAllUserSoftSkillsByUserId(Integer userId) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found с id " + userId));
+
+        List<UserSoftSkill> userSoftSkills = userSoftSkillRepo.findByRatedUser(user);
+
+        for (UserSoftSkill userSoftSkill : userSoftSkills) {
+            userSoftSkillRepo.delete(userSoftSkill);
+            updateSoftSkillRating(user, userSoftSkill.getSoftSkill());
+        }
+    }
+
     private void updateSoftSkillRating(User ratedUser, SoftSkill softSkill) {
         UserSoftSkillRating softSkillRating = userSoftSkillRatingRepo.findByRatedUserAndSoftSkill(ratedUser, softSkill);
 
         List<UserSoftSkill> ratings = userSoftSkillRepo.findRatingsBySoftSkillId(softSkill.getId());
-        Double average = ratings.stream()
+
+        OptionalDouble averageOpt = ratings.stream()
                 .mapToInt(UserSoftSkill::getRating)
-                .average()
-                .orElse(0.0);
+                .average();
+
+        Double average = averageOpt.isPresent() ? averageOpt.getAsDouble() : null;
 
         if (softSkillRating == null) {
             softSkillRating = new UserSoftSkillRating();
