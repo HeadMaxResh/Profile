@@ -1,8 +1,9 @@
 package com.t1.profile.controller;
 
 import com.t1.profile.dto.SoftSkillCategoryWithRatingsDto;
-import com.t1.profile.dto.UserSoftSkillResponseDto;
+import com.t1.profile.dto.UserSoftSkillBatchRequestDto;
 import com.t1.profile.dto.UserSoftSkillRequestDto;
+import com.t1.profile.dto.UserSoftSkillResponseDto;
 import com.t1.profile.service.UserSoftSkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,26 @@ public class UserSoftSkillController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRating);
     }
 
+    @PostMapping("/add-multiple")
+    public ResponseEntity<List<UserSoftSkillResponseDto>> rateMultipleSoftSkills(
+            @RequestBody UserSoftSkillBatchRequestDto batchRequestDto
+    ) {
+        List<UserSoftSkillResponseDto> savedRatings = userSoftSkillService.rateMultipleSoftSkills(batchRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedRatings);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteUserSoftSkill(@PathVariable Integer id) {
+        userSoftSkillService.deleteUserSoftSkill(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/delete-all/user/{userId}")
+    public ResponseEntity<Void> deleteAllUserSoftSkills(@PathVariable Integer userId) {
+        userSoftSkillService.deleteAllUserSoftSkillsByUserId(userId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/soft-skill/{softSkillId}")
     public ResponseEntity<List<UserSoftSkillResponseDto>> getRatingBySoftSkill(@PathVariable Integer softSkillId) {
         List<UserSoftSkillResponseDto> ratings = userSoftSkillService.getRatingBySoftSkill(softSkillId);
@@ -34,7 +55,9 @@ public class UserSoftSkillController {
     }
 
     @GetMapping("/user/{userId}/soft-skills-with-ratings")
-    public ResponseEntity<List<SoftSkillCategoryWithRatingsDto>> getSoftSkillsWithRatingsByUser(@PathVariable Integer userId) {
+    public ResponseEntity<List<SoftSkillCategoryWithRatingsDto>> getSoftSkillsWithRatingsByUser(
+            @PathVariable Integer userId
+    ) {
         List<SoftSkillCategoryWithRatingsDto> result = userSoftSkillService.getSoftSkillsWithRatingsByUser(userId);
         return ResponseEntity.ok(result);
     }

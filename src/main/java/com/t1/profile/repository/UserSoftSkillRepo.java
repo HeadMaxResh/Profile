@@ -1,5 +1,6 @@
 package com.t1.profile.repository;
 
+import com.t1.profile.model.User;
 import com.t1.profile.model.UserSoftSkill;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -23,5 +24,7 @@ public interface UserSoftSkillRepo extends CrudRepository<UserSoftSkill, Integer
             @Param("ratedUserId") Integer ratedUserId,
             @Param("softSkillId") Integer softSkillId
     );
+
+    List<UserSoftSkill> findByRatedUser(User user);
 
 }
