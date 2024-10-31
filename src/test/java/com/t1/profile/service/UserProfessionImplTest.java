@@ -2,6 +2,7 @@ package com.t1.profile.service;
 
 import com.t1.profile.dto.UserDto;
 import com.t1.profile.exeption.ResourceNotFoundException;
+import com.t1.profile.mapper.ProfessionMapper;
 import com.t1.profile.mapper.UserMapper;
 import com.t1.profile.model.Profession;
 import com.t1.profile.model.User;
@@ -34,6 +35,9 @@ public class UserProfessionImplTest {
     @Mock
     private UserMapper userMapper;
 
+    @Mock
+    private ProfessionMapper professionMapper;
+
     private User user;
     private Profession profession;
     private UserDto userDto;
@@ -53,7 +57,7 @@ public class UserProfessionImplTest {
         userDto = new UserDto();
         userDto.setId(1);
         userDto.setFirstName("User 1");
-        userDto.setProfession(profession);
+        userDto.setProfession(professionMapper.toDto(profession));
     }
 
     @Test
@@ -74,9 +78,8 @@ public class UserProfessionImplTest {
     public void addProfessionToUser_shouldThrowResourceNotFoundException_whenUserNotFound() {
         when(userRepo.findById(1)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-            userProfessionService.addProfessionToUser(1, 1);
-        });
+        Exception exception = assertThrows(ResourceNotFoundException.class, ()
+                -> userProfessionService.addProfessionToUser(1, 1));
 
         assertEquals("User not found with id 1", exception.getMessage());
     }
@@ -86,9 +89,8 @@ public class UserProfessionImplTest {
         when(userRepo.findById(1)).thenReturn(Optional.of(user));
         when(professionRepo.findById(1)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-            userProfessionService.addProfessionToUser(1, 1);
-        });
+        Exception exception = assertThrows(ResourceNotFoundException.class, ()
+                -> userProfessionService.addProfessionToUser(1, 1));
 
         assertEquals("Profession not found with id 1", exception.getMessage());
     }
@@ -111,9 +113,8 @@ public class UserProfessionImplTest {
     public void updateProfessionForUser_shouldThrowResourceNotFoundException_whenUserNotFound() {
         when(userRepo.findById(1)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-            userProfessionService.updateProfessionForUser(1, 1);
-        });
+        Exception exception = assertThrows(ResourceNotFoundException.class, ()
+                -> userProfessionService.updateProfessionForUser(1, 1));
 
         assertEquals("User not found with id 1", exception.getMessage());
     }
@@ -123,9 +124,8 @@ public class UserProfessionImplTest {
         when(userRepo.findById(1)).thenReturn(Optional.of(user));
         when(professionRepo.findById(1)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(ResourceNotFoundException.class, () -> {
-            userProfessionService.updateProfessionForUser(1, 1);
-        });
+        Exception exception = assertThrows(ResourceNotFoundException.class, ()
+                -> userProfessionService.updateProfessionForUser(1, 1));
 
         assertEquals("Profession not found with id 1", exception.getMessage());
     }
