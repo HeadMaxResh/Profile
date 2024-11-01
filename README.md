@@ -1,155 +1,1234 @@
-### AuthController
+# Документация API
 
-1. **POST /auth/register** `registerUser`
-   - **Вход:** `RegistrationDto`
-   - **Возвращает:** `ApiDto`
-   - **Описание:** Регистрирует нового пользователя.
+## AuthController
 
-2. **POST /auth/login** `authenticateUser`
-   - **Вход:** `LoginDto`
-   - **Возвращает:** `JwtAuthenticationDto`
-   - **Описание:** Аутентифицирует пользователя и возвращает JWT.
+**Базовый URL:** `/auth`
 
----
+### Регистрация пользователя
 
-### HardSkillController
+- **URL:** `/register`
+- **Метод:** `POST`
+- **Описание:** Регистрирует нового пользователя в системе.
 
-1. **POST /hard-skills/add** `addHardSkill`
-   - **Вход:** `HardSkillDto`
-   - **Возвращает:** `HardSkill`
-   - **Описание:** Добавляет новый хардскилл.
+#### Входные данные:
 
-2. **PUT /hard-skills/{hardSkillId}/update** `updateHardSkill`
-   - **Вход:** `hardSkillId`, `HardSkillDto`
-   - **Возвращает:** `HardSkill`
-   - **Описание:** Обновляет существующий хардскилл по ID.
+- **Тело запроса (JSON):**
 
-3. **DELETE /hard-skills/{hardSkillId}/delete** `deleteHardSkill`
-   - **Вход:** `hardSkillId`
-   - **Возвращает:** `Void`
-   - **Описание:** Удаляет хардскилл по ID.
+  ```json
+  {
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "email": "email@example.com",
+    "password": "пароль"
+  }
+  ```
 
----
+  - **Поля:**
+    - `firstName` (string, обязательное) — Имя пользователя.
+    - `lastName` (string, обязательное) — Фамилия пользователя.
+    - `email` (string, обязательное) — Электронная почта пользователя.
+    - `password` (string, обязательное) — Пароль пользователя (минимум 6 символов).
 
-### ProfessionController
+#### Выходные данные:
 
-1. **POST /professions/add** `addProfession`
-   - **Вход:** `ProfessionDto`
-   - **Возвращает:** `Profession`
-   - **Описание:** Добавляет новую профессию.
+- **HTTP Статус:**
+  - `201 Created` — Если регистрация прошла успешно.
+  - `409 Conflict` — Если электронная почта уже используется.
+- **Тело ответа (JSON):**
 
-2. **POST /professions/{professionId}/add-new-hard-skill** `addHardSkillToProfession`
-   - **Вход:** `professionId`, `HardSkillDto`
-   - **Возвращает:** `HardSkill`
-   - **Описание:** Добавляет новый хардскилл к профессии по ID.
+  ```json
+  {
+    "success": true,
+    "message": "Пользователь успешно зарегистрирован"
+  }
+  ```
 
-3. **POST /professions/{professionId}/add-existing-hard-skill/{hardSkillId}** `addExistingHardSkillToProfession`
-   - **Вход:** `professionId`, `hardSkillId`
-   - **Возвращает:** `HardSkill`
-   - **Описание:** Добавляет существующий хардскилл к профессии по ID.
+  - **Поля:**
+    - `success` (boolean) — Указывает на успешность операции.
+    - `message` (string) — Сообщение о результате операции.
 
-4. **DELETE /professions/{professionId}/remove-hard-skills/{hardSkillId}** `removeHardSkillFromProfession`
-   - **Вход:** `professionId`, `hardSkillId`
-   - **Возвращает:** `Void`
-   - **Описание:** Удаляет хардскилл из профессии по ID.
+### Аутентификация пользователя
 
-5. **DELETE /professions/{professionId}/delete** `deleteProfession`
-   - **Вход:** `professionId`
-   - **Возвращает:** `Void`
-   - **Описание:** Удаляет профессию по ID.
+- **URL:** `/login`
+- **Метод:** `POST`
+- **Описание:** Аутентифицирует пользователя и возвращает JWT токен для доступа к защищённым ресурсам.
 
-6. **GET /professions/{professionId}/hard-skills** `getHardSkillsByProfession`
-   - **Вход:** `professionId`
-   - **Возвращает:** `Set<HardSkill>`
-   - **Описание:** Получает хардскиллы, связанные с профессией по ID.
+#### Входные данные:
 
----
+- **Тело запроса (JSON):**
 
-### SoftSkillController
+  ```json
+  {
+    "email": "email@example.com",
+    "password": "пароль"
+  }
+  ```
 
-1. **POST /soft-skill/category/add** `addCategory`
-   - **Вход:** `SoftSkillCategoryDto`
-   - **Возвращает:** `SoftSkillCategory`
-   - **Описание:** Добавляет новую категорию софт-скиллов.
+  - **Поля:**
+    - `email` (string, обязательное) — Электронная почта пользователя.
+    - `password` (string, обязательное) — Пароль пользователя.
 
-2. **DELETE /soft-skill/category/{categoryId}/delete** `deleteCategory`
-   - **Вход:** `categoryId`
-   - **Возвращает:** `Void`
-   - **Описание:** Удаляет категорию софт-скиллов по ID.
+#### Выходные данные:
 
-3. **POST /soft-skill/add** `addSoftSkill`
-   - **Вход:** `SoftSkillDto`
-   - **Возвращает:** `SoftSkill`
-   - **Описание:** Добавляет новый софт-скилл.
+- **HTTP Статус:**
+  - `200 OK` — Если аутентификация прошла успешно.
+  - `401 Unauthorized` — Если электронная почта или пароль неверны.
+- **Тело ответа (JSON):**
 
-4. **DELETE /soft-skill/{softSkillId}/delete** `deleteSoftSkill`
-   - **Вход:** `softSkillId`
-   - **Возвращает:** `Void`
-   - **Описание:** Удаляет софт-скилл по ID.
+  ```json
+  {
+    "accessToken": "JWT-токен",
+    "tokenType": "Bearer"
+  }
+  ```
 
----
-### UserController
-
-1. **GET /users/** `getAll`
-   - **Вход:** `None`
-   - **Возвращает:** `List<UserDto>`
-   - **Описание:** Получает список всех пользователей.
+  - **Поля:**
+    - `accessToken` (string) — JWT токен для доступа к защищённым ресурсам.
+    - `tokenType` (string) — Тип токена (обычно `"Bearer"`).
 
 ---
 
-### UserHardSkillController
+## HardSkillController
 
-1. **GET /users/{userId}/hard-skills/** `getHardSkillsByUser`
-   - **Вход:** `userId`
-   - **Возвращает:** `Set<HardSkill>`
-   - **Описание:** Получает хардскиллы пользователя по ID.
+**Базовый URL:** `/hard-skills`
 
-2. **POST /users/{userId}/hard-skills/{hardSkillId}/add** `addHardSkillToUser`
-   - **Вход:** `userId`, `hardSkillId`
-   - **Возвращает:** `UserDto`
-   - **Описание:** Добавляет хардскилл пользователю по его ID.
+### Получить все Hard Skills
 
-3. **DELETE /users/{userId}/hard-skills/{hardSkillId}/delete** `removeHardSkillFromUser`
-   - **Вход:** `userId`, `hardSkillId`
-   - **Возвращает:** `Void`
-   - **Описание:** Удаляет хардскилл у пользователя по его ID.
+- **URL:** `/all`
+- **Метод:** `GET`
+- **Описание:** Возвращает список всех Hard Skills (жестких навыков).
 
-4. **GET /users/{userId}/hard-skills/user-profession** `getUserAndProfessionHardSkills`
-   - **Вход:** `userId`
-   - **Возвращает:** `UserHardSkillsDto`
-   - **Описание:** Получает хардскиллы пользователя и его профессии по ID пользователя.
+#### Входные данные:
 
-5. **GET /users/{userId}/hard-skills/user-profession/{professionId}** `getUserAndProfessionHardSkills`
-   - **Вход:** `userId`, `professionId`
-   - **Возвращает:** `UserHardSkillsDto`
-   - **Описание:** Получает хардскиллы пользователя и его профессии по ID пользователя и профессии.
+- Нет.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  [
+    {
+      "id": 1,
+      "name": "Навык 1"
+    },
+    {
+      "id": 2,
+      "name": "Навык 2"
+    }
+    // ... другие навыки
+  ]
+  ```
+
+### Добавить новый Hard Skill
+
+- **URL:** `/add`
+- **Метод:** `POST`
+- **Описание:** Добавляет новый Hard Skill.
+
+#### Входные данные:
+
+- **Тело запроса (JSON):**
+
+  ```json
+  {
+    "name": "Название навыка"
+  }
+  ```
+
+  - **Поля:**
+    - `name` (string, обязательное) — Название навыка.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `201 Created`
+- **Тело ответа (JSON):**
+
+  ```json
+  {
+    "id": 3,
+    "name": "Название навыка"
+  }
+  ```
+
+### Обновить Hard Skill
+
+- **URL:** `/{hardSkillId}/update`
+- **Метод:** `PUT`
+- **Описание:** Обновляет существующий Hard Skill.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `hardSkillId` (integer) — Идентификатор навыка для обновления.
+- **Тело запроса (JSON):**
+
+  ```json
+  {
+    "name": "Новое название навыка"
+  }
+  ```
+
+  - **Поля:**
+    - `name` (string, обязательное) — Новое название навыка.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  {
+    "id": 3,
+    "name": "Новое название навыка"
+  }
+  ```
+
+### Удалить Hard Skill
+
+- **URL:** `/{hardSkillId}/delete`
+- **Метод:** `DELETE`
+- **Описание:** Удаляет существующий Hard Skill.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `hardSkillId` (integer) — Идентификатор навыка для удаления.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `204 No Content`
+- **Тело ответа:** Пустое.
 
 ---
 
-### UserProfessionController
+## ProfessionController
 
-1. **POST /users/{userId}/profession/{professionId}/add** `addProfessionToUser`
-   - **Вход:** `userId`, `professionId`
-   - **Возвращает:** `UserDto`
-   - **Описание:** Добавляет профессию пользователю по ID.
+**Базовый URL:** `/professions`
 
-2. **PUT /users/{userId}/profession/{professionId}/update** `updateProfessionForUser`
-   - **Вход:** `userId`, `professionId`
-   - **Возвращает:** `UserDto`
-   - **Описание:** Обновляет профессию пользователя.
+### Получить все профессии
+
+- **URL:** `/all`
+- **Метод:** `GET`
+- **Описание:** Возвращает список всех профессий.
+
+#### Входные данные:
+
+- Нет.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  [
+    {
+      "id": 1,
+      "name": "Профессия 1"
+    },
+    {
+      "id": 2,
+      "name": "Профессия 2"
+    }
+    // ... другие профессии
+  ]
+  ```
+
+### Добавить новую профессию
+
+- **URL:** `/add`
+- **Метод:** `POST`
+- **Описание:** Добавляет новую профессию.
+
+#### Входные данные:
+
+- **Тело запроса (JSON):**
+
+  ```json
+  {
+    "name": "Название профессии"
+  }
+  ```
+
+  - **Поля:**
+    - `name` (string, обязательное) — Название профессии.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `201 Created`
+- **Тело ответа (JSON):**
+
+  ```json
+  {
+    "id": 3,
+    "name": "Название профессии"
+  }
+  ```
+
+### Добавить новый Hard Skill к профессии
+
+- **URL:** `/{professionId}/add-new-hard-skill`
+- **Метод:** `POST`
+- **Описание:** Добавляет новый Hard Skill к указанной профессии.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `professionId` (integer) — Идентификатор профессии.
+- **Тело запроса (JSON):**
+
+  ```json
+  {
+    "name": "Название навыка"
+  }
+  ```
+
+  - **Поля:**
+    - `name` (string, обязательное) — Название нового Hard Skill.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `201 Created`
+- **Тело ответа (JSON):**
+
+  ```json
+  {
+    "id": 4,
+    "name": "Название навыка"
+  }
+  ```
+
+### Добавить существующий Hard Skill к профессии
+
+- **URL:** `/{professionId}/add-existing-hard-skill/{hardSkillId}`
+- **Метод:** `POST`
+- **Описание:** Ассоциирует существующий Hard Skill с указанной профессией.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `professionId` (integer) — Идентификатор профессии.
+  - `hardSkillId` (integer) — Идентификатор существующего Hard Skill.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  {
+    "id": 2,
+    "name": "Название навыка"
+  }
+  ```
+
+### Удалить Hard Skill из профессии
+
+- **URL:** `/{professionId}/remove-hard-skills/{hardSkillId}`
+- **Метод:** `DELETE`
+- **Описание:** Удаляет Hard Skill из указанной профессии.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `professionId` (integer) — Идентификатор профессии.
+  - `hardSkillId` (integer) — Идентификатор Hard Skill для удаления.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `204 No Content`
+- **Тело ответа:** Пустое.
+
+### Удалить профессию
+
+- **URL:** `/{professionId}/delete`
+- **Метод:** `DELETE`
+- **Описание:** Удаляет указанную профессию.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `professionId` (integer) — Идентификатор профессии для удаления.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `204 No Content`
+- **Тело ответа:** Пустое.
+
+### Получить Hard Skills профессии
+
+- **URL:** `/{professionId}/hard-skills`
+- **Метод:** `GET`
+- **Описание:** Возвращает список Hard Skills, связанных с указанной профессией.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `professionId` (integer) — Идентификатор профессии.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  [
+    {
+      "id": 1,
+      "name": "Навык 1"
+    },
+    {
+      "id": 2,
+      "name": "Навык 2"
+    }
+    // ... другие навыки
+  ]
+  ```
 
 ---
 
-### UserSoftSkillController
+## SoftSkillController
 
-1. **POST /soft-skill-rating/add** `rateSoftSkill`
-   - **Вход:** `SoftSkillRatingDto`
-   - **Возвращает:** `SoftSkillRating`
-   - **Описание:** Оценивает софт-скилл.
+**Базовый URL:** `/soft-skills`
 
-2. **GET /soft-skill-rating/soft-skill/{softSkillId}** `getRatingBySoftSkill`
-   - **Вход:** `softSkillId`
-   - **Возвращает:** `List<SoftSkillRating>`
-   - **Описание:** Получает рейтинги по софт-скиллу по ID.
+### Получить все категории Soft Skills
+
+- **URL:** `/category/all`
+- **Метод:** `GET`
+- **Описание:** Возвращает список всех категорий Soft Skills.
+
+#### Входные данные:
+
+- Нет.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  [
+    {
+      "id": 1,
+      "name": "Категория 1"
+    },
+    {
+      "id": 2,
+      "name": "Категория 2"
+    }
+    // ... другие категории
+  ]
+  ```
+
+### Получить Soft Skills по категории
+
+- **URL:** `/category/{categoryId}`
+- **Метод:** `GET`
+- **Описание:** Возвращает список Soft Skills в указанной категории.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `categoryId` (integer) — Идентификатор категории.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  [
+    {
+      "id": 1,
+      "name": "Навык 1"
+    },
+    {
+      "id": 2,
+      "name": "Навык 2"
+    }
+    // ... другие навыки
+  ]
+  ```
+
+### Добавить новую категорию Soft Skills
+
+- **URL:** `/category/add`
+- **Метод:** `POST`
+- **Описание:** Добавляет новую категорию Soft Skills.
+
+#### Входные данные:
+
+- **Тело запроса (JSON):**
+
+  ```json
+  {
+    "name": "Название категории"
+  }
+  ```
+
+  - **Поля:**
+    - `name` (string, обязательное) — Название категории.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `201 Created`
+- **Тело ответа (JSON):**
+
+  ```json
+  {
+    "id": 3,
+    "name": "Название категории"
+  }
+  ```
+
+### Удалить категорию Soft Skills
+
+- **URL:** `/category/{categoryId}/delete`
+- **Метод:** `DELETE`
+- **Описание:** Удаляет указанную категорию Soft Skills.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `categoryId` (integer) — Идентификатор категории для удаления.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `204 No Content`
+- **Тело ответа:** Пустое.
+
+### Добавить Soft Skill в категорию
+
+- **URL:** `/category/{categoryId}/add-soft-skill`
+- **Метод:** `POST`
+- **Описание:** Добавляет новый Soft Skill в указанную категорию.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `categoryId` (integer) — Идентификатор категории.
+- **Тело запроса (JSON):**
+
+  ```json
+  {
+    "name": "Название Soft Skill"
+  }
+  ```
+
+  - **Поля:**
+    - `name` (string, обязательное) — Название Soft Skill.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `201 Created`
+- **Тело ответа (JSON):**
+
+  ```json
+  {
+    "id": 4,
+    "name": "Название Soft Skill"
+  }
+  ```
+
+### Получить все категории с Soft Skills
+
+- **URL:** `/categories-with-skills`
+- **Метод:** `GET`
+- **Описание:** Возвращает список всех категорий Soft Skills вместе с навыками в каждой категории.
+
+#### Входные данные:
+
+- Нет.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  [
+    {
+      "id": 1,
+      "name": "Категория 1",
+      "softSkills": [
+        {
+          "id": 1,
+          "name": "Навык 1"
+        },
+        {
+          "id": 2,
+          "name": "Навык 2"
+        }
+        // ... другие навыки
+      ]
+    }
+    // ... другие категории
+  ]
+  ```
+
+### Удалить Soft Skill
+
+- **URL:** `/{softSkillId}/delete`
+- **Метод:** `DELETE`
+- **Описание:** Удаляет указанный Soft Skill.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `softSkillId` (integer) — Идентификатор Soft Skill для удаления.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `204 No Content`
+- **Тело ответа:** Пустое.
 
 ---
+
+## UserController
+
+**Базовый URL:** `/users`
+
+**Примечание:** Разрешен доступ с `http://localhost:3000` (CORS).
+
+### Получить всех пользователей
+
+- **URL:** `/all`
+- **Метод:** `GET`
+- **Описание:** Возвращает список всех пользователей.
+
+#### Входные данные:
+
+- Нет.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  [
+    {
+      "id": 1,
+      "firstName": "Имя",
+      "lastName": "Фамилия",
+      "dateOfBirth": "YYYY-MM-DD",
+      "gender": "Мужской",
+      "city": "Город",
+      "email": "email@example.com",
+      "profession": {
+        "id": 1,
+        "name": "Профессия"
+      },
+      "userHardSkills": [
+        {
+          "id": 1,
+          "hardSkill": {
+            "id": 1,
+            "name": "Навык"
+          },
+          "rating": 5
+        }
+        // ... другие навыки пользователя
+      ]
+    }
+    // ... другие пользователи
+  ]
+  ```
+
+### Получить пользователя по ID
+
+- **URL:** `/{id}`
+- **Метод:** `GET`
+- **Описание:** Возвращает информацию о пользователе по его идентификатору.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `id` (integer) — Идентификатор пользователя.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  {
+    "id": 1,
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "dateOfBirth": "YYYY-MM-DD",
+    "gender": "Мужской",
+    "city": "Город",
+    "email": "email@example.com",
+    "profession": {
+      "id": 1,
+      "name": "Профессия"
+    },
+    "userHardSkills": [
+      {
+        "id": 1,
+        "hardSkill": {
+          "id": 1,
+          "name": "Навык"
+        },
+        "rating": 5
+      }
+      // ... другие навыки пользователя
+    ]
+  }
+  ```
+
+---
+
+## UserHardSkillController
+
+**Базовый URL:** `/users/{userId}/hard-skills`
+
+### Получить Hard Skills пользователя
+
+- **URL:** `/`
+- **Метод:** `GET`
+- **Описание:** Возвращает список Hard Skills, связанных с пользователем.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `userId` (integer) — Идентификатор пользователя.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  [
+    {
+      "id": 1,
+      "hardSkill": {
+        "id": 1,
+        "name": "Навык"
+      },
+      "rating": 5
+    }
+    // ... другие навыки пользователя
+  ]
+  ```
+
+### Добавить Hard Skill пользователю
+
+- **URL:** `/{hardSkillId}/add/{rating}`
+- **Метод:** `POST`
+- **Описание:** Добавляет Hard Skill к пользователю с указанным рейтингом.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `userId` (integer) — Идентификатор пользователя.
+  - `hardSkillId` (integer) — Идентификатор Hard Skill.
+  - `rating` (integer) — Рейтинг навыка.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  {
+    "id": 1,
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "dateOfBirth": "YYYY-MM-DD",
+    "gender": "Мужской",
+    "city": "Город",
+    "email": "email@example.com",
+    "profession": {
+      "id": 1,
+      "name": "Профессия"
+    },
+    "userHardSkills": [
+      {
+        "id": 2,
+        "hardSkill": {
+          "id": 2,
+          "name": "Новый Навык"
+        },
+        "rating": 4
+      }
+      // ... другие навыки пользователя
+    ]
+  }
+  ```
+
+### Удалить Hard Skill у пользователя
+
+- **URL:** `/{hardSkillId}/delete`
+- **Метод:** `DELETE`
+- **Описание:** Удаляет Hard Skill у пользователя.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `userId` (integer) — Идентификатор пользователя.
+  - `hardSkillId` (integer) — Идентификатор Hard Skill для удаления.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `204 No Content`
+- **Тело ответа:** Пустое.
+
+### Получить Hard Skills пользователя, разделенные по профессии
+
+- **URL:** `/user-profession`
+- **Метод:** `GET`
+- **Описание:** Возвращает список Hard Skills пользователя, разделенных на совпадающие с профессией и остальные.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `userId` (integer) — Идентификатор пользователя.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  {
+    "commonHardSkills": [
+      {
+        "id": 1,
+        "hardSkill": {
+          "id": 1,
+          "name": "Навык 1"
+        },
+        "rating": 5
+      }
+      // ... другие навыки, совпадающие с профессией
+    ],
+    "remainingUserHardSkills": [
+      {
+        "id": 2,
+        "hardSkill": {
+          "id": 2,
+          "name": "Навык 2"
+        },
+        "rating": 4
+      }
+      // ... другие навыки пользователя
+    ]
+  }
+  ```
+
+### Получить Hard Skills пользователя по указанной профессии
+
+- **URL:** `/user-profession/{professionId}`
+- **Метод:** `GET`
+- **Описание:** Возвращает список Hard Skills пользователя, разделенных по совпадению с указанной профессией.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `userId` (integer) — Идентификатор пользователя.
+  - `professionId` (integer) — Идентификатор профессии.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  {
+    "commonHardSkills": [
+      {
+        "id": 3,
+        "hardSkill": {
+          "id": 3,
+          "name": "Навык 3"
+        },
+        "rating": 5
+      }
+      // ... другие совпадающие навыки
+    ],
+    "remainingUserHardSkills": [
+      {
+        "id": 4,
+        "hardSkill": {
+          "id": 4,
+          "name": "Навык 4"
+        },
+        "rating": 3
+      }
+      // ... другие навыки пользователя
+    ]
+  }
+  ```
+
+---
+
+## UserProfessionController
+
+**Базовый URL:** `/users/{userId}/profession/{professionId}`
+
+### Добавить профессию пользователю
+
+- **URL:** `/add`
+- **Метод:** `POST`
+- **Описание:** Добавляет профессию к пользователю.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `userId` (integer) — Идентификатор пользователя.
+  - `professionId` (integer) — Идентификатор профессии.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  {
+    "id": 1,
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "dateOfBirth": "YYYY-MM-DD",
+    "gender": "Мужской",
+    "city": "Город",
+    "email": "email@example.com",
+    "profession": {
+      "id": 2,
+      "name": "Новая Профессия"
+    },
+    "userHardSkills": [
+      // ... навыки пользователя
+    ]
+  }
+  ```
+
+### Обновить профессию пользователя
+
+- **URL:** `/update`
+- **Метод:** `PUT`
+- **Описание:** Обновляет профессию пользователя.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `userId` (integer) — Идентификатор пользователя.
+  - `professionId` (integer) — Идентификатор новой профессии.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  {
+    "id": 1,
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "dateOfBirth": "YYYY-MM-DD",
+    "gender": "Мужской",
+    "city": "Город",
+    "email": "email@example.com",
+    "profession": {
+      "id": 3,
+      "name": "Обновленная Профессия"
+    },
+    "userHardSkills": [
+      // ... навыки пользователя
+    ]
+  }
+  ```
+
+---
+
+## UserSoftSkillController
+
+**Базовый URL:** `/soft-skill-rating`
+
+### Добавить оценку Soft Skill
+
+- **URL:** `/add`
+- **Метод:** `POST`
+- **Описание:** Добавляет оценку Soft Skill для пользователя.
+
+#### Входные данные:
+
+- **Тело запроса (JSON):**
+
+  ```json
+  {
+    "softSkillId": 1,
+    "ratedUserId": 2,
+    "raterUserId": 3,
+    "rating": 5
+  }
+  ```
+
+  - **Поля:**
+    - `softSkillId` (integer, обязательное) — Идентификатор Soft Skill.
+    - `ratedUserId` (integer, обязательное) — Идентификатор пользователя, которому ставится оценка.
+    - `raterUserId` (integer, обязательное) — Идентификатор пользователя, который ставит оценку.
+    - `rating` (integer, обязательное) — Оценка (например, от 1 до 5).
+
+#### Выходные данные:
+
+- **HTTP Статус:** `201 Created`
+- **Тело ответа (JSON):**
+
+  ```json
+  {
+    "id": 1,
+    "softSkill": {
+      "id": 1,
+      "name": "Коммуникация"
+    },
+    "ratedUser": {
+      "id": 2,
+      "firstName": "Иван",
+      "lastName": "Петров",
+      "profession": {
+        "id": 1,
+        "name": "Разработчик"
+      }
+    },
+    "raterUser": {
+      "id": 3,
+      "firstName": "Анна",
+      "lastName": "Смирнова",
+      "profession": {
+        "id": 2,
+        "name": "Тестировщик"
+      }
+    },
+    "rating": 5
+  }
+  ```
+
+### Добавить несколько оценок Soft Skill
+
+- **URL:** `/add-multiple`
+- **Метод:** `POST`
+- **Описание:** Добавляет оценки для нескольких Soft Skill.
+
+#### Входные данные:
+
+- **Тело запроса (JSON):**
+
+  ```json
+  {
+    "ratings": [
+      {
+        "softSkillId": 1,
+        "ratedUserId": 2,
+        "raterUserId": 3,
+        "rating": 4
+      },
+      {
+        "softSkillId": 2,
+        "ratedUserId": 2,
+        "raterUserId": 3,
+        "rating": 5
+      }
+      // ... другие оценки
+    ]
+  }
+  ```
+
+#### Выходные данные:
+
+- **HTTP Статус:** `201 Created`
+- **Тело ответа (JSON):**
+
+  ```json
+  [
+    {
+      "id": 1,
+      "softSkill": {
+        "id": 1,
+        "name": "Коммуникация"
+      },
+      "ratedUser": {
+        "id": 2,
+        "firstName": "Иван",
+        "lastName": "Петров",
+        "profession": {
+          "id": 1,
+          "name": "Разработчик"
+        }
+      },
+      "raterUser": {
+        "id": 3,
+        "firstName": "Анна",
+        "lastName": "Смирнова",
+        "profession": {
+          "id": 2,
+          "name": "Тестировщик"
+        }
+      },
+      "rating": 4
+    },
+    {
+      "id": 2,
+      "softSkill": {
+        "id": 2,
+        "name": "Командная работа"
+      },
+      "ratedUser": {
+        "id": 2,
+        "firstName": "Иван",
+        "lastName": "Петров",
+        "profession": {
+          "id": 1,
+          "name": "Разработчик"
+        }
+      },
+      "raterUser": {
+        "id": 3,
+        "firstName": "Анна",
+        "lastName": "Смирнова",
+        "profession": {
+          "id": 2,
+          "name": "Тестировщик"
+        }
+      },
+      "rating": 5
+    }
+    // ... другие результаты
+  ]
+  ```
+
+### Удалить оценку Soft Skill
+
+- **URL:** `/delete/{id}`
+- **Метод:** `DELETE`
+- **Описание:** Удаляет указанную оценку Soft Skill.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `id` (integer) — Идентификатор оценки.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `204 No Content`
+- **Тело ответа:** Пустое.
+
+### Удалить все оценки Soft Skill пользователя
+
+- **URL:** `/delete-all/user/{userId}`
+- **Метод:** `DELETE`
+- **Описание:** Удаляет все оценки Soft Skill для указанного пользователя.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `userId` (integer) — Идентификатор пользователя.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `204 No Content`
+- **Тело ответа:** Пустое.
+
+### Получить оценки по Soft Skill
+
+- **URL:** `/soft-skill/{softSkillId}`
+- **Метод:** `GET`
+- **Описание:** Возвращает список оценок для указанного Soft Skill.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `softSkillId` (integer) — Идентификатор Soft Skill.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  [
+    {
+      "id": 1,
+      "softSkill": {
+        "id": 1,
+        "name": "Коммуникация"
+      },
+      "ratedUser": {
+        "id": 2,
+        "firstName": "Иван",
+        "lastName": "Петров",
+        "profession": {
+          "id": 1,
+          "name": "Разработчик"
+        }
+      },
+      "raterUser": {
+        "id": 3,
+        "firstName": "Анна",
+        "lastName": "Смирнова",
+        "profession": {
+          "id": 2,
+          "name": "Тестировщик"
+        }
+      },
+      "rating": 5
+    }
+    // ... другие оценки
+  ]
+  ```
+
+### Получить Soft Skills пользователя с оценками
+
+- **URL:** `/user/{userId}/soft-skills-with-ratings`
+- **Метод:** `GET`
+- **Описание:** Возвращает Soft Skills пользователя с средними оценками по каждой категории.
+
+#### Входные данные:
+
+- **Параметры пути:**
+  - `userId` (integer) — Идентификатор пользователя.
+
+#### Выходные данные:
+
+- **HTTP Статус:** `200 OK`
+- **Тело ответа (JSON):**
+
+  ```json
+  [
+    {
+      "id": 1,
+      "name": "Коммуникативные навыки",
+      "softSkills": [
+        {
+          "id": 1,
+          "name": "Коммуникация",
+          "averageRating": 4.5
+        },
+        {
+          "id": 2,
+          "name": "Презентации",
+          "averageRating": 4.0
+        }
+        // ... другие навыки в категории
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Лидерство",
+      "softSkills": [
+        {
+          "id": 3,
+          "name": "Управление командой",
+          "averageRating": 5.0
+        }
+        // ... другие навыки в категории
+      ]
+    }
+    // ... другие категории
+  ]
+  ```
+
