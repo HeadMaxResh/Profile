@@ -29,6 +29,7 @@ public class User {
     @Column(unique = true)
     private String email;
     private String passwordHash;
+    private String photoPath; // Новое поле для хранения пути к фото
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<UserHardSkill> userHardSkills = new HashSet<>();
