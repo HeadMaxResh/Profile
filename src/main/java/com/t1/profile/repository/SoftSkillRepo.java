@@ -9,6 +9,7 @@ import java.util.List;
 public interface SoftSkillRepo extends CrudRepository<SoftSkill, Integer> {
 
     List<SoftSkill> findAll();
+
     List<SoftSkill> findByCategory(SoftSkillCategory category);
 
 }

@@ -9,6 +9,7 @@ import com.t1.profile.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
@@ -30,6 +31,9 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
 
     @Autowired
     private UserSoftSkillRatingRepo userSoftSkillRatingRepo;
+
+    @Autowired
+    private UserSoftSkillRatingHistoryRepo userSoftSkillRatingHistoryRepo;
 
     @Autowired
     private UserSoftSkillMapper userSoftSkillMapper;
@@ -97,15 +101,30 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
 
             List<SoftSkill> softSkills = softSkillRepo.findByCategory(category);
             for (SoftSkill softSkill : softSkills) {
-                UserSoftSkillRating softSkillRating = userSoftSkillRatingRepo.findByRatedUserAndSoftSkill(
-                        userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found")),
-                        softSkill
-                );
+                User user = userRepo.findById(userId).orElseThrow(()
+                        -> new ResourceNotFoundException("User not found"));
+                Double lastHistoryRating = getHistoryRating(user, softSkill);
+
+                UserSoftSkillRating softSkillRating =
+                        userSoftSkillRatingRepo.findByRatedUserAndSoftSkill(user, softSkill);
+                /*UserSoftSkillRatingHistory historySoftSkillRating =
+                        userSoftSkillRatingHistoryRepo.findByRatedUserAndSoftSkill(
+                                userRepo.findById(userId).orElseThrow(()
+                                        -> new ResourceNotFoundException("User not found")),
+                                softSkill
+                        );*/
+
 
                 SoftSkillWithAverageRatingDto skillDto = new SoftSkillWithAverageRatingDto();
                 skillDto.setId(softSkill.getId());
                 skillDto.setName(softSkill.getName());
-                skillDto.setAverageRating(softSkillRating != null ? softSkillRating.getAverageRating() : null);
+                skillDto.setAverageRating(
+                        softSkillRating != null ? softSkillRating.getAverageRating() : null
+                );
+                skillDto.setHistoryRating(lastHistoryRating);
+                /*skillDto.setHistoryRating(
+                        historySoftSkillRating != null ? historySoftSkillRating.getAverageRating() : null
+                );*/
 
                 skillsWithRatings.add(skillDto);
             }
@@ -135,9 +154,24 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
         List<UserSoftSkill> userSoftSkills = userSoftSkillRepo.findByRatedUser(user);
 
         for (UserSoftSkill userSoftSkill : userSoftSkills) {
-            userSoftSkillRepo.delete(userSoftSkill);
-            updateSoftSkillRating(user, userSoftSkill.getSoftSkill());
+            UserSoftSkillRating softSkillRating = userSoftSkillRatingRepo.findByRatedUserAndSoftSkill(
+                    userSoftSkill.getRatedUser(),
+                    userSoftSkill.getSoftSkill()
+            );
+
+            saveRatingToHistory(
+                    userSoftSkill.getRatedUser(),
+                    userSoftSkill.getSoftSkill(),
+                    softSkillRating
+            );
+
         }
+        userSoftSkillRepo.deleteAll(userSoftSkills);
+
+        for (SoftSkill softSkill : softSkillRepo.findAll()) {
+            updateSoftSkillRating(user, softSkill);
+        }
+
     }
 
     private void updateSoftSkillRating(User ratedUser, SoftSkill softSkill) {
@@ -159,6 +193,26 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
 
         softSkillRating.setAverageRating(average);
         userSoftSkillRatingRepo.save(softSkillRating);
+    }
+
+    private void saveRatingToHistory(User ratedUser, SoftSkill softSkill, UserSoftSkillRating softSkillRating) {
+        if (softSkillRating != null) {
+            UserSoftSkillRatingHistory history = new UserSoftSkillRatingHistory();
+            history.setRatedUser(ratedUser);
+            history.setSoftSkill(softSkill);
+            history.setAverageRating(softSkillRating.getAverageRating());
+            history.setDeletedAt(LocalDateTime.now());
+
+            userSoftSkillRatingHistoryRepo.save(history);
+        }
+    }
+
+    private Double getHistoryRating(User ratedUser, SoftSkill softSkill) {
+        List<UserSoftSkillRatingHistory> history =
+                userSoftSkillRatingHistoryRepo.findByRatedUserAndSoftSkill(ratedUser, softSkill);
+        if (history.isEmpty()) return null;
+        UserSoftSkillRatingHistory lastRating = history.get(history.size() - 1);
+        return lastRating.getAverageRating();
     }
 
 }

@@ -1,7 +1,16 @@
 *.class
 *.log
-build/
 out/
-# Игнорировать настройки IDE
-.idea/
-.vscode/
+target/
+idea/
+*.iml
+vscode/
+gradle/
+build/
+local.properties/
+*.user
+*.idea/workspace.xml
+*.idea/tasks.xml
+*.idea/dictionaries
+*.idea/vcs.xml
+*.idea/gradle.xml
