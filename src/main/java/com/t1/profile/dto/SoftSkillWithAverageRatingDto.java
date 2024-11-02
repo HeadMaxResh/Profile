@@ -8,5 +8,6 @@ public class SoftSkillWithAverageRatingDto {
     private Integer id;
     private String name;
     private Double averageRating;
+    private Double historyRating;
 
 }
