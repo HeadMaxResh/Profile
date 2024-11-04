@@ -1,1 +1,5 @@
 rootProject.name = 'profile'
+
+includeBuild 'eureka-server'
+includeBuild 'user-profile-service'
+includeBuild 'api-gateway'
