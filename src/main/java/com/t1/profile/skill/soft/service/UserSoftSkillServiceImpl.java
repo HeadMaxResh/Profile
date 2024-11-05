@@ -7,9 +7,10 @@ import com.t1.profile.skill.soft.mapper.SoftSkillCategoryMapper;
 import com.t1.profile.skill.soft.mapper.UserSoftSkillMapper;
 import com.t1.profile.skill.soft.model.*;
 import com.t1.profile.skill.soft.repository.*;
-import com.t1.profile.user.exception.UserNotFoundException;
+import com.t1.profile.user.exception.EntityNotFoundByIdException;
 import com.t1.profile.user.model.User;
 import com.t1.profile.user.repository.UserRepo;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,30 +20,16 @@ import java.util.List;
 import java.util.OptionalDouble;
 
 @Service
+@AllArgsConstructor
 public class UserSoftSkillServiceImpl implements UserSoftSkillService {
 
-    @Autowired
     private UserSoftSkillRepo userSoftSkillRepo;
-
-    @Autowired
     private SoftSkillRepo softSkillRepo;
-
-    @Autowired
     private CategorySoftSkillRepo categorySoftSkillRepo;
-
-    @Autowired
     private UserRepo userRepo;
-
-    @Autowired
     private UserSoftSkillRatingRepo userSoftSkillRatingRepo;
-
-    @Autowired
     private UserSoftSkillRatingHistoryRepo userSoftSkillRatingHistoryRepo;
-
-    @Autowired
     private UserSoftSkillMapper userSoftSkillMapper;
-
-    @Autowired
     private SoftSkillCategoryMapper softSkillCategoryMapper;
 
     @Override
@@ -53,14 +40,10 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
                 );
 
         User ratedUser = userRepo.findById(ratingDto.getRatedUserId())
-                .orElseThrow(() -> new UserNotFoundException(
-                        "Rated user not found с id " + ratingDto.getRatedUserId())
-                );
+                .orElseThrow(() -> new EntityNotFoundByIdException(User.class, ratingDto.getRatedUserId()));
 
         User raterUser = userRepo.findById(ratingDto.getRaterUserId())
-                .orElseThrow(() -> new UserNotFoundException(
-                        "Rater user not found " + ratingDto.getRaterUserId())
-                );
+                .orElseThrow(() -> new EntityNotFoundByIdException(User.class, ratingDto.getRaterUserId()));
 
         UserSoftSkill rating = new UserSoftSkill();
         rating.setSoftSkill(softSkill);
@@ -91,7 +74,7 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
     }
 
     @Override
-    public List<SoftSkillCategoryWithRatingsDto> getSoftSkillsWithRatingsByUser(Integer userId) {
+    public List<SoftSkillCategoryWithRatingsDto> getSoftSkillsWithRatingsByUser(Long userId) {
         List<SoftSkillCategory> categories = categorySoftSkillRepo.findAll();
 
         List<SoftSkillCategoryWithRatingsDto> result = new ArrayList<>();
@@ -106,7 +89,7 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
             List<SoftSkill> softSkills = softSkillRepo.findByCategory(category);
             for (SoftSkill softSkill : softSkills) {
                 User user = userRepo.findById(userId).orElseThrow(()
-                        -> new UserNotFoundException("User not found"));
+                        -> new EntityNotFoundByIdException(User.class, userId));
                 Double lastHistoryRating = getHistoryRating(user, softSkill);
 
                 UserSoftSkillRating softSkillRating =
@@ -151,9 +134,9 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
     }
 
     @Override
-    public void deleteAllUserSoftSkillsByUserId(Integer userId) {
+    public void deleteAllUserSoftSkillsByUserId(Long userId) {
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found с id " + userId));
+                .orElseThrow(() -> new EntityNotFoundByIdException(User.class, userId));
 
         List<UserSoftSkill> userSoftSkills = userSoftSkillRepo.findByRatedUser(user);
 

@@ -4,7 +4,7 @@ import com.t1.profile.user.dto.UserDto;
 
 public interface UserProfessionService {
 
-    UserDto addProfessionToUser(Integer userId, Integer professionId);
-    UserDto updateProfessionForUser(Integer userId, Integer professionId);
+    UserDto addProfessionToUser(Long userId, Long professionId);
 
+    UserDto updateProfessionForUser(Long userId, Long professionId);
 }

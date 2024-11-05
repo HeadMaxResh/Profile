@@ -1,4 +1,4 @@
-package com.t1.profile.common.web.exeption;
+package com.t1.profile.common.web.handler;
 
 import com.t1.profile.common.web.response.ErrorResponse;
 import com.t1.profile.profession.exception.ProfessionNotFoundException;
@@ -9,10 +9,12 @@ import com.t1.profile.skill.hard.exception.UserHardSkillNotFoundException;
 import com.t1.profile.skill.soft.exception.CategorySoftSkillNotFoundException;
 import com.t1.profile.skill.soft.exception.SoftSkillNotFoundException;
 import com.t1.profile.skill.soft.exception.UserSoftSkillNotFoundException;
-import com.t1.profile.user.exception.UserNotFoundException;
+import com.t1.profile.user.exception.EntityNotFoundByIdException;
+import com.t1.profile.user.exception.EntityNotFoundByNameException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,18 +32,6 @@ public class GlobalExceptionHandler {
         log.info("request: {}", request);
 
         return ResponseEntity.status(500).body(new ErrorResponse(ex.getMessage()));
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    @SneakyThrows
-    ResponseEntity<Object> handleUserNotFoundException(
-            UserNotFoundException ex,
-            WebRequest request
-    ) {
-        log.error("UserNotFoundException occurred: ", ex);
-        log.info("request: {}", request);
-
-        return ResponseEntity.status(404).body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(HardSkillNotFoundException.class)
@@ -138,5 +128,15 @@ public class GlobalExceptionHandler {
         log.info("request: {}", request);
 
         return ResponseEntity.status(404).body(new ErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(EntityNotFoundByIdException.class)
+    public ResponseEntity<String> handleException(EntityNotFoundByIdException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(EntityNotFoundByNameException.class)
+    public ResponseEntity<String> handleException(EntityNotFoundByNameException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

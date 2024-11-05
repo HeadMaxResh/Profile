@@ -39,12 +39,12 @@ public class UserServiceImplTest {
         MockitoAnnotations.openMocks(this);
 
         user = new User();
-        user.setId(1);
+        user.setId(1L);
         user.setEmail("test@example.com");
         user.setFirstName("User 1");
 
         userDto = new UserDto();
-        userDto.setId(1);
+        userDto.setId(1L);
         userDto.setEmail("test@example.com");
         userDto.setFirstName("User 1");
 
@@ -60,7 +60,7 @@ public class UserServiceImplTest {
         when(userRepo.findAll()).thenReturn(userList);
         when(userMapper.toDtoList(anyList())).thenReturn(userDtoList);
 
-        List<UserDto> result = userService.getAllUsers();
+        List<UserDto> result = userService.findAll();
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -93,15 +93,15 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void findByProfession_shouldReturnListOfUserDto() {
+    public void findByProfession_Id_shouldReturnListOfUserDto() {
         Profession profession = new Profession();
-        profession.setId(1);
+        profession.setId(1L);
         profession.setName("Разработчик");
 
         when(userRepo.findByProfession(any(Profession.class))).thenReturn(userList);
         when(userMapper.toDtoList(anyList())).thenReturn(userDtoList);
 
-        List<UserDto> result = userService.findByProfession(profession);
+        List<UserDto> result = userService.findByProfessionId(profession.getId());
 
         assertNotNull(result);
         assertEquals(1, result.size());

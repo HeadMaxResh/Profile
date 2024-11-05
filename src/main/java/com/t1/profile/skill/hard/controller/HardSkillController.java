@@ -29,7 +29,7 @@ public class HardSkillController {
 
     @PutMapping("/{hardSkillId}/update")
     public ResponseEntity<HardSkillDto> updateHardSkill(
-            @PathVariable Integer hardSkillId,
+            @PathVariable Long hardSkillId,
             @RequestBody HardSkillDto hardSkillDto
     ) {
         HardSkillDto updatedHardSkill = hardSkillService.updateHardSkill(hardSkillId, hardSkillDto);
@@ -37,7 +37,7 @@ public class HardSkillController {
     }
 
     @DeleteMapping("/{hardSkillId}/delete")
-    public ResponseEntity<Void> deleteHardSkill(@PathVariable Integer hardSkillId) {
+    public ResponseEntity<Void> deleteHardSkill(@PathVariable Long hardSkillId) {
         hardSkillService.deleteHardSkill(hardSkillId);
         return ResponseEntity.noContent().build();
     }

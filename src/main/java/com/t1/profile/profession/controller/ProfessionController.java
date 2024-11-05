@@ -31,7 +31,7 @@ public class ProfessionController {
 
     @PostMapping("/{professionId}/add-new-hard-skill")
     public ResponseEntity<HardSkillDto> addHardSkillToProfession(
-            @PathVariable Integer professionId,
+            @PathVariable Long professionId,
             @RequestBody HardSkillDto hardSkillDto
     ) {
         HardSkillDto savedHardSkill = professionService.addHardSkillToProfession(professionId, hardSkillDto);
@@ -40,8 +40,8 @@ public class ProfessionController {
 
     @PostMapping("/{professionId}/add-existing-hard-skill/{hardSkillId}")
     public ResponseEntity<HardSkillDto> addExistingHardSkillToProfession(
-            @PathVariable Integer professionId,
-            @PathVariable Integer hardSkillId
+            @PathVariable Long professionId,
+            @PathVariable Long hardSkillId
     ) {
         HardSkillDto savedHardSkill = professionService.addExistingHardSkillToProfession(professionId, hardSkillId);
         return ResponseEntity.status(HttpStatus.OK).body(savedHardSkill);
@@ -49,21 +49,21 @@ public class ProfessionController {
 
     @DeleteMapping("/{professionId}/remove-hard-skills/{hardSkillId}")
     public ResponseEntity<Void> removeHardSkillFromProfession(
-            @PathVariable Integer professionId,
-            @PathVariable Integer hardSkillId
+            @PathVariable Long professionId,
+            @PathVariable Long hardSkillId
     ) {
         professionService.removeHardSkillFromProfession(professionId, hardSkillId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{professionId}/delete")
-    public ResponseEntity<Void> deleteProfession(@PathVariable Integer professionId) {
+    public ResponseEntity<Void> deleteProfession(@PathVariable Long professionId) {
         professionService.deleteProfession(professionId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{professionId}/hard-skills")
-    public ResponseEntity<Set<HardSkillDto>> getHardSkillsByProfession(@PathVariable Integer professionId) {
+    public ResponseEntity<Set<HardSkillDto>> getHardSkillsByProfession(@PathVariable Long professionId) {
         Set<HardSkillDto> hardSkills = professionService.getHardSkillsByProfession(professionId);
         return ResponseEntity.ok(hardSkills);
     }

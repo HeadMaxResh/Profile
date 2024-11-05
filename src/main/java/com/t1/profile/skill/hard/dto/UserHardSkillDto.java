@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class UserHardSkillDto {
 
-    private Integer id;
+    private Long id;
     private HardSkillDto hardSkill;
     private Integer rating;
 

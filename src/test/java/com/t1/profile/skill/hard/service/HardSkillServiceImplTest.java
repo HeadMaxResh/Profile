@@ -41,7 +41,7 @@ public class HardSkillServiceImplTest {
         hardSkillDto.setName("Java");
 
         HardSkill hardSkill = new HardSkill();
-        hardSkill.setId(1);
+        hardSkill.setId(1L);
         hardSkill.setName("Java");
 
         when(hardSkillMapper.toEntity(any(HardSkillDto.class))).thenReturn(hardSkill);
@@ -57,7 +57,7 @@ public class HardSkillServiceImplTest {
 
     @Test
     public void testUpdateHardSkill_Success() {
-        Integer hardSkillId = 1;
+        Long hardSkillId = 1L;
         HardSkillDto hardSkillDto = new HardSkillDto();
         hardSkillDto.setName("Python");
 
@@ -85,7 +85,7 @@ public class HardSkillServiceImplTest {
 
     @Test
     public void testUpdateHardSkill_NotFound() {
-        Integer hardSkillId = 1;
+        Long hardSkillId = 1L;
         HardSkillDto hardSkillDto = new HardSkillDto();
         hardSkillDto.setName("Python");
 
@@ -103,7 +103,7 @@ public class HardSkillServiceImplTest {
 
     @Test
     public void testDeleteHardSkill_Success() {
-        Integer hardSkillId = 1;
+        Long hardSkillId = 1L;
 
         HardSkill existingHardSkill = new HardSkill();
         existingHardSkill.setId(hardSkillId);
@@ -119,7 +119,7 @@ public class HardSkillServiceImplTest {
 
     @Test
     public void testDeleteHardSkill_NotFound() {
-        Integer hardSkillId = 1;
+        Long hardSkillId = 1L;
 
         when(hardSkillRepo.findById(hardSkillId)).thenReturn(Optional.empty());
 

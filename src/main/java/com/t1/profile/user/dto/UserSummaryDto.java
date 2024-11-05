@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class UserSummaryDto {
 
-    private Integer id;
+    private Long id;
     private String firstName;
     private String lastName;
     private ProfessionDto profession;

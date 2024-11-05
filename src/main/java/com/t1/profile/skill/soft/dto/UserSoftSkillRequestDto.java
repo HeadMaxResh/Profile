@@ -6,8 +6,8 @@ import lombok.Data;
 public class UserSoftSkillRequestDto {
 
     private Integer softSkillId;
-    private Integer ratedUserId;
-    private Integer raterUserId;
+    private Long ratedUserId;
+    private Long raterUserId;
     private Integer rating;
 
 }

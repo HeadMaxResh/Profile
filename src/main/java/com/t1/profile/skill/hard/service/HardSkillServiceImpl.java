@@ -33,7 +33,7 @@ public class HardSkillServiceImpl implements HardSkillService {
     }
 
     @Override
-    public HardSkillDto updateHardSkill(Integer hardSkillId, HardSkillDto hardSkillDto) {
+    public HardSkillDto updateHardSkill(Long hardSkillId, HardSkillDto hardSkillDto) {
         HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
                 .orElseThrow(() -> new HardSkillNotFoundException("HardSkill not found with id " + hardSkillId));
         hardSkill.setName(hardSkillDto.getName());
@@ -42,7 +42,7 @@ public class HardSkillServiceImpl implements HardSkillService {
     }
 
     @Override
-    public void deleteHardSkill(Integer hardSkillId) {
+    public void deleteHardSkill(Long hardSkillId) {
         HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
                 .orElseThrow(() -> new HardSkillNotFoundException("HardSkill not found with id " + hardSkillId));
 

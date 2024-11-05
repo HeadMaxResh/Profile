@@ -10,10 +10,10 @@ public interface ProfessionService {
 
     List<ProfessionDto> getAllProfessions();
     ProfessionDto addProfession(ProfessionDto professionDto);
-    HardSkillDto addHardSkillToProfession(Integer professionId, HardSkillDto hardSkillDto);
-    HardSkillDto addExistingHardSkillToProfession(Integer professionId, Integer hardSkillId);
-    void removeHardSkillFromProfession(Integer professionId, Integer hardSkillId);
-    void deleteProfession(Integer professionId);
-    Set<HardSkillDto> getHardSkillsByProfession(Integer professionId);
+    HardSkillDto addHardSkillToProfession(Long professionId, HardSkillDto hardSkillDto);
+    HardSkillDto addExistingHardSkillToProfession(Long professionId, Long hardSkillId);
+    void removeHardSkillFromProfession(Long professionId, Long hardSkillId);
+    void deleteProfession(Long professionId);
+    Set<HardSkillDto> getHardSkillsByProfession(Long professionId);
 
 }

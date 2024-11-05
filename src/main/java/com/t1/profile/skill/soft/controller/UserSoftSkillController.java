@@ -43,7 +43,7 @@ public class UserSoftSkillController {
     }
 
     @DeleteMapping("/delete-all/user/{userId}")
-    public ResponseEntity<Void> deleteAllUserSoftSkills(@PathVariable Integer userId) {
+    public ResponseEntity<Void> deleteAllUserSoftSkills(@PathVariable Long userId) {
         userSoftSkillService.deleteAllUserSoftSkillsByUserId(userId);
         return ResponseEntity.noContent().build();
     }
@@ -56,7 +56,7 @@ public class UserSoftSkillController {
 
     @GetMapping("/user/{userId}/soft-skills-with-ratings")
     public ResponseEntity<List<SoftSkillCategoryWithRatingsDto>> getSoftSkillsWithRatingsByUser(
-            @PathVariable Integer userId
+            @PathVariable Long userId
     ) {
         List<SoftSkillCategoryWithRatingsDto> result = userSoftSkillService.getSoftSkillsWithRatingsByUser(userId);
         return ResponseEntity.ok(result);

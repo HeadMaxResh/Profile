@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Data
 public class UserDetailsImpl implements UserDetails {
 
-    private Integer id;
+    private Long id;
     private String email;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;

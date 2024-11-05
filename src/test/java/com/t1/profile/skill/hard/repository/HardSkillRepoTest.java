@@ -63,7 +63,7 @@ public class HardSkillRepoTest {
 
     @Test
     public void testFindByProfessionId_NotFound() {
-        List<HardSkill> skills = hardSkillRepo.findByProfessionId(999);
+        List<HardSkill> skills = hardSkillRepo.findByProfessionId(999L);
 
         assertThat(skills).isEmpty();
     }

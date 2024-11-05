@@ -12,8 +12,10 @@ public interface UserSoftSkillService {
     UserSoftSkillResponseDto rateSoftSkill(UserSoftSkillRequestDto ratingDto);
     List<UserSoftSkillResponseDto> rateMultipleSoftSkills(UserSoftSkillBatchRequestDto batchRequestDto);
     List<UserSoftSkillResponseDto> getRatingBySoftSkill(Integer softSkillId);
-    List<SoftSkillCategoryWithRatingsDto> getSoftSkillsWithRatingsByUser(Integer userId);
-    void deleteUserSoftSkill(Integer userSoftSkillId);
-    void deleteAllUserSoftSkillsByUserId(Integer userId);
 
+    List<SoftSkillCategoryWithRatingsDto> getSoftSkillsWithRatingsByUser(Long userId);
+
+    void deleteUserSoftSkill(Integer userSoftSkillId);
+
+    void deleteAllUserSoftSkillsByUserId(Long userId);
 }

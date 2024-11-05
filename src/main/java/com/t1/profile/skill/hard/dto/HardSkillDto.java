@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class HardSkillDto {
 
-    private Integer id;
+    private Long id;
     private String name;
 
 }

@@ -76,11 +76,11 @@ public class  UserSoftSkillServiceImplTest {
         softSkill.setName("Communication");
 
         ratedUser = new User();
-        ratedUser.setId(1);
+        ratedUser.setId(1L);
         ratedUser.setFirstName("User 1");
 
         raterUser = new User();
-        raterUser.setId(2);
+        raterUser.setId(2L);
         raterUser.setFirstName("User 2");
 
         ratingDto = new UserSoftSkillResponseDto();
@@ -89,11 +89,11 @@ public class  UserSoftSkillServiceImplTest {
         softSkillDto.setName("Communication");
 
         UserSummaryDto ratedUserDto = new UserSummaryDto();
-        ratedUserDto.setId(1);
+        ratedUserDto.setId(1L);
         ratedUserDto.setFirstName("User 1");
 
         UserSummaryDto raterUserDto = new UserSummaryDto();
-        raterUserDto.setId(2);
+        raterUserDto.setId(2L);
         raterUserDto.setFirstName("User 2");
 
         ratingDto.setSoftSkill(softSkillDto);
@@ -103,8 +103,8 @@ public class  UserSoftSkillServiceImplTest {
 
         ratingRequestDto = new UserSoftSkillRequestDto();
         ratingRequestDto.setSoftSkillId(1);
-        ratingRequestDto.setRatedUserId(1);
-        ratingRequestDto.setRaterUserId(2);
+        ratingRequestDto.setRatedUserId(1L);
+        ratingRequestDto.setRaterUserId(2L);
         ratingRequestDto.setRating(5);
 
         userSoftSkill = new UserSoftSkill();
@@ -123,8 +123,8 @@ public class  UserSoftSkillServiceImplTest {
     @Test
     public void rateSoftSkill_shouldReturnSoftSkillRatingDto() {
         when(softSkillRepo.findById(1)).thenReturn(Optional.of(softSkill));
-        when(userRepo.findById(1)).thenReturn(Optional.of(ratedUser));
-        when(userRepo.findById(2)).thenReturn(Optional.of(raterUser));
+        when(userRepo.findById(1L)).thenReturn(Optional.of(ratedUser));
+        when(userRepo.findById(2L)).thenReturn(Optional.of(raterUser));
         when(userSoftSkillRepo.save(any(UserSoftSkill.class))).thenReturn(userSoftSkill);
         when(userSoftSkillMapper.toDto(any(UserSoftSkill.class))).thenReturn(ratingDto);
 
@@ -149,7 +149,7 @@ public class  UserSoftSkillServiceImplTest {
     @Test
     public void rateSoftSkill_shouldThrowUserSoftSkillNotFoundException_whenRatedUserNotFound() {
         when(softSkillRepo.findById(1)).thenReturn(Optional.of(softSkill));
-        when(userRepo.findById(1)).thenReturn(Optional.empty());
+        when(userRepo.findById(1L)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(UserSoftSkillNotFoundException.class, () -> userSoftSkillService.rateSoftSkill(ratingRequestDto));
 
@@ -159,8 +159,8 @@ public class  UserSoftSkillServiceImplTest {
     @Test
     public void rateSoftSkill_shouldThrowUserSoftSkillNotFoundException_whenRaterUserNotFound() {
         when(softSkillRepo.findById(1)).thenReturn(Optional.of(softSkill));
-        when(userRepo.findById(1)).thenReturn(Optional.of(ratedUser));
-        when(userRepo.findById(2)).thenReturn(Optional.empty());
+        when(userRepo.findById(1L)).thenReturn(Optional.of(ratedUser));
+        when(userRepo.findById(2L)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(UserSoftSkillNotFoundException.class, () -> userSoftSkillService.rateSoftSkill(ratingRequestDto));
 
@@ -193,9 +193,9 @@ public class  UserSoftSkillServiceImplTest {
         when(categorySoftSkillRepo.findAll()).thenReturn(Collections.singletonList(category));
         when(softSkillRepo.findByCategory(category)).thenReturn(Collections.singletonList(softSkill));
         when(userSoftSkillRatingRepo.findByRatedUserAndSoftSkill(any(User.class), any(SoftSkill.class))).thenReturn(softSkillRating);
-        when(userRepo.findById(1)).thenReturn(Optional.of(ratedUser));
+        when(userRepo.findById(1L)).thenReturn(Optional.of(ratedUser));
 
-        List<SoftSkillCategoryWithRatingsDto> result = userSoftSkillService.getSoftSkillsWithRatingsByUser(1);
+        List<SoftSkillCategoryWithRatingsDto> result = userSoftSkillService.getSoftSkillsWithRatingsByUser(1L);
 
         assertNotNull(result);
         assertEquals(1, result.size());

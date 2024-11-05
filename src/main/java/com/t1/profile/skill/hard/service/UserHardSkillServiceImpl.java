@@ -4,7 +4,6 @@ import com.t1.profile.profession.model.Profession;
 import com.t1.profile.profession.repository.ProfessionRepo;
 import com.t1.profile.skill.hard.dto.UserHardSkillDto;
 import com.t1.profile.skill.hard.dto.UserHardSkillsCategorizedDto;
-import com.t1.profile.skill.hard.exception.HardSkillNotFoundException;
 import com.t1.profile.skill.hard.exception.UserHardSkillAssociationAlreadyExistException;
 import com.t1.profile.skill.hard.exception.UserHardSkillAssociationNotFoundException;
 import com.t1.profile.skill.hard.exception.UserHardSkillNotFoundException;
@@ -14,7 +13,8 @@ import com.t1.profile.skill.hard.model.UserHardSkill;
 import com.t1.profile.skill.hard.repository.HardSkillRepo;
 import com.t1.profile.skill.hard.repository.UserHardSkillRepo;
 import com.t1.profile.user.dto.UserDto;
-import com.t1.profile.user.exception.UserNotFoundException;
+import com.t1.profile.user.exception.UserNotFoundByIdAndProfessionException;
+import com.t1.profile.user.exception.EntityNotFoundByIdException;
 import com.t1.profile.user.mapper.UserMapper;
 import com.t1.profile.user.model.User;
 import com.t1.profile.user.repository.UserRepo;
@@ -50,21 +50,21 @@ public class UserHardSkillServiceImpl implements UserHardSkillService {
     private UserMapper userMapper;
 
     @Override
-    public Set<UserHardSkillDto> getHardSkillsByUser(Integer userId) {
+    public Set<UserHardSkillDto> getHardSkillsByUser(Long userId) {
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден с id " + userId));
+                .orElseThrow(() -> new EntityNotFoundByIdException(User.class, userId));
         return user.getUserHardSkills().stream()
                 .map(userHardSkillMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
     @Override
-    public UserDto addHardSkillToUser(Integer userId, Integer hardSkillId, Integer rating) {
+    public UserDto addHardSkillToUser(Long userId, Long hardSkillId, Integer rating) {
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден с id " + userId));
+                .orElseThrow(() -> new EntityNotFoundByIdException(User.class, userId));
 
         HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
-                .orElseThrow(() -> new HardSkillNotFoundException("Хардскилл не найден с id " + hardSkillId));
+                .orElseThrow(() -> new EntityNotFoundByIdException(HardSkill.class,  hardSkillId));
 
         List<UserHardSkill> existingUserHardSkills = userHardSkillRepo.findByUserId(userId);
         for (UserHardSkill uhs : existingUserHardSkills) {
@@ -84,7 +84,7 @@ public class UserHardSkillServiceImpl implements UserHardSkillService {
 
     @Override
     @Transactional
-    public UserHardSkillDto updateHardSkillRating(Integer userId, Integer hardSkillId, Integer newRating) {
+    public UserHardSkillDto updateHardSkillRating(Long userId, Long hardSkillId, Integer newRating) {
         UserHardSkill userHardSkill = userHardSkillRepo.findByUserId(userId).stream()
                 .filter(uhs -> uhs.getHardSkill().getId().equals(hardSkillId))
                 .findFirst()
@@ -97,7 +97,7 @@ public class UserHardSkillServiceImpl implements UserHardSkillService {
     }
 
     @Override
-    public UserHardSkillDto updateHardSkillRating(Integer userHardSkillId, Integer newRating) {
+    public UserHardSkillDto updateHardSkillRating(Long userHardSkillId, Integer newRating) {
         UserHardSkill userHardSkill = userHardSkillRepo.findById(userHardSkillId)
                 .orElseThrow(() -> new UserHardSkillNotFoundException("Хардскилл не найден с id " + userHardSkillId));
 
@@ -108,9 +108,9 @@ public class UserHardSkillServiceImpl implements UserHardSkillService {
     }
 
     @Override
-    public void removeHardSkillFromUser(Integer userId, Integer hardSkillId) {
+    public void removeHardSkillFromUser(Long userId, Long hardSkillId) {
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден с id " + userId));
+                .orElseThrow(() -> new EntityNotFoundByIdException(User.class, userId));
 
         UserHardSkill userHardSkill = userHardSkillRepo.findByUserId(userId).stream()
                 .filter(uhs -> uhs.getHardSkill().getId().equals(hardSkillId))
@@ -123,36 +123,34 @@ public class UserHardSkillServiceImpl implements UserHardSkillService {
     }
 
     @Override
-    public void removeHardSkillFromUser(Integer userHardSkillId) {
+    public void removeHardSkillFromUser(Long userHardSkillId) {
         UserHardSkill userHardSkill = userHardSkillRepo.findById(userHardSkillId)
                 .orElseThrow(() -> new UserHardSkillNotFoundException("Хардскилл не найден с id " + userHardSkillId));
 
         userHardSkillRepo.delete(userHardSkill);
 
         User user = userRepo.findById(userHardSkill.getUser().getId())
-                .orElseThrow(() -> new UserNotFoundException(
-                        "Пользователь не найден с id " + userHardSkill.getUser().getId())
-                );
+            .orElseThrow(() -> new EntityNotFoundByIdException(User.class, userHardSkill.getUser().getId()));
 
         user.getUserHardSkills().remove(userHardSkill);
     }
 
     @Override
-    public UserHardSkillsCategorizedDto getUserAndProfessionHardSkills(Integer userId) {
+    public UserHardSkillsCategorizedDto getUserAndProfessionHardSkills(Long userId) {
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден с id " + userId));
+                .orElseThrow(() -> new EntityNotFoundByIdException(User.class, userId));
 
         Profession profession = user.getProfession();
         if (profession == null) {
-            throw new UserNotFoundException("Профессия не найдена для пользователя с id " + userId);
+            throw new UserNotFoundByIdAndProfessionException(userId);
         }
 
-        Integer professionId = profession.getId();
+        Long professionId = profession.getId();
 
         List<UserHardSkill> userHardSkills = userHardSkillRepo.findByUserId(userId);
         List<HardSkill> professionHardSkills = hardSkillRepo.findByProfessionId(professionId);
 
-        Set<Integer> professionSkillIds = professionHardSkills.stream()
+        Set<Long> professionSkillIds = professionHardSkills.stream()
                 .map(HardSkill::getId)
                 .collect(Collectors.toSet());
 
@@ -173,19 +171,19 @@ public class UserHardSkillServiceImpl implements UserHardSkillService {
     }
 
     @Override
-    public UserHardSkillsCategorizedDto getUserAndProfessionHardSkills(Integer userId, Integer professionId) {
+    public UserHardSkillsCategorizedDto getUserAndProfessionHardSkills(Long userId, Long professionId) {
 
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден с id " + userId));
+                .orElseThrow(() -> new EntityNotFoundByIdException(User.class, userId));
 
         Profession profession = professionRepo.findById(professionId)
                 .orElseThrow(()
-                        -> new UserNotFoundException("Профессия не найдена для пользователя с id " + userId));
+                    -> new UserNotFoundByIdAndProfessionException(userId));
 
         List<UserHardSkill> userHardSkills = userHardSkillRepo.findByUserId(userId);
         List<HardSkill> professionHardSkills = hardSkillRepo.findByProfessionId(professionId);
 
-        Set<Integer> professionSkillIds = professionHardSkills.stream()
+        Set<Long> professionSkillIds = professionHardSkills.stream()
                 .map(HardSkill::getId)
                 .collect(Collectors.toSet());
 

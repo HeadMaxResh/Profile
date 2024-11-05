@@ -15,8 +15,8 @@ public class UserProfessionController {
 
     @PostMapping("/add")
     public ResponseEntity<UserDto> addProfessionToUser(
-            @PathVariable Integer userId,
-            @PathVariable Integer professionId
+            @PathVariable Long userId,
+            @PathVariable Long professionId
     ) {
         UserDto updatedUser = userProfessionService.addProfessionToUser(userId, professionId);
         return ResponseEntity.ok(updatedUser);
@@ -24,8 +24,8 @@ public class UserProfessionController {
 
     @PutMapping("/update")
     public ResponseEntity<UserDto> updateProfessionForUser(
-            @PathVariable Integer userId,
-            @PathVariable Integer professionId) {
+            @PathVariable Long userId,
+            @PathVariable Long professionId) {
         UserDto updatedUser = userProfessionService.updateProfessionForUser(userId, professionId);
         return ResponseEntity.ok(updatedUser);
     }

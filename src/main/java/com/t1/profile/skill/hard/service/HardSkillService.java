@@ -8,7 +8,7 @@ public interface HardSkillService {
 
     List<HardSkillDto> getAllHardSkills();
     HardSkillDto addHardSkill(HardSkillDto hardSkillDto);
-    HardSkillDto updateHardSkill(Integer hardSkillId, HardSkillDto hardSkillDto);
-    void deleteHardSkill(Integer hardSkillId);
+    HardSkillDto updateHardSkill(Long hardSkillId, HardSkillDto hardSkillDto);
+    void deleteHardSkill(Long hardSkillId);
 
 }

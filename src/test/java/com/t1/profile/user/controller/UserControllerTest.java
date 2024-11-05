@@ -40,11 +40,11 @@ public class UserControllerTest {
     @Test
     public void testGetUserById() throws Exception {
         User user = new User();
-        user.setId(1);
+        user.setId(1L);
         user.setEmail("testuser@example.com");
         user.setFirstName("testuser");
 
-        when(userRepo.findById(1)).thenReturn(java.util.Optional.of(user));
+        when(userRepo.findById(1L)).thenReturn(java.util.Optional.of(user));
 
         mockMvc.perform(get("/users/1"))
                 .andExpect(status().isOk())

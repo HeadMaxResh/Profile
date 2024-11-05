@@ -8,13 +8,13 @@ import java.util.Set;
 
 public interface UserHardSkillService {
 
-    Set<UserHardSkillDto> getHardSkillsByUser(Integer userId);
-    UserDto addHardSkillToUser(Integer userId, Integer hardSkillId, Integer rating);
-    UserHardSkillDto updateHardSkillRating(Integer userId, Integer hardSkillId, Integer newRating);
-    UserHardSkillDto updateHardSkillRating(Integer userHardSkillId, Integer newRating);
-    void removeHardSkillFromUser(Integer userId, Integer hardSkillId);
-    void removeHardSkillFromUser(Integer userHardSkillId);
-    UserHardSkillsCategorizedDto getUserAndProfessionHardSkills(Integer userId);
-    UserHardSkillsCategorizedDto getUserAndProfessionHardSkills(Integer userId, Integer professionId);
+    Set<UserHardSkillDto> getHardSkillsByUser(Long userId);
+    UserDto addHardSkillToUser(Long userId, Long hardSkillId, Integer rating);
+    UserHardSkillDto updateHardSkillRating(Long userId, Long hardSkillId, Integer newRating);
+    UserHardSkillDto updateHardSkillRating(Long userHardSkillId, Integer newRating);
+    void removeHardSkillFromUser(Long userId, Long hardSkillId);
+    void removeHardSkillFromUser(Long userHardSkillId);
+    UserHardSkillsCategorizedDto getUserAndProfessionHardSkills(Long userId);
+    UserHardSkillsCategorizedDto getUserAndProfessionHardSkills(Long userId, Long professionId);
 
 }

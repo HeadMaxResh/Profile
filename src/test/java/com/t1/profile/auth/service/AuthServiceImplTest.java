@@ -71,7 +71,7 @@ public class AuthServiceImplTest {
         ApiDto response = authService.registerUser(registrationDto);
 
         assertThat(response.isSuccess()).isTrue();
-        assertThat(response.getMessage()).isEqualTo("User registered successfully");
+        assertThat(response.getMessage()).isEqualTo("Пользователь успешно зарегистрирован");
         verify(userRepo, times(1)).findByEmail(registrationDto.getEmail());
         verify(userRepo, times(1)).save(any(User.class));
     }

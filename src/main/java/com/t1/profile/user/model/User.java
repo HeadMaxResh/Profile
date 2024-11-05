@@ -4,9 +4,16 @@ import com.t1.profile.Table;
 import com.t1.profile.skill.hard.model.UserHardSkill;
 import com.t1.profile.profession.model.Profession;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDate;
@@ -18,19 +25,48 @@ import java.util.Set;
 @Setter
 @RequiredArgsConstructor
 @Entity(name = Table.TABLE_USER)
+@AllArgsConstructor
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
+
+    // Личная информация
+    @Column(nullable = false)
     private String firstName;
     private String lastName;
-    private LocalDate dateOfBirth;
-    private String gender;
-    private String city;
+    private LocalDate birthDate;
+    private Gender gender;
+    private String username;
+
+    // Контактная информация
     @Column(unique = true)
     private String email;
+    @Column(length = 11)
+    private String phoneNumber;
+    private String city;
+
+    // Аутентификация
     private String passwordHash;
+
+    // Описание профиля
+    @Column(length = 2048)
+    private String bio;
+    private String messengerContact;
+    @Column(length = 512)
+    private String picture;
+
+    // Настройки профиля
+    private boolean isVisibility = true;
+
+    // Метаданные
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<UserHardSkill> userHardSkills = new HashSet<>();
