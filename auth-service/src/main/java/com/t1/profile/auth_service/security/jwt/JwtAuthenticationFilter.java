@@ -1,11 +1,10 @@
-package com.t1.profile.auth.security.jwt;
+package com.t1.profile.auth_service.security.jwt;
 
-import com.t1.profile.auth.security.details.UserDetailsServiceImpl;
+import com.t1.profile.auth_service.security.details.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

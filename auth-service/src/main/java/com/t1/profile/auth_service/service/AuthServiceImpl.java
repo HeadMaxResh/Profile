@@ -1,17 +1,16 @@
-package com.t1.profile.auth.service;
+package com.t1.profile.auth_service.service;
 
-import com.t1.profile.auth.dto.ApiDto;
-import com.t1.profile.auth.dto.JwtAuthenticationDto;
-import com.t1.profile.auth.dto.LoginDto;
-import com.t1.profile.auth.dto.RegistrationDto;
-import com.t1.profile.user.model.Role;
-import com.t1.profile.user.model.User;
-import com.t1.profile.user.repository.RoleRepo;
-import com.t1.profile.user.repository.UserRepo;
-import com.t1.profile.auth.security.jwt.JwtTokenProvider;
+import com.t1.profile.auth_service.dto.ApiDto;
+import com.t1.profile.auth_service.dto.JwtAuthenticationDto;
+import com.t1.profile.auth_service.dto.LoginDto;
+import com.t1.profile.auth_service.dto.RegistrationDto;
+import com.t1.profile.auth_service.model.Role;
+import com.t1.profile.auth_service.model.User;
+import com.t1.profile.auth_service.repository.RoleRepo;
+import com.t1.profile.auth_service.repository.UserRepo;
+import com.t1.profile.auth_service.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-// Импортируйте необходимые пакеты
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

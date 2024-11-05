@@ -1,4 +1,4 @@
-package com.t1.profile.auth.security.jwt;
+package com.t1.profile.auth_service.security.jwt;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

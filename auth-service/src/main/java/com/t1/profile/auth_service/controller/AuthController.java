@@ -1,10 +1,10 @@
-package com.t1.profile.auth.controller;
+package com.t1.profile.auth_service.controller;
 
-import com.t1.profile.auth.dto.ApiDto;
-import com.t1.profile.auth.dto.JwtAuthenticationDto;
-import com.t1.profile.auth.dto.LoginDto;
-import com.t1.profile.auth.dto.RegistrationDto;
-import com.t1.profile.auth.service.AuthService;
+import com.t1.profile.auth_service.dto.ApiDto;
+import com.t1.profile.auth_service.dto.JwtAuthenticationDto;
+import com.t1.profile.auth_service.dto.LoginDto;
+import com.t1.profile.auth_service.dto.RegistrationDto;
+import com.t1.profile.auth_service.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

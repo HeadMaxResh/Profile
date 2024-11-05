@@ -1,9 +1,9 @@
-package com.t1.profile.auth.config;
+package com.t1.profile.auth_service.config;
 
-import com.t1.profile.user.model.Role;
-import com.t1.profile.user.model.User;
-import com.t1.profile.user.repository.RoleRepo;
-import com.t1.profile.user.repository.UserRepo;
+import com.t1.profile.auth_service.model.Role;
+import com.t1.profile.auth_service.model.User;
+import com.t1.profile.auth_service.repository.RoleRepo;
+import com.t1.profile.auth_service.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
