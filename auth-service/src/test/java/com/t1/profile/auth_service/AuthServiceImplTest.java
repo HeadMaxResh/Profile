@@ -1,14 +1,15 @@
-package com.t1.profile.auth.service;
+package com.t1.profile.auth_service;
 
-import com.t1.profile.RoleType;
-
-import com.t1.profile.auth.dto.ApiDto;
-
-import com.t1.profile.user.model.Role;
-import com.t1.profile.user.model.User;
-import com.t1.profile.user.repository.RoleRepo;
-import com.t1.profile.user.repository.UserRepo;
-import com.t1.profile.auth.security.jwt.JwtTokenProvider;
+import com.t1.profile.auth_service.dto.ApiDto;
+import com.t1.profile.auth_service.dto.JwtAuthenticationDto;
+import com.t1.profile.auth_service.dto.LoginDto;
+import com.t1.profile.auth_service.dto.RegistrationDto;
+import com.t1.profile.auth_service.model.Role;
+import com.t1.profile.auth_service.model.User;
+import com.t1.profile.auth_service.repository.RoleRepo;
+import com.t1.profile.auth_service.repository.UserRepo;
+import com.t1.profile.auth_service.security.jwt.JwtTokenProvider;
+import com.t1.profile.auth_service.service.AuthServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,13 +21,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class AuthServiceImplTest {
 
-    /*@InjectMocks
+    @InjectMocks
     private AuthServiceImpl authService;
 
     @Mock
@@ -124,5 +125,5 @@ public class AuthServiceImplTest {
         }
 
         verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
-    }*/
+    }
 }
