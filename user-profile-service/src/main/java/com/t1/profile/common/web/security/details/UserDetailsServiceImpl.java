@@ -1,4 +1,4 @@
-package com.t1.profile.auth.security.details;
+package com.t1.profile.common.web.security.details;
 
 import com.t1.profile.user.exception.UserNotFoundException;
 import com.t1.profile.user.model.User;

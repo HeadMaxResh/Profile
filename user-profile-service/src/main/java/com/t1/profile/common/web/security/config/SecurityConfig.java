@@ -1,6 +1,8 @@
-package com.t1.profile.auth;
+package com.t1.profile.common.web.security.config;
 
-import com.t1.profile.auth.security.details.UserDetailsServiceImpl;
+import com.t1.profile.common.web.security.details.UserDetailsServiceImpl;
+import com.t1.profile.common.web.security.jwt.JwtAuthenticationEntryPoint;
+import com.t1.profile.common.web.security.jwt.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,14 +31,12 @@ public class SecurityConfig {
         return new JwtAuthenticationFilter();
     }
 
-    // Настройка AuthenticationManager
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration
                                                                authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
-    // Конфигурация безопасности
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -48,8 +48,8 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/**").permitAll() // Разрешаем доступ к /auth/**
-                        .anyRequest().authenticated() // Остальные запросы требуют аутентификации
+                        .requestMatchers("/auth/**").permitAll()
+                        .anyRequest().authenticated()
                 );
         // Добавляем фильтр JWT
         http.addFilterBefore(jwtAuthenticationFilter(),
@@ -58,7 +58,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Определение бина PasswordEncoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

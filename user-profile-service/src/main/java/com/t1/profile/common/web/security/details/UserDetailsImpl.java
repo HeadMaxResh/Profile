@@ -1,4 +1,4 @@
-package com.t1.profile.auth.security.details;
+package com.t1.profile.common.web.security.details;
 
 import com.t1.profile.user.model.Role;
 import com.t1.profile.user.model.User;
@@ -31,7 +31,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email; // Возвращаем email вместо firstName + lastName
+        return email;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities; // Возвращаем роли пользователя
+        return authorities;
     }
 
     @Override

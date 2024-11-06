@@ -1,7 +1,6 @@
-package com.t1.profile.auth;
+package com.t1.profile.common.web.security.jwt;
 
-import com.t1.profile.auth.security.details.UserDetailsServiceImpl;
-import com.t1.profile.auth.security.jwt.JwtTokenProvider;
+import com.t1.profile.common.web.security.details.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,10 +16,13 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     @Autowired
     private JwtTokenProvider tokenProvider;
+
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -39,6 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
+
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
@@ -46,4 +49,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
+
 }

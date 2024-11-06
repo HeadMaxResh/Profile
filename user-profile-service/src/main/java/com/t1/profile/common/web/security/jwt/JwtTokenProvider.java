@@ -1,6 +1,6 @@
-package com.t1.profile.auth.security.jwt;
+package com.t1.profile.common.web.security.jwt;
 
-import com.t1.profile.auth.security.details.UserDetailsImpl;
+import com.t1.profile.common.web.security.details.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -11,14 +11,12 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-   // private final Key jwtSecret = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     @Value("${app.jwtSecret}")
     private String jwtSecret;
 
     @Value("${app.jwtExpirationInMs}")
     private int jwtExpirationInMs;
 
-    // Генерация токена
     public String generateToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
@@ -33,7 +31,6 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // Получение имени пользователя из токена
     public String getUserNameFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
@@ -43,7 +40,6 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
-    // Валидация токена
     public boolean validateToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
