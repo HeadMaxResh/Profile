@@ -5,6 +5,9 @@ import com.t1.profile.auth_service.dto.JwtAuthenticationDto;
 import com.t1.profile.auth_service.dto.LoginDto;
 import com.t1.profile.auth_service.dto.RegistrationDto;
 import com.t1.profile.auth_service.service.AuthService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +38,18 @@ public class AuthController {
     public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
         JwtAuthenticationDto jwtResponse = authService.authenticateUser(loginDto);
         return ResponseEntity.ok(jwtResponse);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutUser(HttpServletRequest request) {
+
+        ApiDto response = authService.logoutUser(request);
+
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }

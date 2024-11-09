@@ -1,4 +1,4 @@
-package com.t1.profile.auth_service.exception.jwt;
+package com.t1.profile.auth_service.security.exception;
 
 public class JwtTokenUnsupportedException extends RuntimeException {
 

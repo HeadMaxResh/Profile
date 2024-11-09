@@ -6,7 +6,9 @@ import com.t1.profile.common.web.security.exception.jwt.JwtTokenIllegalArgumentE
 import com.t1.profile.common.web.security.exception.jwt.JwtTokenMalformedException;
 import com.t1.profile.common.web.security.exception.jwt.JwtTokenUnsupportedException;
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -21,19 +23,8 @@ public class JwtTokenProvider {
     @Value("${app.jwtExpirationInMs}")
     private int jwtExpirationInMs;
 
-    public String generateToken(Authentication authentication) {
-        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
-
-        return Jwts.builder()
-                .setSubject(userPrincipal.getUsername())
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact();
-    }
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     public String getUserNameFromJWT(String token) {
         Claims claims = Jwts.parser()
@@ -46,7 +37,16 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String authToken) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+            Claims claims = Jwts.parser()
+                    .setSigningKey(jwtSecret)
+                    .parseClaimsJws(authToken)
+                    .getBody();
+            String jti = claims.getId();
+            String username = redisTemplate.opsForValue().get(jti);
+            if (username == null) {
+            // Токен недействителен
+                return false;
+            }
             return true;
         } catch (MalformedJwtException ex) {
             throw new JwtTokenMalformedException(ex.getMessage());
