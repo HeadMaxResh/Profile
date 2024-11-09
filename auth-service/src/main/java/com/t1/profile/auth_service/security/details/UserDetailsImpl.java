@@ -30,7 +30,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email; // Возвращаем email вместо firstName + lastName
+        return email;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities; // Возвращаем роли пользователя
+        return authorities;
     }
 
     @Override

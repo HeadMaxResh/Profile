@@ -1,5 +1,5 @@
 // Файл: SecurityConfig.java
-package com.t1.profile.auth_service.config;
+package com.t1.profile.auth_service.common.web.config;
 
 import com.t1.profile.auth_service.security.details.UserDetailsServiceImpl;
 import com.t1.profile.auth_service.security.jwt.JwtAuthenticationEntryPoint;
@@ -38,19 +38,17 @@ public class SecurityConfig {
         return new JwtAuthenticationFilter();
     }
 
-    // Настройка AuthenticationManager для аутентификации
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
-    // Основная конфигурация безопасности
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors() // Включаем CORS
+                .cors()
                 .and()
-                .csrf().disable() // Отключаем CSRF для REST API
+                .csrf().disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler)
                 .and()
@@ -66,27 +64,24 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Настройка CORS
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Разрешаем этот источник
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Разрешаем эти методы
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Разрешаем эти заголовки
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Применяем ко всем путям
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }
 
-    // Определение бина PasswordEncoder
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Используем BCrypt для хэширования паролей
+        return new BCryptPasswordEncoder();
     }
-
 
 }

@@ -34,9 +34,9 @@ public class ProfessionServiceImpl implements ProfessionService {
 
     @Override
     public List<ProfessionDto> getAllProfessions() {
-        List<Profession> professions = professionRepo.findAll(); // Получите все профессии
+        List<Profession> professions = professionRepo.findAll();
         return professions.stream()
-                .map(professionMapper::toDto) // Преобразуйте их в ProfessionDto
+                .map(professionMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -51,11 +51,10 @@ public class ProfessionServiceImpl implements ProfessionService {
     @Override
     public HardSkillDto addHardSkillToProfession(Integer professionId, HardSkillDto hardSkillDto) {
         Profession profession = professionRepo.findById(professionId)
-                .orElseThrow(() -> new ProfessionNotFoundException("Profession not found with id " + professionId));
+                .orElseThrow(() -> new ProfessionNotFoundException(professionId));
 
         HardSkill hardSkill = new HardSkill();
         hardSkill.setName(hardSkillDto.getName());
-        //hardSkill.setType(hardSkillDto.getType());
 
         hardSkill.setProfession(profession);
         profession.getMainHardSkills().add(hardSkill);
@@ -66,10 +65,10 @@ public class ProfessionServiceImpl implements ProfessionService {
     @Override
     public HardSkillDto  addExistingHardSkillToProfession(Integer professionId, Integer hardSkillId) {
         Profession profession = professionRepo.findById(professionId)
-                .orElseThrow(() -> new ProfessionNotFoundException("Profession not found with id " + professionId));
+                .orElseThrow(() -> new ProfessionNotFoundException(professionId));
 
         HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
-                .orElseThrow(() -> new HardSkillNotFoundException("HardSkill not found with id " + hardSkillId));
+                .orElseThrow(() -> new HardSkillNotFoundException(hardSkillId));
 
         hardSkill.setProfession(profession);
         profession.getMainHardSkills().add(hardSkill);
@@ -80,10 +79,10 @@ public class ProfessionServiceImpl implements ProfessionService {
     @Override
     public void removeHardSkillFromProfession(Integer professionId, Integer hardSkillId) {
         Profession profession = professionRepo.findById(professionId)
-                .orElseThrow(() -> new ProfessionNotFoundException("Profession not found with id " + professionId));
+                .orElseThrow(() -> new ProfessionNotFoundException(professionId));
 
         HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
-                .orElseThrow(() -> new HardSkillNotFoundException("HardSkill not found with id " + hardSkillId));
+                .orElseThrow(() -> new HardSkillNotFoundException(hardSkillId));
 
         hardSkill.setProfession(null);
         profession.getMainHardSkills().remove(hardSkill);
@@ -93,7 +92,7 @@ public class ProfessionServiceImpl implements ProfessionService {
     @Override
     public void deleteProfession(Integer professionId) {
         Profession profession = professionRepo.findById(professionId)
-                .orElseThrow(() -> new ProfessionNotFoundException("Profession not found with id " + professionId));
+                .orElseThrow(() -> new ProfessionNotFoundException(professionId));
 
         professionRepo.delete(profession);
     }
@@ -101,7 +100,7 @@ public class ProfessionServiceImpl implements ProfessionService {
     @Override
     public Set<HardSkillDto> getHardSkillsByProfession(Integer professionId) {
         Profession profession = professionRepo.findById(professionId)
-                .orElseThrow(() -> new ProfessionNotFoundException("Profession not found with id " + professionId));
+                .orElseThrow(() -> new ProfessionNotFoundException(professionId));
 
         return profession.getMainHardSkills().stream()
                 .map(hardSkillMapper::toDto)

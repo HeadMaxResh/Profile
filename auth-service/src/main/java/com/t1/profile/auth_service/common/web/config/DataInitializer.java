@@ -1,4 +1,4 @@
-package com.t1.profile.auth_service.config;
+package com.t1.profile.auth_service.common.web.config;
 
 import com.t1.profile.auth_service.model.Role;
 import com.t1.profile.auth_service.model.User;
@@ -10,6 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+
+import static com.t1.profile.auth_service.RoleType.ADMIN;
+import static com.t1.profile.auth_service.RoleType.USER;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -25,21 +28,18 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // Создание роли ROLE_USER, если она не существует
-        if (roleRepo.findByName("ROLE_USER") == null) {
+        if (roleRepo.findByName(USER) == null) {
             Role roleUser = new Role();
-            roleUser.setName("ROLE_USER");
+            roleUser.setName(USER);
             roleRepo.save(roleUser);
         }
 
-        // Создание роли ROLE_ADMIN, если она не существует
-        if (roleRepo.findByName("ROLE_ADMIN") == null) {
+        if (roleRepo.findByName(ADMIN) == null) {
             Role roleAdmin = new Role();
-            roleAdmin.setName("ROLE_ADMIN");
+            roleAdmin.setName(ADMIN);
             roleRepo.save(roleAdmin);
         }
 
-        // Создание пользователя-администратора, если он не существует
         if (userRepo.findByEmail("admin@admin.admin") == null) {
             User adminUser = new User();
             adminUser.setEmail("admin@admin.admin");
@@ -47,10 +47,11 @@ public class DataInitializer implements CommandLineRunner {
             adminUser.setLastName("User");
             adminUser.setPasswordHash(passwordEncoder.encode("123456"));
 
-            Role adminRole = roleRepo.findByName("ROLE_ADMIN");
+            Role adminRole = roleRepo.findByName(ADMIN);
             adminUser.setRoles(Collections.singleton(adminRole));
 
             userRepo.save(adminUser);
         }
     }
+
 }

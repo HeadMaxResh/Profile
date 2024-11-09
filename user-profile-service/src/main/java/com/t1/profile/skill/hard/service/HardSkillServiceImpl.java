@@ -35,7 +35,7 @@ public class HardSkillServiceImpl implements HardSkillService {
     @Override
     public HardSkillDto updateHardSkill(Integer hardSkillId, HardSkillDto hardSkillDto) {
         HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
-                .orElseThrow(() -> new HardSkillNotFoundException("HardSkill not found with id " + hardSkillId));
+                .orElseThrow(() -> new HardSkillNotFoundException(hardSkillId));
         hardSkill.setName(hardSkillDto.getName());
         HardSkill savedHardSkill = hardSkillRepo.save(hardSkill);
         return hardSkillMapper.toDto(savedHardSkill);
@@ -44,7 +44,7 @@ public class HardSkillServiceImpl implements HardSkillService {
     @Override
     public void deleteHardSkill(Integer hardSkillId) {
         HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
-                .orElseThrow(() -> new HardSkillNotFoundException("HardSkill not found with id " + hardSkillId));
+                .orElseThrow(() -> new HardSkillNotFoundException(hardSkillId));
 
         hardSkillRepo.delete(hardSkill);
     }

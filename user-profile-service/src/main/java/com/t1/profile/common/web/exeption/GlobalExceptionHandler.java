@@ -2,6 +2,7 @@ package com.t1.profile.common.web.exeption;
 
 import com.t1.profile.common.web.response.ErrorResponse;
 import com.t1.profile.profession.exception.ProfessionNotFoundException;
+import com.t1.profile.profession.exception.UserProfessionNotFoundException;
 import com.t1.profile.skill.hard.exception.HardSkillNotFoundException;
 import com.t1.profile.skill.hard.exception.UserHardSkillAssociationAlreadyExistException;
 import com.t1.profile.skill.hard.exception.UserHardSkillAssociationNotFoundException;
@@ -9,10 +10,13 @@ import com.t1.profile.skill.hard.exception.UserHardSkillNotFoundException;
 import com.t1.profile.skill.soft.exception.CategorySoftSkillNotFoundException;
 import com.t1.profile.skill.soft.exception.SoftSkillNotFoundException;
 import com.t1.profile.skill.soft.exception.UserSoftSkillNotFoundException;
+import com.t1.profile.user.exception.RatedUserNotFoundException;
+import com.t1.profile.user.exception.RaterUserNotFoundException;
 import com.t1.profile.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,7 +33,7 @@ public class GlobalExceptionHandler {
         log.error("Exception occurred: ", ex);
         log.info("request: {}", request);
 
-        return ResponseEntity.status(500).body(new ErrorResponse(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(UserNotFoundException.class)
@@ -41,7 +45,31 @@ public class GlobalExceptionHandler {
         log.error("UserNotFoundException occurred: ", ex);
         log.info("request: {}", request);
 
-        return ResponseEntity.status(404).body(new ErrorResponse(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(RatedUserNotFoundException.class)
+    @SneakyThrows
+    ResponseEntity<Object> handleRatedUserNotFoundException(
+            RatedUserNotFoundException ex,
+            WebRequest request
+    ) {
+        log.error("RatedUserNotFoundException occurred: ", ex);
+        log.info("request: {}", request);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(RaterUserNotFoundException.class)
+    @SneakyThrows
+    ResponseEntity<Object> handleRaterUserNotFoundException(
+            RaterUserNotFoundException ex,
+            WebRequest request
+    ) {
+        log.error("RaterUserNotFoundException occurred: ", ex);
+        log.info("request: {}", request);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(HardSkillNotFoundException.class)
@@ -53,7 +81,7 @@ public class GlobalExceptionHandler {
         log.error("HardSkillNotFoundException occurred: ", ex);
         log.info("request: {}", request);
 
-        return ResponseEntity.status(404).body(new ErrorResponse(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(UserHardSkillAssociationAlreadyExistException.class)
@@ -65,7 +93,7 @@ public class GlobalExceptionHandler {
         log.error("UserHardSkillAssociationAlreadyExistException occurred: ", ex);
         log.info("request: {}", request);
 
-        return ResponseEntity.status(409).body(new ErrorResponse(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(UserHardSkillAssociationNotFoundException.class)
@@ -77,7 +105,7 @@ public class GlobalExceptionHandler {
         log.error("UserHardSkillAssociationNotFoundException occurred: ", ex);
         log.info("request: {}", request);
 
-        return ResponseEntity.status(404).body(new ErrorResponse(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(UserHardSkillNotFoundException.class)
@@ -89,7 +117,7 @@ public class GlobalExceptionHandler {
         log.error("UserHardSkillNotFoundException occurred: ", ex);
         log.info("request: {}", request);
 
-        return ResponseEntity.status(404).body(new ErrorResponse(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(CategorySoftSkillNotFoundException.class)
@@ -101,7 +129,7 @@ public class GlobalExceptionHandler {
         log.error("CategorySoftSkillNotFoundException occurred: ", ex);
         log.info("request: {}", request);
 
-        return ResponseEntity.status(404).body(new ErrorResponse(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(SoftSkillNotFoundException.class)
@@ -113,7 +141,7 @@ public class GlobalExceptionHandler {
         log.error("SoftSkillNotFoundException occurred: ", ex);
         log.info("request: {}", request);
 
-        return ResponseEntity.status(404).body(new ErrorResponse(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(UserSoftSkillNotFoundException.class)
@@ -125,7 +153,7 @@ public class GlobalExceptionHandler {
         log.error("UserSoftSkillNotFoundException occurred: ", ex);
         log.info("request: {}", request);
 
-        return ResponseEntity.status(404).body(new ErrorResponse(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(ProfessionNotFoundException.class)
@@ -137,6 +165,19 @@ public class GlobalExceptionHandler {
         log.error("ProfessionNotFoundException occurred: ", ex);
         log.info("request: {}", request);
 
-        return ResponseEntity.status(404).body(new ErrorResponse(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
     }
+
+    @ExceptionHandler(UserProfessionNotFoundException.class)
+    @SneakyThrows
+    ResponseEntity<Object> handleUserProfessionNotFoundException(
+            UserProfessionNotFoundException ex,
+            WebRequest request
+    ) {
+        log.error("UserProfessionNotFoundException occurred: ", ex);
+        log.info("request: {}", request);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
+    }
+
 }

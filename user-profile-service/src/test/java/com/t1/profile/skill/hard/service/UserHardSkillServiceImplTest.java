@@ -1,5 +1,6 @@
 package com.t1.profile.skill.hard.service;
 
+import com.t1.profile.profession.exception.ProfessionNotFoundException;
 import com.t1.profile.skill.hard.exception.HardSkillNotFoundException;
 import com.t1.profile.skill.hard.exception.UserHardSkillAssociationAlreadyExistException;
 import com.t1.profile.skill.hard.exception.UserHardSkillAssociationNotFoundException;
@@ -112,16 +113,11 @@ public class UserHardSkillServiceImplTest {
 
     @Test
     public void updateHardSkillRating_shouldReturnUpdatedUserHardSkillDto1Id() {
-        // Настройка мока
         when(userHardSkillRepo.findById(1)).thenReturn(Optional.of(userHardSkill));
         when(userHardSkillMapper.toDto(userHardSkill)).thenReturn(userHardSkillDto);
 
-        // Вызов тестируемого метода
         userHardSkillService.updateHardSkillRating(1, 10);
 
-        //userHardSkillDto.setRating(10);
-
-        // Проверка результатов
         assertEquals(10, userHardSkill.getRating());
         verify(userHardSkillRepo, times(1)).save(userHardSkill);
 
@@ -131,12 +127,12 @@ public class UserHardSkillServiceImplTest {
     public void updateHardSkillRating_shouldThrowUserHardSkillNotFoundException() {
         when(userHardSkillRepo.findById(1)).thenReturn(Optional.empty());
 
-        assertThrows(UserHardSkillNotFoundException.class, () -> userHardSkillService.updateHardSkillRating(1, 10));
+        assertThrows(UserHardSkillNotFoundException.class, ()
+                -> userHardSkillService.updateHardSkillRating(1, 10));
     }
 
     @Test
     public void removeHardSkillFromUser_shouldRemoveHardSkill1Id() {
-        // Настройка мока
         when(userHardSkillRepo.findById(1)).thenReturn(Optional.of(userHardSkill));
 
         User user = new User();
@@ -155,7 +151,8 @@ public class UserHardSkillServiceImplTest {
     public void removeHardSkillFromUser_shouldThrowUserHardSkillAssociationNotFoundException() {
         when(userHardSkillRepo.findById(1)).thenReturn(Optional.empty());
 
-        assertThrows(UserHardSkillAssociationNotFoundException.class, () -> userHardSkillService.removeHardSkillFromUser(1));
+        assertThrows(UserHardSkillAssociationNotFoundException.class, ()
+                -> userHardSkillService.removeHardSkillFromUser(1));
     }
 
     @Test
@@ -164,16 +161,18 @@ public class UserHardSkillServiceImplTest {
         when(userRepo.findById(1)).thenReturn(Optional.empty());
 
 
-        assertThrows(UserHardSkillNotFoundException.class, () -> userHardSkillService.removeHardSkillFromUser(1));
+        assertThrows(UserHardSkillNotFoundException.class, ()
+                -> userHardSkillService.removeHardSkillFromUser(1));
     }
 
     @Test
     public void getHardSkillsByUser_shouldThrowUserHardSkillNotFoundException_whenUserNotFound() {
         when(userRepo.findById(1)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(UserHardSkillNotFoundException.class, () -> userHardSkillService.getHardSkillsByUser(1));
+        Exception exception = assertThrows(UserHardSkillNotFoundException.class, ()
+                -> userHardSkillService.getHardSkillsByUser(1));
 
-        assertEquals("Пользователь не найден с id 1", exception.getMessage());
+        assertEquals(UserHardSkillNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test
@@ -196,9 +195,10 @@ public class UserHardSkillServiceImplTest {
     public void addHardSkillToUser_shouldThrowUserHardSkillNotFoundException_whenUserNotFound() {
         when(userRepo.findById(1)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(UserHardSkillNotFoundException.class, () -> userHardSkillService.addHardSkillToUser(1, 1, 5));
+        Exception exception = assertThrows(UserHardSkillNotFoundException.class, ()
+                -> userHardSkillService.addHardSkillToUser(1, 1, 5));
 
-        assertEquals("Пользователь не найден с id 1", exception.getMessage());
+        assertEquals(UserHardSkillNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test
@@ -206,9 +206,10 @@ public class UserHardSkillServiceImplTest {
         when(userRepo.findById(1)).thenReturn(Optional.of(user));
         when(hardSkillRepo.findById(1)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(UserHardSkillNotFoundException.class, () -> userHardSkillService.addHardSkillToUser(1, 1, 5));
+        Exception exception = assertThrows(UserHardSkillNotFoundException.class, ()
+                -> userHardSkillService.addHardSkillToUser(1, 1, 5));
 
-        assertEquals("Хардскилл не найден с id 1", exception.getMessage());
+        assertEquals(UserHardSkillNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test
@@ -218,9 +219,10 @@ public class UserHardSkillServiceImplTest {
         when(hardSkillRepo.findById(1)).thenReturn(Optional.of(hardSkill));
         when(userHardSkillRepo.findByUserId(1)).thenReturn(userHardSkills);
 
-        Exception exception = assertThrows(UserHardSkillAssociationAlreadyExistException.class, () -> userHardSkillService.addHardSkillToUser(1, 1, 5));
+        Exception exception = assertThrows(UserHardSkillAssociationAlreadyExistException.class, ()
+                -> userHardSkillService.addHardSkillToUser(1, 1, 5));
 
-        assertEquals("Хардскилл уже ассоциирован с пользователем.", exception.getMessage());
+        assertEquals(UserHardSkillAssociationAlreadyExistException.getMessage(1), exception.getMessage());
     }
 
     @Test
@@ -241,9 +243,10 @@ public class UserHardSkillServiceImplTest {
     public void updateHardSkillRating_shouldThrowUserHardSkillAssociationNotFoundException_whenHardSkillNotAssociated() {
         when(userHardSkillRepo.findByUserId(1)).thenReturn(Collections.emptyList());
 
-        Exception exception = assertThrows(UserHardSkillAssociationNotFoundException.class, () -> userHardSkillService.updateHardSkillRating(1, 1, 10));
+        Exception exception = assertThrows(UserHardSkillAssociationNotFoundException.class, ()
+                -> userHardSkillService.updateHardSkillRating(1, 1, 10));
 
-        assertEquals("Хардскилл не ассоциирован с пользователем.", exception.getMessage());
+        assertEquals(UserHardSkillAssociationNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test
@@ -262,9 +265,10 @@ public class UserHardSkillServiceImplTest {
     public void removeHardSkillFromUser_shouldThrowUserHardSkillNotFoundException_whenUserNotFound() {
         when(userRepo.findById(1)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(UserHardSkillNotFoundException.class, () -> userHardSkillService.removeHardSkillFromUser(1, 1));
+        Exception exception = assertThrows(UserHardSkillNotFoundException.class, ()
+                -> userHardSkillService.removeHardSkillFromUser(1, 1));
 
-        assertEquals("Пользователь не найден с id 1", exception.getMessage());
+        assertEquals(UserHardSkillNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test
@@ -273,9 +277,10 @@ public class UserHardSkillServiceImplTest {
         when(userRepo.findById(1)).thenReturn(Optional.of(user));
         when(userHardSkillRepo.findByUserId(1)).thenReturn(Collections.emptyList());
 
-        Exception exception = assertThrows(UserHardSkillAssociationNotFoundException.class, () -> userHardSkillService.removeHardSkillFromUser(1, 1));
+        Exception exception = assertThrows(UserHardSkillAssociationNotFoundException.class, ()
+                -> userHardSkillService.removeHardSkillFromUser(1, 1));
 
-        assertEquals("Хардскилл не ассоциирован с пользователем.", exception.getMessage());
+        assertEquals(UserHardSkillAssociationNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test
@@ -292,7 +297,8 @@ public class UserHardSkillServiceImplTest {
         when(hardSkillRepo.findByProfessionId(1)).thenReturn(Collections.singletonList(hardSkill));
         when(userHardSkillRepo.findByUserId(1)).thenReturn(userHardSkills);
 
-        UserHardSkillsCategorizedDto result = userHardSkillService.getUserAndProfessionHardSkills(1, 1);
+        UserHardSkillsCategorizedDto result =
+                userHardSkillService.getUserAndProfessionHardSkills(1, 1);
 
         assertNotNull(result);
         assertEquals(1, result.getCommonHardSkills().size());
@@ -303,20 +309,22 @@ public class UserHardSkillServiceImplTest {
     public void getUserAndProfessionHardSkills_shouldThrowUserHardSkillNotFoundException_whenUserNotFound() {
         when(userRepo.findById(1)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(UserHardSkillNotFoundException.class, () -> userHardSkillService.getUserAndProfessionHardSkills(1, 1));
+        Exception exception = assertThrows(UserHardSkillNotFoundException.class, ()
+                -> userHardSkillService.getUserAndProfessionHardSkills(1, 1));
 
-        assertEquals("Пользователь не найден с id 1", exception.getMessage());
+        assertEquals(UserHardSkillNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test
-    public void getUserAndProfessionHardSkills_shouldThrowUserHardSkillNotFoundException_whenProfessionNotFound() {
+    public void getUserAndProfessionHardSkills_shouldThrowProfessionNotFoundException_whenProfessionNotFound() {
         when(userRepo.findById(1)).thenReturn(Optional.of(new User()));
 
         when(professionRepo.findById(999)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(UserHardSkillNotFoundException.class, () -> userHardSkillService.getUserAndProfessionHardSkills(1, 999));
+        Exception exception = assertThrows(ProfessionNotFoundException.class, ()
+                -> userHardSkillService.getUserAndProfessionHardSkills(1, 999));
 
-        assertEquals("Профессия не найдена для пользователя с id 1", exception.getMessage());
+        assertEquals(ProfessionNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test
@@ -336,7 +344,8 @@ public class UserHardSkillServiceImplTest {
         when(hardSkillRepo.findByProfessionId(1)).thenReturn(Collections.singletonList(differentSkill));
         when(userHardSkillRepo.findByUserId(1)).thenReturn(Collections.singletonList(userHardSkill));
 
-        UserHardSkillsCategorizedDto result = userHardSkillService.getUserAndProfessionHardSkills(1, 1);
+        UserHardSkillsCategorizedDto result =
+                userHardSkillService.getUserAndProfessionHardSkills(1, 1);
 
         assertNotNull(result);
         assertEquals(0, result.getCommonHardSkills().size());

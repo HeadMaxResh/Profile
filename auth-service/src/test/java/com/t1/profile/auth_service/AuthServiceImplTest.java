@@ -70,7 +70,7 @@ public class AuthServiceImplTest {
         ApiDto response = authService.registerUser(registrationDto);
 
         assertThat(response.isSuccess()).isTrue();
-        assertThat(response.getMessage()).isEqualTo("User registered successfully");
+        assertThat(response.getMessage()).isEqualTo(MessageType.USER_REGISTERED_SUCCESSFULLY);
         verify(userRepo, times(1)).findByEmail(registrationDto.getEmail());
         verify(userRepo, times(1)).save(any(User.class));
     }
@@ -85,7 +85,7 @@ public class AuthServiceImplTest {
         ApiDto response = authService.registerUser(registrationDto);
 
         assertThat(response.isSuccess()).isFalse();
-        assertThat(response.getMessage()).isEqualTo("Email Address already in use!");
+        assertThat(response.getMessage()).isEqualTo(MessageType.EMAIL_ALREADY_USE);
         verify(userRepo, times(1)).findByEmail(registrationDto.getEmail());
         verify(userRepo, never()).save(any(User.class));
     }
@@ -120,7 +120,7 @@ public class AuthServiceImplTest {
         try {
             authService.authenticateUser(loginDto);
             fail("Expected RuntimeException to be thrown");
-        } catch (RuntimeException  e) {
+        } catch (RuntimeException e) {
             assertThat(e.getMessage()).isEqualTo("Authentication failed");
         }
 

@@ -83,7 +83,7 @@ public class UserProfessionImplTest {
         Exception exception = assertThrows(UserNotFoundException.class, ()
                 -> userProfessionService.addProfessionToUser(1, 1));
 
-        assertEquals("User not found with id 1", exception.getMessage());
+        assertEquals(UserNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test
@@ -94,7 +94,7 @@ public class UserProfessionImplTest {
         Exception exception = assertThrows(ProfessionNotFoundException.class, ()
                 -> userProfessionService.addProfessionToUser(1, 1));
 
-        assertEquals("Profession not found with id 1", exception.getMessage());
+        assertEquals(ProfessionNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test
@@ -118,7 +118,7 @@ public class UserProfessionImplTest {
         Exception exception = assertThrows(UserNotFoundException.class, ()
                 -> userProfessionService.updateProfessionForUser(1, 1));
 
-        assertEquals("User not found with id 1", exception.getMessage());
+        assertEquals(UserNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test
@@ -129,7 +129,7 @@ public class UserProfessionImplTest {
         Exception exception = assertThrows(ProfessionNotFoundException.class, ()
                 -> userProfessionService.updateProfessionForUser(1, 1));
 
-        assertEquals("Profession not found with id 1", exception.getMessage());
+        assertEquals(ProfessionNotFoundException.getMessage(1), exception.getMessage());
     }
 
 }

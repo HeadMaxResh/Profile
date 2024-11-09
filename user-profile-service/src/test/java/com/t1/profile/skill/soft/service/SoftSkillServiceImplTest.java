@@ -97,7 +97,7 @@ public class SoftSkillServiceImplTest {
         Exception exception = assertThrows(CategorySoftSkillNotFoundException.class, ()
                 -> softSkillService.deleteCategory(1));
 
-        assertEquals("Category not found with id 1", exception.getMessage());
+        assertEquals(CategorySoftSkillNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test
@@ -119,7 +119,7 @@ public class SoftSkillServiceImplTest {
         Exception exception = assertThrows(CategorySoftSkillNotFoundException.class, ()
                 -> softSkillService.addSoftSkill(categoryId, softSkillDto));
 
-        assertEquals("Category not found with id 1", exception.getMessage());
+        assertEquals(CategorySoftSkillNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test
@@ -138,7 +138,7 @@ public class SoftSkillServiceImplTest {
         Exception exception = assertThrows(SoftSkillNotFoundException.class, ()
                 -> softSkillService.deleteSoftSkill(1));
 
-        assertEquals("SoftSkill not found with id 1", exception.getMessage());
+        assertEquals(SoftSkillNotFoundException.getMessage(1), exception.getMessage());
     }
 
 }

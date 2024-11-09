@@ -15,6 +15,8 @@ import com.t1.profile.skill.soft.repository.SoftSkillRepo;
 import com.t1.profile.skill.soft.repository.UserSoftSkillRatingRepo;
 import com.t1.profile.skill.soft.repository.UserSoftSkillRepo;
 import com.t1.profile.user.dto.UserSummaryDto;
+import com.t1.profile.user.exception.RatedUserNotFoundException;
+import com.t1.profile.user.exception.RaterUserNotFoundException;
 import com.t1.profile.user.model.User;
 import com.t1.profile.user.repository.UserRepo;
 import org.junit.jupiter.api.BeforeEach;
@@ -135,36 +137,38 @@ public class  UserSoftSkillServiceImplTest {
         assertEquals(ratingDto.getRatedUser().getId(), result.getRatedUser().getId());
         assertEquals(ratingDto.getRaterUser().getId(), result.getRaterUser().getId());
         verify(userSoftSkillRepo, times(1)).save(any(UserSoftSkill.class));
-        verify(userSoftSkillRatingRepo, times(1)).save(any(UserSoftSkillRating.class)); // Проверяем сохранение рейтинга
+        verify(userSoftSkillRatingRepo, times(1)).save(any(UserSoftSkillRating.class));
     }
     @Test
     public void rateSoftSkill_shouldThrowUserSoftSkillNotFoundException_whenSoftSkillNotFound() {
         when(softSkillRepo.findById(1)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(UserSoftSkillNotFoundException.class, () -> userSoftSkillService.rateSoftSkill(ratingRequestDto));
+        Exception exception = assertThrows(UserSoftSkillNotFoundException.class, ()
+                -> userSoftSkillService.rateSoftSkill(ratingRequestDto));
 
-        assertEquals("SoftSkill not found с id 1", exception.getMessage());
+        assertEquals(UserSoftSkillNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test
-    public void rateSoftSkill_shouldThrowUserSoftSkillNotFoundException_whenRatedUserNotFound() {
+    public void rateSoftSkill_shouldThrowRatedUserNotFoundException_whenRatedUserNotFound() {
         when(softSkillRepo.findById(1)).thenReturn(Optional.of(softSkill));
         when(userRepo.findById(1)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(UserSoftSkillNotFoundException.class, () -> userSoftSkillService.rateSoftSkill(ratingRequestDto));
+        Exception exception = assertThrows(RatedUserNotFoundException.class, ()
+                -> userSoftSkillService.rateSoftSkill(ratingRequestDto));
 
-        assertEquals("Rated user not found с id 1", exception.getMessage());
+        assertEquals(RatedUserNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test
-    public void rateSoftSkill_shouldThrowUserSoftSkillNotFoundException_whenRaterUserNotFound() {
+    public void rateSoftSkill_shouldThrowRaterUserNotFoundException_whenRaterUserNotFound() {
         when(softSkillRepo.findById(1)).thenReturn(Optional.of(softSkill));
         when(userRepo.findById(1)).thenReturn(Optional.of(ratedUser));
         when(userRepo.findById(2)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(UserSoftSkillNotFoundException.class, () -> userSoftSkillService.rateSoftSkill(ratingRequestDto));
+        Exception exception = assertThrows(RaterUserNotFoundException.class, () -> userSoftSkillService.rateSoftSkill(ratingRequestDto));
 
-        assertEquals("Rater user not found 2", exception.getMessage());
+        assertEquals(RaterUserNotFoundException.getMessage(1), exception.getMessage());
     }
 
     @Test

@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class ApiDto {
+
     private Boolean success;
     private String message;
 
@@ -15,4 +16,5 @@ public class ApiDto {
     public Boolean isSuccess() {
         return success;
     }
+
 }

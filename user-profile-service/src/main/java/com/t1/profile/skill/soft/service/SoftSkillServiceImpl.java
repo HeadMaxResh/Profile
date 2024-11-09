@@ -48,7 +48,7 @@ public class SoftSkillServiceImpl implements SoftSkillService {
     @Override
     public List<SoftSkillDto> getSoftSkillsByCategory(Integer categoryId) {
         SoftSkillCategory category = categorySoftSkillRepo.findById(categoryId)
-                .orElseThrow(() -> new CategorySoftSkillNotFoundException("Category not found with id " + categoryId));
+                .orElseThrow(() -> new CategorySoftSkillNotFoundException(categoryId));
 
         List<SoftSkill> softSkills = softSkillRepo.findByCategory(category);
         return softSkills.stream()
@@ -78,7 +78,7 @@ public class SoftSkillServiceImpl implements SoftSkillService {
     @Override
     public void deleteCategory(Integer categoryId) {
         SoftSkillCategory category = categorySoftSkillRepo.findById(categoryId)
-                .orElseThrow(() -> new CategorySoftSkillNotFoundException("Category not found with id " + categoryId));
+                .orElseThrow(() -> new CategorySoftSkillNotFoundException(categoryId));
         categorySoftSkillRepo.delete(category);
     }
 
@@ -88,9 +88,7 @@ public class SoftSkillServiceImpl implements SoftSkillService {
         softSkill.setName(softSkillDto.getName());
 
         SoftSkillCategory category = categorySoftSkillRepo.findById(categoryId)
-                .orElseThrow(() -> new CategorySoftSkillNotFoundException(
-                        "Category not found with id " + categoryId /*softSkillDto.getCategory().getId()*/)
-                );
+                .orElseThrow(() -> new CategorySoftSkillNotFoundException(categoryId));
         softSkill.setCategory(category);
         SoftSkill savedSoftSkill = softSkillRepo.save(softSkill);
         return softSkillMapper.toDto(savedSoftSkill);
@@ -99,7 +97,7 @@ public class SoftSkillServiceImpl implements SoftSkillService {
     @Override
     public void deleteSoftSkill(Integer softSkillId) {
         SoftSkill softSkill = softSkillRepo.findById(softSkillId)
-                .orElseThrow(() -> new SoftSkillNotFoundException("SoftSkill not found with id " + softSkillId));
+                .orElseThrow(() -> new SoftSkillNotFoundException(softSkillId));
         softSkillRepo.delete(softSkill);
     }
 

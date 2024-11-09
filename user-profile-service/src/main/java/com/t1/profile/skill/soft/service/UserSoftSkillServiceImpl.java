@@ -7,6 +7,8 @@ import com.t1.profile.skill.soft.mapper.SoftSkillCategoryMapper;
 import com.t1.profile.skill.soft.mapper.UserSoftSkillMapper;
 import com.t1.profile.skill.soft.model.*;
 import com.t1.profile.skill.soft.repository.*;
+import com.t1.profile.user.exception.RatedUserNotFoundException;
+import com.t1.profile.user.exception.RaterUserNotFoundException;
 import com.t1.profile.user.exception.UserNotFoundException;
 import com.t1.profile.user.model.User;
 import com.t1.profile.user.repository.UserRepo;
@@ -48,19 +50,14 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
     @Override
     public UserSoftSkillResponseDto rateSoftSkill(UserSoftSkillRequestDto ratingDto) {
         SoftSkill softSkill = softSkillRepo.findById(ratingDto.getSoftSkillId())
-                .orElseThrow(() -> new SoftSkillNotFoundException(
-                        "SoftSkill not found с id " + ratingDto.getSoftSkillId())
-                );
+                .orElseThrow(() -> new SoftSkillNotFoundException(ratingDto.getSoftSkillId()));
 
         User ratedUser = userRepo.findById(ratingDto.getRatedUserId())
-                .orElseThrow(() -> new UserNotFoundException(
-                        "Rated user not found с id " + ratingDto.getRatedUserId())
+                .orElseThrow(() -> new RatedUserNotFoundException(ratingDto.getRatedUserId())
                 );
 
         User raterUser = userRepo.findById(ratingDto.getRaterUserId())
-                .orElseThrow(() -> new UserNotFoundException(
-                        "Rater user not found " + ratingDto.getRaterUserId())
-                );
+                .orElseThrow(() -> new RaterUserNotFoundException(ratingDto.getRaterUserId()));
 
         UserSoftSkill rating = new UserSoftSkill();
         rating.setSoftSkill(softSkill);
@@ -106,18 +103,11 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
             List<SoftSkill> softSkills = softSkillRepo.findByCategory(category);
             for (SoftSkill softSkill : softSkills) {
                 User user = userRepo.findById(userId).orElseThrow(()
-                        -> new UserNotFoundException("User not found"));
+                        -> new UserNotFoundException(userId));
                 Double lastHistoryRating = getHistoryRating(user, softSkill);
 
                 UserSoftSkillRating softSkillRating =
                         userSoftSkillRatingRepo.findByRatedUserAndSoftSkill(user, softSkill);
-                /*UserSoftSkillRatingHistory historySoftSkillRating =
-                        userSoftSkillRatingHistoryRepo.findByRatedUserAndSoftSkill(
-                                userRepo.findById(userId).orElseThrow(()
-                                        -> new ResourceNotFoundException("User not found")),
-                                softSkill
-                        );*/
-
 
                 SoftSkillWithAverageRatingDto skillDto = new SoftSkillWithAverageRatingDto();
                 skillDto.setId(softSkill.getId());
@@ -126,9 +116,6 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
                         softSkillRating != null ? softSkillRating.getAverageRating() : null
                 );
                 skillDto.setHistoryRating(lastHistoryRating);
-                /*skillDto.setHistoryRating(
-                        historySoftSkillRating != null ? historySoftSkillRating.getAverageRating() : null
-                );*/
 
                 skillsWithRatings.add(skillDto);
             }
@@ -143,7 +130,7 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
     @Override
     public void deleteUserSoftSkill(Integer userSoftSkillId) {
         UserSoftSkill userSoftSkill = userSoftSkillRepo.findById(userSoftSkillId)
-                .orElseThrow(() -> new UserSoftSkillNotFoundException("UserSoftSkill not found с id " + userSoftSkillId));
+                .orElseThrow(() -> new UserSoftSkillNotFoundException(userSoftSkillId));
 
         userSoftSkillRepo.delete(userSoftSkill);
 
@@ -153,7 +140,7 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
     @Override
     public void deleteAllUserSoftSkillsByUserId(Integer userId) {
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found с id " + userId));
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
         List<UserSoftSkill> userSoftSkills = userSoftSkillRepo.findByRatedUser(user);
 

@@ -94,7 +94,7 @@ public class HardSkillServiceImplTest {
         try {
             hardSkillService.updateHardSkill(hardSkillId, hardSkillDto);
         } catch (HardSkillNotFoundException e) {
-            assertThat(e.getMessage()).isEqualTo("HardSkill not found with id " + hardSkillId);
+            assertThat(e.getMessage()).isEqualTo(HardSkillNotFoundException.getMessage(hardSkillId));
         }
 
         verify(hardSkillRepo, times(1)).findById(hardSkillId);
@@ -126,7 +126,7 @@ public class HardSkillServiceImplTest {
         try {
             hardSkillService.deleteHardSkill(hardSkillId);
         } catch (HardSkillNotFoundException e) {
-            assertThat(e.getMessage()).isEqualTo("HardSkill not found with id " + hardSkillId);
+            assertThat(e.getMessage()).isEqualTo(HardSkillNotFoundException.getMessage(hardSkillId));
         }
 
         verify(hardSkillRepo, times(1)).findById(hardSkillId);

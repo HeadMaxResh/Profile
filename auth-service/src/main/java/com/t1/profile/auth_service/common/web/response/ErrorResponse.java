@@ -1,4 +1,4 @@
-package com.t1.profile.common.web.response;
+package com.t1.profile.auth_service.common.web.response;
 
 import java.time.LocalDateTime;
 
