@@ -1,11 +1,10 @@
 package com.t1.profile.auth_service.security.jwt;
 
-import com.t1.profile.auth_service.exception.UserNotFoundException;
-import com.t1.profile.auth_service.exception.jwt.JwtTokenExpiredException;
-import com.t1.profile.auth_service.exception.jwt.JwtTokenIllegalArgumentException;
-import com.t1.profile.auth_service.exception.jwt.JwtTokenMalformedException;
-import com.t1.profile.auth_service.exception.jwt.JwtTokenUnsupportedException;
 import com.t1.profile.auth_service.security.details.UserDetailsServiceImpl;
+import com.t1.profile.auth_service.security.exception.JwtTokenExpiredException;
+import com.t1.profile.auth_service.security.exception.JwtTokenIllegalArgumentException;
+import com.t1.profile.auth_service.security.exception.JwtTokenMalformedException;
+import com.t1.profile.auth_service.security.exception.JwtTokenUnsupportedException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -27,8 +25,6 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String AUTHORIZATION = "Authorization";
-    private static final String BEARER = "Bearer ";
     private static final String OPTIONS = "OPTIONS";
 
     @Autowired
@@ -49,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         try {
-            String jwt = getJwtFromRequest(request);
+            String jwt = JwtFromRequest.getJwt(request);
 
             if (jwt != null && tokenProvider.validateToken(jwt)) {
                 String email = tokenProvider.getUserNameFromJWT(jwt);
@@ -75,11 +71,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION);
-        if (bearerToken != null && bearerToken.startsWith(BEARER)) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
 }

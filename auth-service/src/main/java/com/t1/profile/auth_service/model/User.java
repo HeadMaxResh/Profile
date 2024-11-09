@@ -9,8 +9,7 @@ import lombok.Setter;
 import java.util.Set;
 
 @Data
-@Entity
-@Table(name = "table_user")
+@Entity(name = "table_user")
 public class User {
 
     @Id
@@ -21,11 +20,7 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
     private String passwordHash;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
 }

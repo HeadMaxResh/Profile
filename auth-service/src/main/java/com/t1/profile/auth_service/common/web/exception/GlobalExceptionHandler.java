@@ -2,10 +2,10 @@ package com.t1.profile.auth_service.common.web.exception;
 
 import com.t1.profile.auth_service.common.web.response.ErrorResponse;
 import com.t1.profile.auth_service.exception.*;
-import com.t1.profile.auth_service.exception.jwt.JwtTokenExpiredException;
-import com.t1.profile.auth_service.exception.jwt.JwtTokenIllegalArgumentException;
-import com.t1.profile.auth_service.exception.jwt.JwtTokenMalformedException;
-import com.t1.profile.auth_service.exception.jwt.JwtTokenUnsupportedException;
+import com.t1.profile.auth_service.security.exception.JwtTokenExpiredException;
+import com.t1.profile.auth_service.security.exception.JwtTokenIllegalArgumentException;
+import com.t1.profile.auth_service.security.exception.JwtTokenMalformedException;
+import com.t1.profile.auth_service.security.exception.JwtTokenUnsupportedException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;

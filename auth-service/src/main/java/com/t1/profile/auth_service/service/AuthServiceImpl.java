@@ -6,10 +6,15 @@ import com.t1.profile.auth_service.dto.LoginDto;
 import com.t1.profile.auth_service.dto.RegistrationDto;
 import com.t1.profile.auth_service.model.Role;
 import com.t1.profile.auth_service.model.User;
-import com.t1.profile.auth_service.repository.RoleRepo;
 import com.t1.profile.auth_service.repository.UserRepo;
+import com.t1.profile.auth_service.security.jwt.JwtFromRequest;
 import com.t1.profile.auth_service.security.jwt.JwtTokenProvider;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,9 +24,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Set;
 
 import static com.t1.profile.auth_service.MessageType.*;
-import static com.t1.profile.auth_service.RoleType.USER;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -33,13 +38,13 @@ public class AuthServiceImpl implements AuthService {
     private UserRepo userRepo;
 
     @Autowired
-    private RoleRepo roleRepo;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JwtTokenProvider tokenProvider;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     public ApiDto registerUser(RegistrationDto registrationDto) {
@@ -53,13 +58,8 @@ public class AuthServiceImpl implements AuthService {
         user.setLastName(registrationDto.getLastName());
         user.setPasswordHash(passwordEncoder.encode(registrationDto.getPassword()));
 
-        Role userRole = roleRepo.findByName(USER);
-        if (userRole == null) {
-            userRole = new Role();
-            userRole.setName(USER);
-            roleRepo.save(userRole);
-        }
-        user.setRoles(Collections.singleton(userRole));
+
+        user.setRoles(Collections.singleton(Role.ROLE_USER));
 
         userRepo.save(user);
 
@@ -78,11 +78,33 @@ public class AuthServiceImpl implements AuthService {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = tokenProvider.generateToken(authentication);
-            return new JwtAuthenticationDto(jwt);
+
+            User user = userRepo.findByEmail(loginDto.getEmail());
+
+            if (user.getRoles().contains(Role.ROLE_ADMIN)) {
+                return new JwtAuthenticationDto(jwt, Role.ROLE_ADMIN.name());
+            }
+
+            return new JwtAuthenticationDto(jwt, Role.ROLE_USER.name());
+
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException(WRONG_EMAIL_OR_PASSWORD);
         }
     }
 
+    @Override
+    public ApiDto logoutUser(HttpServletRequest request) {
+        String token = JwtFromRequest.getJwt(request);
+        if (token != null && tokenProvider.validateToken(token)) {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(tokenProvider.getJwtSecret())
+                    .parseClaimsJws(token)
+                    .getBody();
+            String jti = claims.getId();
+            redisTemplate.delete(jti);
+            return new ApiDto(true, LOGGED_OUT);
+        }
+        return new ApiDto(false, UNABLE_LOGGED_OUT);
+    }
 
 }

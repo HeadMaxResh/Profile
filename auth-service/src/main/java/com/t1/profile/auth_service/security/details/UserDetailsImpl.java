@@ -23,7 +23,7 @@ public class UserDetailsImpl implements UserDetails {
         this.email = user.getEmail();
         this.password = user.getPasswordHash();
         this.authorities = user.getRoles().stream()
-                .map(Role::getName)
+                .map(Role::name)
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }

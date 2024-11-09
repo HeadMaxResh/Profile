@@ -4,9 +4,7 @@ import com.t1.profile.auth_service.dto.ApiDto;
 import com.t1.profile.auth_service.dto.JwtAuthenticationDto;
 import com.t1.profile.auth_service.dto.LoginDto;
 import com.t1.profile.auth_service.dto.RegistrationDto;
-import com.t1.profile.auth_service.model.Role;
 import com.t1.profile.auth_service.model.User;
-import com.t1.profile.auth_service.repository.RoleRepo;
 import com.t1.profile.auth_service.repository.UserRepo;
 import com.t1.profile.auth_service.security.jwt.JwtTokenProvider;
 import com.t1.profile.auth_service.service.AuthServiceImpl;
@@ -37,9 +35,6 @@ public class AuthServiceImplTest {
     private UserRepo userRepo;
 
     @Mock
-    private RoleRepo roleRepo;
-
-    @Mock
     private PasswordEncoder passwordEncoder;
 
     @Mock
@@ -62,9 +57,7 @@ public class AuthServiceImplTest {
         registrationDto.setPassword("password123");
 
         when(userRepo.findByEmail(registrationDto.getEmail())).thenReturn(null);
-        Role userRole = new Role();
-        userRole.setName(RoleType.USER);
-        when(roleRepo.findByName(RoleType.USER)).thenReturn(userRole);
+
         when(userRepo.save(any(User.class))).thenReturn(new User());
 
         ApiDto response = authService.registerUser(registrationDto);
