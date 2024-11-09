@@ -20,6 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
+import static com.t1.profile.auth_service.MessageType.*;
+import static com.t1.profile.auth_service.RoleType.USER;
+
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -41,26 +44,26 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ApiDto registerUser(RegistrationDto registrationDto) {
         if (userRepo.findByEmail(registrationDto.getEmail()) != null) {
-            return new ApiDto(false, "Email уже используется!");
+            return new ApiDto(false, EMAIL_ALREADY_USE);
         }
 
         User user = new User();
         user.setEmail(registrationDto.getEmail());
         user.setFirstName(registrationDto.getFirstName());
-        user.setLastName(registrationDto.getLastName()); // Убедитесь, что lastName установлен
+        user.setLastName(registrationDto.getLastName());
         user.setPasswordHash(passwordEncoder.encode(registrationDto.getPassword()));
 
-        Role userRole = roleRepo.findByName("ROLE_USER"); // Убедитесь, что роль существует
+        Role userRole = roleRepo.findByName(USER);
         if (userRole == null) {
             userRole = new Role();
-            userRole.setName("ROLE_USER");
+            userRole.setName(USER);
             roleRepo.save(userRole);
         }
         user.setRoles(Collections.singleton(userRole));
 
         userRepo.save(user);
 
-        return new ApiDto(true, "Пользователь успешно зарегистрирован");
+        return new ApiDto(true, USER_REGISTERED_SUCCESSFULLY);
     }
 
     @Override
@@ -77,7 +80,9 @@ public class AuthServiceImpl implements AuthService {
             String jwt = tokenProvider.generateToken(authentication);
             return new JwtAuthenticationDto(jwt);
         } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("Неверный email или пароль");
+            throw new BadCredentialsException(WRONG_EMAIL_OR_PASSWORD);
         }
     }
+
+
 }

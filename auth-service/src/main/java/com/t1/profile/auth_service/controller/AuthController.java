@@ -36,4 +36,5 @@ public class AuthController {
         JwtAuthenticationDto jwtResponse = authService.authenticateUser(loginDto);
         return ResponseEntity.ok(jwtResponse);
     }
+
 }

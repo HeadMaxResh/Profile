@@ -26,10 +26,10 @@ public class UserProfessionServiceImpl implements UserProfessionService {
     @Override
     public UserDto addProfessionToUser(Integer userId, Integer professionId) {
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
         Profession profession = professionRepo.findById(professionId)
-                .orElseThrow(() -> new ProfessionNotFoundException("Profession not found with id " + professionId));
+                .orElseThrow(() -> new ProfessionNotFoundException(professionId));
 
         user.setProfession(profession);
         User savedUser = userRepo.save(user);
@@ -39,10 +39,10 @@ public class UserProfessionServiceImpl implements UserProfessionService {
     @Override
     public UserDto updateProfessionForUser(Integer userId, Integer professionId) {
         User user = userRepo.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id " + userId));
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
         Profession profession = professionRepo.findById(professionId)
-                .orElseThrow(() -> new ProfessionNotFoundException("Profession not found with id " + professionId));
+                .orElseThrow(() -> new ProfessionNotFoundException(professionId));
 
         user.setProfession(profession);
         User savedUser = userRepo.save(user);

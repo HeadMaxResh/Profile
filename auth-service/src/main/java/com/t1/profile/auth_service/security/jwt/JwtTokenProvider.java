@@ -1,25 +1,30 @@
 package com.t1.profile.auth_service.security.jwt;
 
+import com.t1.profile.auth_service.exception.jwt.JwtTokenExpiredException;
+import com.t1.profile.auth_service.exception.jwt.JwtTokenIllegalArgumentException;
+import com.t1.profile.auth_service.exception.jwt.JwtTokenMalformedException;
+import com.t1.profile.auth_service.exception.jwt.JwtTokenUnsupportedException;
 import com.t1.profile.auth_service.security.details.UserDetailsImpl;
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import java.security.SignatureException;
 import java.util.Date;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtTokenProvider {
 
-   // private final Key jwtSecret = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     @Value("${app.jwtSecret}")
     private String jwtSecret;
 
     @Value("${app.jwtExpirationInMs}")
     private int jwtExpirationInMs;
 
-    // Генерация токена
     public String generateToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
@@ -34,7 +39,6 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // Получение имени пользователя из токена
     public String getUserNameFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
@@ -44,20 +48,19 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
-    // Валидация токена
     public boolean validateToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
             return true;
         } catch (MalformedJwtException ex) {
-            // Невалидный JWT
+            throw new JwtTokenMalformedException(ex.getMessage());
         } catch (ExpiredJwtException ex) {
-            // Истек срок действия JWT
+            throw new JwtTokenExpiredException(ex.getMessage());
         } catch (UnsupportedJwtException ex) {
-            // Неподдерживаемый JWT
+            throw new JwtTokenUnsupportedException(ex.getMessage());
         } catch (IllegalArgumentException ex) {
-            // Пустой строковый аргумент
+            throw new JwtTokenIllegalArgumentException(ex.getMessage());
         }
-        return false;
     }
+
 }

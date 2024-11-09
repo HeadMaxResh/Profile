@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "roles") // или другое имя таблицы
+@Table(name = "roles")
 public class Role {
 
     @Id

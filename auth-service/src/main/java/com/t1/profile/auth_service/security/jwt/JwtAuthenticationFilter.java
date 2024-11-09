@@ -1,6 +1,14 @@
 package com.t1.profile.auth_service.security.jwt;
 
+import com.t1.profile.auth_service.exception.UserNotFoundException;
+import com.t1.profile.auth_service.exception.jwt.JwtTokenExpiredException;
+import com.t1.profile.auth_service.exception.jwt.JwtTokenIllegalArgumentException;
+import com.t1.profile.auth_service.exception.jwt.JwtTokenMalformedException;
+import com.t1.profile.auth_service.exception.jwt.JwtTokenUnsupportedException;
 import com.t1.profile.auth_service.security.details.UserDetailsServiceImpl;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,6 +26,10 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String BEARER = "Bearer ";
+    private static final String OPTIONS = "OPTIONS";
 
     @Autowired
     private JwtTokenProvider tokenProvider;
@@ -30,9 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-
-        // Пропускаем запросы OPTIONS
-        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+        if (OPTIONS.equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
             filterChain.doFilter(request, response);
             return;
@@ -51,18 +62,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
-        } catch (Exception ex) {
-            // Логирование ошибок
+        } catch (ExpiredJwtException ex) {
+            throw new JwtTokenExpiredException(ex.getMessage());
+        } catch (MalformedJwtException ex) {
+            throw new JwtTokenMalformedException(ex.getMessage());
+        }  catch (UnsupportedJwtException ex) {
+            throw new JwtTokenUnsupportedException(ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            throw new JwtTokenIllegalArgumentException(ex.getMessage());
         }
 
         filterChain.doFilter(request, response);
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        // JWT обычно передается в заголовке Authorization в формате "Bearer token"
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7); // Убираем "Bearer "
+        String bearerToken = request.getHeader(AUTHORIZATION);
+        if (bearerToken != null && bearerToken.startsWith(BEARER)) {
+            return bearerToken.substring(7);
         }
         return null;
     }
