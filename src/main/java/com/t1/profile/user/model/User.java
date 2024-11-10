@@ -59,7 +59,7 @@ public class User {
 
     // Настройки профиля
     private boolean isVisibility = true;
-
+        
     // Метаданные
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
