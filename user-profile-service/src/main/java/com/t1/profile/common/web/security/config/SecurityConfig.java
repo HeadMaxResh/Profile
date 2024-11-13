@@ -42,6 +42,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors()
+                .and()
                 .csrf(AbstractHttpConfigurer::disable) // Отключаем CSRF
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(unauthorizedHandler)
@@ -51,6 +53,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/users/current/photo").permitAll() // Разрешить доступ к фото без авторизации
                         .anyRequest().authenticated()
                 )
 // Добавляем фильтр JWT

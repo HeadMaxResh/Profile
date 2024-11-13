@@ -82,10 +82,10 @@ public class AuthServiceImpl implements AuthService {
             User user = userRepo.findByEmail(loginDto.getEmail());
 
             if (user.getRoles().contains(Role.ROLE_ADMIN)) {
-                return new JwtAuthenticationDto(jwt, Role.ROLE_ADMIN.name());
+                return new JwtAuthenticationDto(jwt, Role.ROLE_ADMIN.name(), user.getId());
             }
 
-            return new JwtAuthenticationDto(jwt, Role.ROLE_USER.name());
+            return new JwtAuthenticationDto(jwt, Role.ROLE_USER.name(), user.getId());
 
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException(WRONG_EMAIL_OR_PASSWORD);

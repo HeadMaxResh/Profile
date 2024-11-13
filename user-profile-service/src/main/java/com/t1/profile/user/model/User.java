@@ -34,6 +34,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
+    private String photoPath; // Новое поле для хранения пути к фото
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<UserHardSkill> userHardSkills = new HashSet<>();
 

@@ -18,4 +18,5 @@ public class UserDto {
     private String email;
     private ProfessionDto profession;
     private Set<UserHardSkillDto> userHardSkills;
+    private String photoPath; // Для фото (путь)
 }
