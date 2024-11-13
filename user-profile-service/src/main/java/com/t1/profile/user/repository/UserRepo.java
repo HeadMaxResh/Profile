@@ -3,7 +3,6 @@ package com.t1.profile.user.repository;
 import com.t1.profile.Table;
 import com.t1.profile.profession.model.Profession;
 import com.t1.profile.user.model.User;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

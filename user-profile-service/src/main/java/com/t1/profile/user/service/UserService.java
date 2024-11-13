@@ -1,5 +1,6 @@
 package com.t1.profile.user.service;
 
+import com.t1.profile.user.dto.UserDetailsDto;
 import com.t1.profile.user.dto.UserDto;
 import com.t1.profile.profession.model.Profession;
 
@@ -9,7 +10,7 @@ public interface UserService {
 
     List<UserDto> getAllUsers();
 
-    UserDto findByEmail(String email);
+    UserDetailsDto findByEmail(String email);
 
     List<UserDto> findByProfession(Profession profession);
 

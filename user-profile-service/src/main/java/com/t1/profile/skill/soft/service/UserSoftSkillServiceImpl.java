@@ -7,12 +7,14 @@ import com.t1.profile.skill.soft.mapper.SoftSkillCategoryMapper;
 import com.t1.profile.skill.soft.mapper.UserSoftSkillMapper;
 import com.t1.profile.skill.soft.model.*;
 import com.t1.profile.skill.soft.repository.*;
+import com.t1.profile.skill.soft.service.producer.ReviewTaskProducer;
 import com.t1.profile.user.exception.RatedUserNotFoundException;
 import com.t1.profile.user.exception.RaterUserNotFoundException;
 import com.t1.profile.user.exception.UserNotFoundException;
 import com.t1.profile.user.model.User;
 import com.t1.profile.user.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -47,6 +49,11 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
     @Autowired
     private SoftSkillCategoryMapper softSkillCategoryMapper;
 
+    @Autowired
+    private ReviewTaskProducer reviewTaskProducer;
+
+
+
     @Override
     public UserSoftSkillResponseDto rateSoftSkill(UserSoftSkillRequestDto ratingDto) {
         SoftSkill softSkill = softSkillRepo.findById(ratingDto.getSoftSkillId())
@@ -78,6 +85,11 @@ public class UserSoftSkillServiceImpl implements UserSoftSkillService {
         for (UserSoftSkillRequestDto ratingDto : batchRequestDto.getRatings()) {
             responseDtos.add(rateSoftSkill(ratingDto));
         }
+
+        reviewTaskProducer.sendTaskCompletedMessage(
+                responseDtos.get(0).getRaterUser().getId(),
+                responseDtos.get(0).getRatedUser().getId()
+        );
 
         return responseDtos;
     }

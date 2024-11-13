@@ -4,9 +4,12 @@ import com.t1.profile.skill.hard.dto.HardSkillDto;
 import com.t1.profile.skill.hard.exception.HardSkillNotFoundException;
 import com.t1.profile.skill.hard.mapper.HardSkillMapper;
 import com.t1.profile.skill.hard.model.HardSkill;
+import com.t1.profile.skill.hard.model.UserHardSkill;
 import com.t1.profile.skill.hard.repository.HardSkillRepo;
+import com.t1.profile.skill.hard.repository.UserHardSkillRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,6 +18,9 @@ public class HardSkillServiceImpl implements HardSkillService {
 
     @Autowired
     private HardSkillRepo hardSkillRepo;
+
+    @Autowired
+    private UserHardSkillRepo userHardSkillRepo;
 
     @Autowired
     private HardSkillMapper hardSkillMapper;
@@ -41,10 +47,16 @@ public class HardSkillServiceImpl implements HardSkillService {
         return hardSkillMapper.toDto(savedHardSkill);
     }
 
+    @Transactional
     @Override
     public void deleteHardSkill(Integer hardSkillId) {
         HardSkill hardSkill = hardSkillRepo.findById(hardSkillId)
                 .orElseThrow(() -> new HardSkillNotFoundException(hardSkillId));
+
+        for (UserHardSkill userHardSkill : hardSkill.getUserHardSkills()) {
+            userHardSkill.getUser().getUserHardSkills().remove(userHardSkill);
+            userHardSkillRepo.delete(userHardSkill);
+        }
 
         hardSkillRepo.delete(hardSkill);
     }

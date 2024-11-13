@@ -8,7 +8,6 @@ import com.t1.profile.user.mapper.UserMapper;
 import com.t1.profile.profession.model.Profession;
 import com.t1.profile.user.model.User;
 import com.t1.profile.profession.repository.ProfessionRepo;
-import com.t1.profile.profession.service.UserProfessionServiceImpl;
 import com.t1.profile.user.repository.UserRepo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

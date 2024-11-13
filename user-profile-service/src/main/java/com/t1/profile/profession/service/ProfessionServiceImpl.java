@@ -1,15 +1,17 @@
 package com.t1.profile.profession.service;
 
-import com.t1.profile.profession.exception.ProfessionNotFoundException;
-import com.t1.profile.skill.hard.dto.HardSkillDto;
 import com.t1.profile.profession.dto.ProfessionDto;
+import com.t1.profile.profession.exception.ProfessionNotFoundException;
+import com.t1.profile.profession.mapper.ProfessionMapper;
+import com.t1.profile.profession.model.Profession;
+import com.t1.profile.profession.repository.ProfessionRepo;
+import com.t1.profile.skill.hard.dto.HardSkillDto;
 import com.t1.profile.skill.hard.exception.HardSkillNotFoundException;
 import com.t1.profile.skill.hard.mapper.HardSkillMapper;
-import com.t1.profile.profession.mapper.ProfessionMapper;
 import com.t1.profile.skill.hard.model.HardSkill;
-import com.t1.profile.profession.model.Profession;
 import com.t1.profile.skill.hard.repository.HardSkillRepo;
-import com.t1.profile.profession.repository.ProfessionRepo;
+import com.t1.profile.user.model.User;
+import com.t1.profile.user.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,9 @@ public class ProfessionServiceImpl implements ProfessionService {
 
     @Autowired
     private HardSkillRepo hardSkillRepo;
+
+    @Autowired
+    private UserRepo userRepo;
 
     @Autowired
     private ProfessionMapper professionMapper;
@@ -63,7 +68,7 @@ public class ProfessionServiceImpl implements ProfessionService {
     }
 
     @Override
-    public HardSkillDto  addExistingHardSkillToProfession(Integer professionId, Integer hardSkillId) {
+    public HardSkillDto addExistingHardSkillToProfession(Integer professionId, Integer hardSkillId) {
         Profession profession = professionRepo.findById(professionId)
                 .orElseThrow(() -> new ProfessionNotFoundException(professionId));
 
@@ -94,8 +99,17 @@ public class ProfessionServiceImpl implements ProfessionService {
         Profession profession = professionRepo.findById(professionId)
                 .orElseThrow(() -> new ProfessionNotFoundException(professionId));
 
+        profession.getMainHardSkills().forEach(hardSkill -> hardSkill.setProfession(null));
+
+        List<User> usersWithProfession = userRepo.findByProfession(profession);
+
+        usersWithProfession.forEach(user -> user.setProfession(null));
+
+        userRepo.saveAll(usersWithProfession);
+
         professionRepo.delete(profession);
     }
+
 
     @Override
     public Set<HardSkillDto> getHardSkillsByProfession(Integer professionId) {
