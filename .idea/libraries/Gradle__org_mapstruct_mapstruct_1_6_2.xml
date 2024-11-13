@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.mapstruct:mapstruct:1.6.2">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapstruct/mapstruct/1.6.2/5f4840bb324a33267cc25ee5152b5f483a068b47/mapstruct-1.6.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapstruct/mapstruct/1.6.2/df50bc8fbcdd3a0d1634f866267f2d4b0880fa41/mapstruct-1.6.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
