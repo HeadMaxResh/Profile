@@ -25,6 +25,4 @@ public interface UserService {
 
     List<UserDto> findByQuery(String query);
 
-    List<UserDto> findByQueryAndNoTeamId(String query, Integer noTeamId);
-
 }

@@ -50,8 +50,9 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/**").permitAll()
-                        .anyRequest().authenticated()
+//                        .requestMatchers("/auth/**").permitAll()
+                        .anyRequest().permitAll()
+//                        .authenticated()
                 )
 // Добавляем фильтр JWT
                 .addFilterBefore(jwtAuthenticationFilter(),

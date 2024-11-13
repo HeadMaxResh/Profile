@@ -88,10 +88,4 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDtoList(users);
     }
 
-    @Override
-    public List<UserDto> findByQueryAndNoTeamId(String query, Integer noTeamId) {
-        return userRepo.findByQueryAndNotInTeam(query, noTeamId).stream().map(userMapper::toDto)
-            .toList();
-    }
-
 }

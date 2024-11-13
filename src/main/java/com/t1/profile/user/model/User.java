@@ -28,36 +28,36 @@ import java.util.Set;
 @AllArgsConstructor
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Integer id;
 
-    // Личная информация
-    @Column(nullable = false)
-    private String firstName;
-    private String lastName;
-    private LocalDate birthDate;
+// Личная информация
+@Column(nullable = false)
+private String firstName;
+private String lastName;
+private LocalDate birthDate;
 //    private Gender gender;
-    private String username;
+private String username;
 
-    // Контактная информация
-    @Column(unique = true)
-    private String email;
-    @Column(length = 11)
-    private String phoneNumber;
-    private String city;
+// Контактная информация
+@Column(unique = true)
+private String email;
+@Column(length = 11)
+private String phoneNumber;
+private String city;
 
-    // Аутентификация
-    private String passwordHash;
-    @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
+// Аутентификация
+private String passwordHash;
+@Enumerated(EnumType.STRING)
+private Set<Role> roles;
 
-    // Описание профиля
-    @Column(length = 2048)
-    private String bio;
-    private String messengerContact;
-    @Column(length = 512)
-    private String picture;
+// Описание профиля
+@Column(length = 2048)
+private String bio;
+private String messengerContact;
+@Column(length = 512)
+private String picture;
 
     // Настройки профиля
     //private boolean isVisibility = true;

@@ -50,16 +50,14 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    /*
-    * TODO Подумать над тем, как это переписать, пока у меня нет ответа, на то, как это сделать нормально
-    *     по-хорошему наверное стоит подключить elasticsearch
-    * */
-    @GetMapping("?search={query}&noTeamId={noTeamId}")
+    @GetMapping("/email/{email}")
+    public UserDto findByEmail(@PathVariable String email) {
+        return userService.findByEmail(email);
+    }
+
+    @GetMapping("?search={query}")
     public List<UserDto> findByQuery(@RequestParam("query") String query,
         @RequestParam(name = "noTeamId", required = false) Integer noTeamId) {
-        if (noTeamId != null) {
-            return userService.findByQueryAndNoTeamId(query, noTeamId);
-        }
         return userService.findByQuery(query);
     }
 
