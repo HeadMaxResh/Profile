@@ -1,6 +1,8 @@
 package com.t1.profile.user.service;
 
+import com.t1.profile.user.dto.UserDetailsDto;
 import com.t1.profile.user.dto.UserDto;
+import com.t1.profile.user.mapper.UserDetailsMapper;
 import com.t1.profile.user.mapper.UserMapper;
 import com.t1.profile.profession.model.Profession;
 import com.t1.profile.user.model.User;
@@ -19,15 +21,18 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private UserDetailsMapper userDetailsMapper;
+
     @Override
     public List<UserDto> getAllUsers() {
         return userMapper.toDtoList(userRepo.findAll());
     }
 
     @Override
-    public UserDto findByEmail(String email) {
+    public UserDetailsDto findByEmail(String email) {
         User user =  userRepo.findByEmail(email);
-        return user != null ? userMapper.toDto(user) : null;
+        return user != null ? userDetailsMapper.toDto(user) : null;
     }
 
     @Override

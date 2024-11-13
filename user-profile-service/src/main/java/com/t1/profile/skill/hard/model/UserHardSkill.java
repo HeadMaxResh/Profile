@@ -20,11 +20,11 @@ public class UserHardSkill {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "hard_skill_id", nullable = false)
+    @JoinColumn(name = "hard_skill_id")
     private HardSkill hardSkill;
 
     private Integer rating;

@@ -6,7 +6,6 @@ import com.t1.profile.skill.hard.mapper.HardSkillMapper;
 import com.t1.profile.profession.mapper.ProfessionMapper;
 import com.t1.profile.skill.hard.model.HardSkill;
 import com.t1.profile.profession.model.Profession;
-import com.t1.profile.profession.service.ProfessionServiceImpl;
 import com.t1.profile.skill.hard.repository.HardSkillRepo;
 import com.t1.profile.profession.repository.ProfessionRepo;
 import org.junit.jupiter.api.BeforeEach;

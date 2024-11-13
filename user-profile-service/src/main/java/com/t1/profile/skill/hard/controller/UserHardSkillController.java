@@ -1,5 +1,6 @@
 package com.t1.profile.skill.hard.controller;
 
+import com.t1.profile.skill.hard.model.UserHardSkill;
 import com.t1.profile.user.dto.UserDto;
 import com.t1.profile.skill.hard.dto.UserHardSkillDto;
 import com.t1.profile.skill.hard.dto.UserHardSkillsCategorizedDto;
@@ -33,6 +34,16 @@ public class UserHardSkillController {
         return ResponseEntity.ok(updatedUser);
     }
 
+    @PostMapping("/{hardSkillId}/update-rating/{rating}")
+    public ResponseEntity<UserHardSkillDto> updateRatingHardSkillToUser(
+            @PathVariable Integer userId,
+            @PathVariable Integer hardSkillId,
+            @PathVariable Integer rating
+    ) {
+        UserHardSkillDto userHardSkill = userHardSkillService.updateHardSkillRating(userId, hardSkillId, rating);
+        return ResponseEntity.ok(userHardSkill);
+    }
+
     @DeleteMapping("/{hardSkillId}/delete")
     public ResponseEntity<Void> removeHardSkillFromUser(
             @PathVariable Integer userId,
@@ -58,6 +69,5 @@ public class UserHardSkillController {
         UserHardSkillsCategorizedDto response = userHardSkillService.getUserAndProfessionHardSkills(userId, professionId);
         return ResponseEntity.ok(response);
     }
-
 
 }

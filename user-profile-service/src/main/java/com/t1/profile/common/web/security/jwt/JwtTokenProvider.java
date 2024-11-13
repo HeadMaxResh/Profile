@@ -1,6 +1,5 @@
 package com.t1.profile.common.web.security.jwt;
 
-import com.t1.profile.common.web.security.details.UserDetailsImpl;
 import com.t1.profile.common.web.security.exception.jwt.JwtTokenExpiredException;
 import com.t1.profile.common.web.security.exception.jwt.JwtTokenIllegalArgumentException;
 import com.t1.profile.common.web.security.exception.jwt.JwtTokenMalformedException;
@@ -9,10 +8,7 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 @Component
 public class JwtTokenProvider {

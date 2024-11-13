@@ -2,7 +2,6 @@ package com.t1.profile.skill.hard.repository;
 
 import com.t1.profile.skill.hard.model.HardSkill;
 import com.t1.profile.profession.model.Profession;
-import com.t1.profile.skill.hard.repository.HardSkillRepo;
 import com.t1.profile.user.model.User;
 import com.t1.profile.profession.repository.ProfessionRepo;
 import com.t1.profile.user.repository.UserRepo;

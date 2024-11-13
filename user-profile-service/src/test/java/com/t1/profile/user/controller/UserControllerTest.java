@@ -2,7 +2,6 @@ package com.t1.profile.user.controller;
 
 import com.t1.profile.user.model.User;
 import com.t1.profile.user.repository.UserRepo;
-import com.t1.profile.user.controller.UserController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

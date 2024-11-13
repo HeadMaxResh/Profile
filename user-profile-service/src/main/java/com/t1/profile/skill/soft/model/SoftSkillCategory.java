@@ -22,7 +22,7 @@ public class SoftSkillCategory {
 
     private String name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private Set<SoftSkill> softSkills = new HashSet<>();
 
     @Override

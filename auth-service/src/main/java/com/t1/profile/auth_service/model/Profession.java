@@ -1,7 +1,5 @@
-package com.t1.profile.skill.soft.model;
+package com.t1.profile.auth_service.model;
 
-import com.t1.profile.Table;
-import com.t1.profile.user.model.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,33 +8,18 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
 @Entity
-public class SoftSkill {
+public class Profession {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
-
-    /*@ManyToOne
-    @JoinColumn(name = Table.USER_ID)
-    private User user;*/
-
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private SoftSkillCategory category;
-
-    @OneToMany(mappedBy = "softSkill", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<UserSoftSkill> userSoftSkills = new HashSet<>();
-
-    @OneToMany(mappedBy = "softSkill", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<UserSoftSkillRating> userSoftSkillRatings = new HashSet<>();
 
     @Override
     public final boolean equals(Object o) {
@@ -51,8 +34,8 @@ public class SoftSkill {
                 .getPersistentClass()
                 : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        SoftSkill softSkill = (SoftSkill) o;
-        return getId() != null && Objects.equals(getId(), softSkill.getId());
+        Profession profession = (Profession) o;
+        return getId() != null && Objects.equals(getId(), profession.getId());
     }
 
     @Override

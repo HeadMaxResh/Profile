@@ -1,11 +1,9 @@
 package com.t1.profile.skill.hard.service;
 
 import com.t1.profile.profession.exception.ProfessionNotFoundException;
-import com.t1.profile.skill.hard.exception.HardSkillNotFoundException;
 import com.t1.profile.skill.hard.exception.UserHardSkillAssociationAlreadyExistException;
 import com.t1.profile.skill.hard.exception.UserHardSkillAssociationNotFoundException;
 import com.t1.profile.skill.hard.exception.UserHardSkillNotFoundException;
-import com.t1.profile.skill.hard.service.UserHardSkillServiceImpl;
 import com.t1.profile.user.dto.UserDto;
 import com.t1.profile.skill.hard.dto.UserHardSkillDto;
 import com.t1.profile.skill.hard.dto.UserHardSkillsCategorizedDto;

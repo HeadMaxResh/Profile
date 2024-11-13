@@ -1,6 +1,5 @@
 package com.t1.profile.skill.hard.controller;
 
-import com.t1.profile.skill.hard.controller.HardSkillController;
 import com.t1.profile.skill.hard.dto.HardSkillDto;
 import com.t1.profile.skill.hard.model.HardSkill;
 import com.t1.profile.skill.hard.repository.HardSkillRepo;

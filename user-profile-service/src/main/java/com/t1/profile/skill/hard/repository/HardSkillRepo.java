@@ -1,7 +1,6 @@
 package com.t1.profile.skill.hard.repository;
 
 import com.t1.profile.skill.hard.model.HardSkill;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
