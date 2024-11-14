@@ -16,4 +16,7 @@ public interface UserService {
 
     UserDto findById(Integer id);
 
+    void updateUserPhotoPath(Integer userId, String photoPath);
+
+    String getUserPhotoPath(Integer userId);
 }
