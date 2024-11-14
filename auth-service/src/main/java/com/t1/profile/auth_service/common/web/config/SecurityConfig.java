@@ -1,4 +1,3 @@
-// Файл: SecurityConfig.java
 package com.t1.profile.auth_service.common.web.config;
 
 import com.t1.profile.auth_service.security.details.UserDetailsServiceImpl;

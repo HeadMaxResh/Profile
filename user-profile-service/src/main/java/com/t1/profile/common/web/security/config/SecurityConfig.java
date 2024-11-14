@@ -53,7 +53,6 @@ public class SecurityConfig {
                         .requestMatchers("/users/by-email").permitAll()
                         .anyRequest().authenticated()
                 )
-// Добавляем фильтр JWT
                 .addFilterBefore(jwtAuthenticationFilter(),
                         UsernamePasswordAuthenticationFilter.class);
         return http.build();
