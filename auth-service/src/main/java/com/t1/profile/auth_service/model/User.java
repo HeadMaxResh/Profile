@@ -18,14 +18,13 @@ public class User {
     private Integer id;
     private String firstName;
     private String lastName;
-    private LocalDate dateOfBirth;
-    private String gender;
+    private LocalDate birthDate;
     private String city;
+    private String gender;
     @Column(unique = true, nullable = false)
     private String email;
     private String passwordHash;
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
-    private Profession profession;
 
 }
