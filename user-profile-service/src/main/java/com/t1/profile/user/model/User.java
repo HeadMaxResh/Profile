@@ -25,7 +25,7 @@ public class User {
     private Integer id;
     private String firstName;
     private String lastName;
-    private LocalDate dateOfBirth;
+    private LocalDate birthDate;
     private String gender;
     private String city;
     @Column(unique = true)

@@ -21,10 +21,11 @@ public class RegistrationDto {
     @NotBlank
     private String gender;
     @NotBlank
+    private String city;
+    @NotBlank
     @Email
     private String email;
     @NotBlank
     @Size(min = 6, message = "Password must have at least 6 characters")
     private String password;
-    private Profession profession;
 }
