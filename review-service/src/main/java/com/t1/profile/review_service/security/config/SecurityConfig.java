@@ -1,14 +1,13 @@
-package com.t1.profile.common.web.security.config;
+package com.t1.profile.review_service.security.config;
 
-import com.t1.profile.common.web.security.details.UserDetailsServiceImpl;
-import com.t1.profile.common.web.security.jwt.JwtAuthenticationEntryPoint;
-import com.t1.profile.common.web.security.jwt.JwtAuthenticationFilter;
-import com.t1.profile.common.web.security.jwt.JwtTokenProvider;
+import com.t1.profile.review_service.security.details.UserDetailsServiceImpl;
+import com.t1.profile.review_service.security.jwt.JwtAuthenticationEntryPoint;
+import com.t1.profile.review_service.security.jwt.JwtAuthenticationFilter;
+import com.t1.profile.review_service.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -42,9 +41,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors()
-                .and()
-                .csrf(AbstractHttpConfigurer::disable) // Отключаем CSRF
+                .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(unauthorizedHandler)
                 )
@@ -53,7 +50,6 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/users/by-email").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter(),
