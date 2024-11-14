@@ -1,11 +1,6 @@
 package com.t1.profile.auth_service.dto;
 
-import com.t1.profile.auth_service.model.Profession;
-import com.t1.profile.auth_service.model.Role;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
